@@ -1,0 +1,272 @@
+/*General Settings*/
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+body {
+  background-color: #f8f9fa;
+  color: rgb(45, 45, 45);
+  background-image: url("Tori_Background.png");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed; /* Khóa ảnh nền không cho cuộn */
+  color: rgb(45, 45, 45);
+}
+p {
+  font-size: 14px;
+}
+
+.main-content {
+  display: flex;
+  gap: 30px;
+  max-width: 1200px;
+  margin: 40px auto;
+  background-color: rgba(255, 255, 255, 0.82);
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+  /*tránh cột bình luận scale (theo height) theo list truyện*/
+  align-items: flex-start;
+}
+
+.story-grid {
+  display: grid;
+  /*1 dòng có 5 bìa*/
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 10px 0;
+}
+/* lưới truyện*/
+/*khung display: 4 bìa*/
+
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid #000080;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  width: 100%;
+}
+
+/*Tắt gạch dưới của chữ để không bị đường kẻ kép */
+.section-header .section-title {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+/* Đối với các tiêu đề đứng một mình (không có header bọc ngoài) */
+.section-title {
+  color: #000080;
+  font-size: 20px;
+  font-weight: 700;
+  border-bottom: 2px solid #000080;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+/*Nút mũi tên*/
+.carousel-arrows button {
+  background-color: transparent;
+  color: #000080;
+  border: 2px solid #000080;
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  margin-left: 8px;
+  font-weight: bold;
+  transition: all 0.3s;
+}
+
+.carousel-arrows button:hover {
+  background-color: #000080;
+  color: white;
+}
+
+.carousel-viewport {
+  width: 100%;
+}
+
+.story-grid-carousel {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto; /*Vuốt ngang tự do*/
+  scroll-behavior: smooth;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.story-grid-carousel::-webkit-scrollbar {
+  display: none;
+}
+
+/* Tính toán hiển thị số lượng truyện theo màn hình */
+.story-grid-carousel .story-card {
+  flex: 0 0 calc((100% - 60px) / 4); /* PC: 4 truyện */
+  position: relative;
+}
+@media (max-width: 1024px) {
+  .story-grid-carousel .story-card {
+    flex: 0 0 calc((100% - 40px) / 3);
+  } /* Tablet: 3 truyện */
+}
+@media (max-width: 600px) {
+  .story-grid-carousel .story-card {
+    flex: 0 0 calc((100% - 20px) / 2);
+  } /* Điện thoại: 2 truyện */
+}
+
+/* Chia 2 cột*/
+.left-section {
+  flex: 7.3;
+  min-width: 0;
+}
+.right-section {
+  flex: 2.5;
+  min-width: 280px;
+}
+.section-title {
+  color: #000080;
+  font-size: 20px;
+  font-weight: 700;
+  border-bottom: 2px solid #000080;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.New-update {
+  margin-top: 40px; /* ạo khoảng cách với Slider phía trên */
+}
+
+/* Khung viền bọc ngoài toàn bộ danh sách */
+.update-list {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  background-color: #fff;
+  overflow: hidden;
+}
+
+/*Từng hàng truyện*/
+.update-item {
+  display: flex;
+  padding: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  transition: background-color 0.2s;
+}
+.update-item:last-child {
+  border-bottom: none; /* Truyện cuối cùng không cần kẻ viền dưới */
+}
+.update-item:hover {
+  background-color: #f9f9fa; /* Đổi màu nền nhẹ khi di chuột */
+}
+
+/* Bìa truyện chữ nhật đứng */
+.update-cover {
+  width: 80px;
+  min-width: 80px;
+  height: 112px;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-right: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.update-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Cột thông tin truyện */
+.update-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.update-title {
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 5px;
+  cursor: pointer;
+}
+.update-title:hover {
+  color: #000080;
+}
+
+.update-meta {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 8px;
+}
+.update-meta span {
+  margin-right: 15px;
+}
+.update-meta strong {
+  color: #444;
+}
+
+/* Tóm tắt truyện: Cắt chữ nếu dài quá 2 dòng */
+.update-desc {
+  font-size: 13px;
+  color: #555;
+  margin-bottom: 10px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  line-height: 1.4;
+}
+
+/* Chương mới nhất */
+.update-chapter {
+  font-size: 13px;
+  font-weight: bold;
+  color: #2b70a1;
+  cursor: pointer;
+}
+.update-chapter:hover {
+  text-decoration: underline;
+}
+.update-vol {
+  font-size: 11px;
+  color: #999;
+  font-weight: normal;
+  display: block;
+  margin-top: 2px;
+}
+
+/* Phân trang */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 20px;
+  gap: 5px;
+}
+
+.page-btn {
+  padding: 6px 12px;
+  border: none;
+  background-color: transparent;
+  color: #2b70a1;
+  cursor: pointer;
+  border-radius: 50%;
+  font-size: 14px;
+  font-weight: bold;
+  transition: all 0.2s;
+}
+.page-btn:hover {
+  background-color: #f0f0f0;
+}
+/* Trang hiện tại đang hiển thị */
+.page-btn.active {
+  background-color: #2b70a1;
+  color: white;
+}

@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thảo luận - Tori Lightnovel</title>
+    <link rel="stylesheet" href="./main_style.css" />
+    <link rel="stylesheet" href="./footer_style.css" />
+    <link rel="stylesheet" href="./main_header_style.css" />
+    <link rel="stylesheet" href="./dark_mode_style.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="navigation-bar-top">
+        <div class="logo">
+          <a href="Home_Page.html"
+            ><img src="Tori_Logo_Transparent.png" alt=""
+          /></a>
+        </div>
+        <ul id="auth-menu">
+          <li><a href="Login.html">Đăng nhập</a></li>
+          <li><a href="Signup.html" class="button-general">Đăng ký</a></li>
+        </ul>
+      </div>
+      <div class="navigation-bar-bottom">
+        <div class="navigation-bar-bottom-left_side">
+          <ul>
+            <li><a href="Home_Page.html">Trang chủ</a></li>
+            <li><a href="Story_List.html">Danh sách truyện</a></li>
+            <li><a href="Self-written_LightNovel.html">Truyện sáng tác</a></li>
+            <li><a href="Discussion.html">Thảo luận</a></li>
+          </ul>
+        </div>
+        <div class="navigation-bar-bottom-right_side">
+          <div class="search-bar">
+            <input type="text" placeholder="Tìm kiếm truyện..." />
+            <button type="submit" id="search-button">🔍︎</button>
+          </div>
+          <button id="dark-mode-btn" onclick="toggleDarkMode()">
+            ⏾ Tắt đèn
+          </button>
+          <button type="submit" id="recharge">Nạp tiền</button>
+        </div>
+      </div>
+    </header>
+    <main class="main-content">
+      <!-- danh sachsa truyện-->
+      <section class="left-section">
+        <h2 class="section-title">Thảo luận</h2>
+
+        <!-- container chứa data truyện -->
+        <div id="story-list-container" class="story-grid"></div>
+      </section>
+    </main>
+    <div class="footer">
+      <p>© 2026 Tori Lightnovel. Nền tảng đọc truyện trực tuyến.</p>
+      <div class="footer-links">
+        <a href="">Điều khoản</a>
+        <a href="">Bảo mật</a>
+        <a href="">Liên hệ</a>
+      </div>
+    </div>
+    <script src="Dark_Mode.js"></script>
+    <script src="Auth.js"></script>
+  </body>
+</html>

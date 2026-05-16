@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bảng điều khiển</title>
+    <link rel="stylesheet" href="./authentication_style.css" />
+    <link rel="stylesheet" href="./footer_style.css" />
+  </head>
+  <body>
+    <header class="authentication-header">
+      <div class="logo">
+        <a href="Home_Page.html"
+          ><img src="Tori_Logo_Transparent.png" alt=""
+        /></a>
+      </div>
+      <div class="navigation-bar-top">
+        <ul>
+          <li><a href="Login.html">Đăng nhập</a></li>
+          <li>
+            <a href="Signup.html" class="button-general">Đăng ký</a>
+          </li>
+        </ul>
+      </div>
+    </header>
+    <main class="authentication-main-content">
+      <div class="authentication-main-content-tittle">
+        <h2>Đăng nhập</h2>
+      </div>
+      <div class="authentication-main-content-form">
+        <form id="myform">
+          <p>Email hoặc tên đăng nhập</p>
+          <input
+            type="text"
+            id="log-username"
+            placeholder="Nhập tên đăng nhập"
+          />
+
+          <p>Mật khẩu</p>
+          <div class="password-wrapper" style="position: relative">
+            <input
+              type="password"
+              id="log-password"
+              placeholder="Nhập mật khẩu"
+              style="padding-right: 40px"
+            />
+            <span
+              onclick="togglePassword('log-password')"
+              style="
+                position: absolute;
+                right: 10px;
+                top: 50%;
+                transform: translateY(-50%);
+                cursor: pointer;
+                font-size: 18px;
+              "
+              >🧐</span
+            >
+          </div>
+
+          <div class="myform-options">
+            <label for="remember"
+              ><input type="checkbox" id="remember" />Duy trì đăng nhập</label
+            >
+            <a href="Password_Recover.html">Quên mật khẩu?</a>
+          </div>
+
+          <button type="button" class="button-general" onclick="handleLogin()">
+            Đăng nhập
+          </button>
+        </form>
+      </div>
+    </main>
+    <footer class="footer">
+      <p>© 2026 Tori Lightnovel. Nền tảng đọc truyện trực tuyến.</p>
+      <div class="footer-links">
+        <a href="">Điều khoản</a>
+        <a href="">Bảo mật</a>
+        <a href="">Liên hệ</a>
+      </div>
+    </footer>
+    <script src="Auth.js"></script>
+  </body>
+</html>

@@ -1,0 +1,12 @@
+* 8/5/2026
+	- Added Login section
+	- Added Signup section
+	- Added Password Recovery section
+* 9-14/5/2026
+	- Adding css and some other stuff don't rll exactly rmb
+* 15/5/2026 
+	- Added user session authentication
+	- Added story detail
+	- Added dark mode
+	- Added tittle sorting
+	- Added

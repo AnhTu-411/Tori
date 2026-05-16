@@ -1,0 +1,190 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+body {
+  background-color: #f8f9fa;
+  color: rgb(45, 45, 45);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+* p {
+  font-size: 14px;
+}
+/*Header*/
+.authentication-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 50px;
+  background-color: rgb(255, 255, 255);
+  box-shadow: 0 2px 4px rgb(214, 214, 214);
+}
+.logo img {
+  width: 80px;
+  height: auto;
+}
+.navigation-bar-top ul {
+  display: flex;
+  list-style: none;
+  align-items: center;
+  gap: 30px;
+}
+a {
+  text-decoration: none;
+  color: #4a4e52;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
+.navigation-bar-top a:hover {
+  color: #000080;
+}
+
+.button-general {
+  display: inline-block;
+  color: #ffffff !important;
+  border: 2px solid #000080;
+  border-radius: 6px;
+  background-color: #000080;
+  padding: 10px 20px;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+  font-weight: 600;
+  transition:
+    color 0.3s ease,
+    background-color 0.3s ease;
+}
+.button-general:hover {
+  background-color: rgb(255, 255, 255);
+  color: #000080 !important;
+}
+
+.authentication-main-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  padding: 40px 20px;
+}
+.authentication-main-content-tittle {
+  text-align: center;
+  margin-bottom: 25px;
+}
+.authentication-main-content-tittle h2 {
+  font-size: 30px;
+  color: #2c2f33;
+  margin-bottom: 8px;
+}
+.authentication-main-content-tittle p {
+  display: inline;
+}
+.authentication-main-content-tittle a {
+  font-size: 14px;
+  color: #000080;
+  transition: color 0.3s ease;
+}
+.authentication-main-content-tittle a:hover {
+  color: #0000d8;
+}
+
+#myform #remember {
+  display: inline;
+}
+#myform p {
+  font-weight: 600;
+  color: rgb(45, 45, 45);
+  margin-bottom: 8px;
+  margin-top: 15px;
+}
+#myform label {
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  color: rgb(45, 45, 45);
+  margin-bottom: 8px;
+  margin-top: 15px;
+}
+
+#myform a {
+  display: block;
+  font-weight: 600;
+  color: #2c2f33;
+  font-size: 14px;
+  margin-bottom: 8px;
+  margin-top: 15px;
+  transition: color 0.3s ease;
+}
+#myform a:hover {
+  color: #0000d8;
+}
+#myform input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  font-size: 14px;
+  outline: none;
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+#myform input:focus {
+  border-color: #000080;
+  box-shadow: 0 0 0 3px rgba(45, 61, 179, 0.1);
+}
+
+#myform input::placeholder {
+  color: #a0aec0;
+}
+#myform {
+  background-color: #ffffff;
+  border: none;
+  box-shadow: 0 2px 4px rgb(214, 214, 214);
+  padding: 32px 40px;
+  border-radius: 6px;
+  width: 100%;
+  min-width: 450px;
+}
+
+#myform .button-general {
+  width: 100%;
+  display: block;
+  margin-top: 20px;
+  transition: background-color 0.3s ease;
+}
+#myform .button-general:hover {
+  background-color: rgb(255, 255, 255);
+}
+#myform span {
+  color: red;
+}
+#myform input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  margin: 0;
+  margin-right: 8px;
+  cursor: pointer;
+}
+.myform-options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 15px;
+  margin-bottom: 20px;
+}
+.myform-options label {
+  display: flex;
+  align-items: center;
+  margin: 0;
+  font-weight: 600;
+}
+#myform a .forgot-password {
+  display: inline;
+  margin: 0;
+}

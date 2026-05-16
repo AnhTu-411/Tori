@@ -1,0 +1,104 @@
+body.dark-mode {
+  background-color: #0f111a;
+  background-image: url("Tori_Dark_Background.jpg");
+  color: #e0e0e0;
+}
+
+#dark-mode-btn {
+  background-color: #1a1a2e;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-right: 15px;
+  transition: all 0.3s ease;
+}
+body.dark-mode #dark-mode-btn {
+  background-color: #f1c40f;
+  color: #121212;
+}
+
+body.dark-mode .header .navigation-bar-top {
+  background-color: #0a0a0f;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.9);
+}
+body.dark-mode .header .navigation-bar-bottom {
+  background-color: #161620;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+body.dark-mode .main-content {
+  background-color: #161a24 !important;
+  border: 1px solid #232936;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
+body.dark-mode .update-list,
+body.dark-mode .right-section .comment-box,
+body.dark-mode .story-card {
+  background-color: #1f2430;
+  border: 1px solid #2d3446;
+}
+
+body.dark-mode a,
+body.dark-mode .section-title,
+body.dark-mode .update-title,
+body.dark-mode .update-chapter,
+body.dark-mode .page-btn,
+body.dark-mode #pagination-container span {
+  color: #b3d4ff !important;
+}
+
+body.dark-mode p,
+body.dark-mode .update-desc,
+body.dark-mode .story-author,
+body.dark-mode .update-meta strong {
+  color: #cccccc;
+}
+
+body.dark-mode .update-meta span {
+  color: #aaaaaa;
+}
+
+body.dark-mode .section-title,
+body.dark-mode .section-header {
+  border-bottom-color: #b3d4ff;
+}
+body.dark-mode .update-item {
+  border-bottom-color: #333;
+}
+body.dark-mode .update-item:hover {
+  background-color: #2a2a2a;
+}
+
+body.dark-mode .carousel-arrows button {
+  color: #f1c40f;
+  border-color: #f1c40f;
+}
+body.dark-mode .carousel-arrows button:hover {
+  background-color: #f1c40f;
+  color: #121212;
+}
+
+body.dark-mode .page-btn.active {
+  background-color: #b3d4ff;
+  color: #121212 !important;
+}
+
+body.dark-mode .sort-container select {
+  background-color: #333;
+  color: white;
+  border-color: #555;
+}
+
+body.dark-mode .sort-container {
+  color: #b3d4ff !important;
+}
+
+body.dark-mode .sort-container select {
+  background-color: #2d3446;
+  color: #e0e0e0;
+  border: 1px solid #555;
+}
