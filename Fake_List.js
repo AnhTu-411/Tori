@@ -1,7 +1,7 @@
 const newUpdateStories = [];
 for (let i = 1; i <= 12; i++) {
   newUpdateStories.push({
-    id: i + 100,
+    id: i <= 8 ? i : 1, //làm tạm tại chx có database, cho trỏ lại về id 1 khi quá 8
     title: `The NOexistenceN of you AND me ${i}`,
     uploader: "Lilith",
     words: (i * 1000 + 105).toLocaleString(), //chx có giữ liệu nên ngẫu nhiên độ dài
