@@ -78,7 +78,7 @@ function checkLoginState() {
   if (currentUser) {
     //Nếu có tk đăng nhập, hiển thị tên và nút Đăng xuất
     authMenu.innerHTML = `
-            <li><a href="#" style="color: #000080; font-weight: bold;">👤 Chào, ${currentUser.username}</a></li>
+            <li><a href="#" style="color: #000080; font-weight: bold;">${currentUser.username}</a></li>
             <li><button onclick="handleLogout()" class="button-general" style="background-color: #000080; border-color: #000080;">Đăng xuất</button></li>
         `;
   } else {
