@@ -27,8 +27,13 @@ function renderUpdateList(page) {
   let html = "";
   for (let i = 0; i < itemsToShow.length; i++) {
     const story = itemsToShow[i];
+    const detailHref =
+      typeof getStoryDetailHref === "function"
+        ? getStoryDetailHref(story.id)
+        : `pages/stories/Story_Detail.html?id=${story.id}`;
+
     html += `
-          <a href="Story_Detail.html?id=${story.id}" style="text-decoration: none;">
+          <a href="${detailHref}" style="text-decoration: none;">
             <div class="update-item">
                 <div class="update-cover">
                     <img src="${story.cover}" alt="Bìa">

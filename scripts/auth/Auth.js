@@ -1,3 +1,19 @@
+function getCurrentPath() {
+  return window.location.pathname.replace(/\\/g, "/");
+}
+
+function getHomeHref() {
+  return getCurrentPath().includes("/pages/") ? "../../index.html" : "index.html";
+}
+
+function getAuthHref(pageName) {
+  const currentPath = getCurrentPath();
+
+  if (currentPath.includes("/pages/auth/")) return pageName;
+  if (currentPath.includes("/pages/")) return `../auth/${pageName}`;
+  return `pages/auth/${pageName}`;
+}
+
 //Xử lý đăng kí
 function handleSignup() {
   //lấy dữ liệu từ người từ người dùng nhập vào
@@ -32,7 +48,7 @@ function handleSignup() {
 
   alert("Đăng ký thành công! Vui lòng hãy đăng nhập.");
 
-  window.location.href = "Login.html";
+  window.location.href = getAuthHref("Login.html");
 }
 
 //Xử lý đăng nhập
@@ -55,7 +71,7 @@ function handleLogin() {
     alert("Đăng nhập thành công!");
     //Lưu tạm thông tin tk này vào ngăn "Người dùng hiện tại" (tori_current_user)
     localStorage.setItem("tori_current_user", JSON.stringify(validUser));
-    window.location.href = "Home_Page.html";
+    window.location.href = getHomeHref();
   } else {
     alert("Sai tên đăng nhập hoặc mật khẩu!");
   }
@@ -84,8 +100,8 @@ function checkLoginState() {
   } else {
     //Nếu là guest, hiển thị lại 2 nút Đăng nhập / Đăng ký
     authMenu.innerHTML = `
-            <li><a href="Login.html">Đăng nhập</a></li>
-            <li><a href="Signup.html" class="button-general">Đăng ký</a></li>
+            <li><a href="${getAuthHref("Login.html")}">Đăng nhập</a></li>
+            <li><a href="${getAuthHref("Signup.html")}" class="button-general">Đăng ký</a></li>
         `;
   }
 }

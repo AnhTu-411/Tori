@@ -364,6 +364,19 @@ const mockStories = [
 ];
 
 // ================= 2. HÀM VẼ TRANG CHỦ & DANH SÁCH =================
+function getStoryDetailHref(storyId) {
+  const currentPath = window.location.pathname.replace(/\\/g, "/");
+  let storyPagePrefix = "pages/stories/";
+
+  if (currentPath.includes("/pages/stories/")) {
+    storyPagePrefix = "";
+  } else if (currentPath.includes("/pages/")) {
+    storyPagePrefix = "../stories/";
+  }
+
+  return `${storyPagePrefix}Story_Detail.html?id=${storyId}`;
+}
+
 function renderStories(storiesArray) {
   const container = document.getElementById("story-list-container");
   if (!container) return;
@@ -372,7 +385,7 @@ function renderStories(storiesArray) {
   for (let i = 0; i < storiesArray.length; i++) {
     const story = storiesArray[i];
     htmlContent += `
-      <a href="Story_Detail.html?id=${story.id}" class="story-card" style="text-decoration: none; display: block;">
+      <a href="${getStoryDetailHref(story.id)}" class="story-card" style="text-decoration: none; display: block;">
         <img src="${story.coverUrl}" alt="Bìa truyện ${story.title}">
         <div class="story-info">
           <h3 class="story-title">${story.title}</h3>
