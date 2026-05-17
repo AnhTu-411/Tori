@@ -7,7 +7,7 @@
     border-color 0.4s ease,
     box-shadow 0.4s ease;
 }
-/* Khi bật Dark Mode: Làm mờ nền sáng, làm rõ nền tối */
+/*Khi bật Dark Mode: Làm mờ nền sáng, làm rõ nền tối */
 body.dark-mode::before {
   opacity: 0; /* Mờ dần ảnh sáng */
 }
