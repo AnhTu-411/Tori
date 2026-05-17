@@ -1,7 +1,19 @@
-body.dark-mode {
-  background-color: #0f111a;
-  background-image: url("Tori_Dark_Background.jpg");
-  color: #e0e0e0;
+*,
+*::before,
+*::after {
+  transition:
+    background-color 0.4s ease,
+    color 0.4s ease,
+    border-color 0.4s ease,
+    box-shadow 0.4s ease;
+}
+/* Khi bật Dark Mode: Làm mờ nền sáng, làm rõ nền tối */
+body.dark-mode::before {
+  opacity: 0; /* Mờ dần ảnh sáng */
+}
+
+body.dark-mode::after {
+  opacity: 1; /* Hiện dần ảnh tối */
 }
 
 #dark-mode-btn {
