@@ -3,12 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Danh sách truyện - Tori Lightnovel</title>
+    <title>Tủ Sách Của Tôi - Tori Lightnovel</title>
     <link rel="stylesheet" href="../../styles/main_style.css" />
     <link rel="stylesheet" href="../../styles/card_style.css" />
     <link rel="stylesheet" href="../../styles/footer_style.css" />
     <link rel="stylesheet" href="../../styles/main_header_style.css" />
     <link rel="stylesheet" href="../../styles/dark_mode_style.css" />
+    <link rel="stylesheet" href="../../styles/bookshelf_style.css" />
     <link rel="stylesheet" href="../../styles/animation_style.css" />
   </head>
   <body>
@@ -16,23 +17,29 @@
       <div class="navigation-bar-top">
         <div class="logo">
           <a href="../../index.html"
-            ><img src="../../assets/images/Tori_Logo_Transparent.png" alt=""
+            ><img
+              src="../../assets/images/Tori_Logo_Transparent.png"
+              alt="Logo"
           /></a>
         </div>
         <ul id="auth-menu">
-          <li><a href="../auth/Login.html">Đăng nhập</a></li>
-          <li>
-            <a href="../auth/Signup.html" class="button-general">Đăng ký</a>
-          </li>
+          <li><a href="Login.html">Đăng nhập</a></li>
+          <li><a href="Signup.html" class="button-general">Đăng ký</a></li>
         </ul>
       </div>
       <div class="navigation-bar-bottom">
         <div class="navigation-bar-bottom-left_side">
           <ul>
             <li><a href="../../index.html">Trang chủ</a></li>
-            <li><a href="Story_List.html">Danh sách truyện</a></li>
-            <li><a href="Self-written_LightNovel.html">Truyện sáng tác</a></li>
-            <li><a href="../shelf/Bookshelf.html">Tủ sách</a></li>
+            <li><a href="../stories/Story_List.html">Danh sách truyện</a></li>
+            <li>
+              <a href="../stories/Self-written_LightNovel.html"
+                >Truyện sáng tác</a
+              >
+            </li>
+            <li>
+              <a href="../shelf/Bookshelf.html" class="active">Tủ sách</a>
+            </li>
           </ul>
         </div>
         <div class="navigation-bar-bottom-right_side">
@@ -40,13 +47,11 @@
             <input type="text" placeholder="Tìm kiếm truyện..." />
             <button type="submit" id="search-button">🔍︎</button>
           </div>
-          <a
-            href="../../pages/payment/Cart.html"
-            class="cart-icon"
-            title="Giỏ hàng"
-          >
+
+          <a href="../payment/Cart.html" class="cart-icon" title="Giỏ hàng">
             🛒 <span id="cart-count">0</span>
           </a>
+
           <button id="dark-mode-btn" onclick="toggleDarkMode()">
             ⏾ Tắt đèn
           </button>
@@ -60,37 +65,43 @@
         </div>
       </div>
     </header>
+
     <main class="main-content">
-      <!--danh sach truyen-->
-      <section class="left-section">
-        <h2 class="section-title">Danh sách truyện</h2>
-        <div class="sort-container" style="font-weight: bold; color: #000080">
-          <label for="sort-select">Sắp xếp: </label>
-          <select
-            id="sort-select"
-            onchange="sortStories(this.value)"
-            style="padding: 5px; border-radius: 5px; cursor: pointer"
-          >
-            <option value="default">Mặc định</option>
-            <option value="az">Tên: A - Z</option>
-            <option value="za">Tên: Z - A</option>
-          </select>
+      <section class="left-section" style="flex: 1">
+        <div class="bookshelf-tabs">
+          <button class="tab-btn active" onclick="switchShelfTab('following')">
+            📖 Truyện theo dõi
+          </button>
+          <button class="tab-btn" onclick="switchShelfTab('purchased')">
+            💰 Lịch sử mua truyện
+          </button>
         </div>
-        <!--Container chua truyen-->
-        <div id="story-list-container" class="story-grid"></div>
+
+        <div id="shelf-following" class="shelf-content active">
+          <div class="story-grid" id="following-grid">
+            <p class="empty-message">Bạn chưa theo dõi bộ truyện nào.</p>
+          </div>
+        </div>
+
+        <div id="shelf-purchased" class="shelf-content">
+          <div class="update-list" id="purchased-list">
+            <p class="empty-message">Bạn chưa mua nội dung trả phí nào.</p>
+          </div>
+        </div>
       </section>
     </main>
-    <div class="footer">
+
+    <footer class="footer">
       <p>© 2026 Tori Lightnovel. Nền tảng đọc truyện trực tuyến.</p>
       <div class="footer-links">
         <a href="">Điều khoản</a>
         <a href="">Bảo mật</a>
         <a href="">Liên hệ</a>
       </div>
-    </div>
+    </footer>
     <script src="../../scripts/data/Fake_DataBase.js"></script>
-    <script src="../../scripts/stories/Sorting.js"></script>
     <script src="../../scripts/ui/Dark_Mode.js"></script>
     <script src="../../scripts/auth/Auth.js"></script>
+    <script src="../../scripts/shelf/Book_Shelf.js"></script>
   </body>
 </html>

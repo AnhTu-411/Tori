@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="../../styles/card_style.css" />
     <link rel="stylesheet" href="../../styles/footer_style.css" />
     <link rel="stylesheet" href="../../styles/dark_mode_style.css" />
+    <link rel="stylesheet" href="../../styles/animation_style.css" />
   </head>
   <body>
     <header class="header">
@@ -20,7 +21,9 @@
         </div>
         <ul id="auth-menu">
           <li><a href="../auth/Login.html">Đăng nhập</a></li>
-          <li><a href="../auth/Signup.html" class="button-general">Đăng ký</a></li>
+          <li>
+            <a href="../auth/Signup.html" class="button-general">Đăng ký</a>
+          </li>
         </ul>
       </div>
       <div class="navigation-bar-bottom">
@@ -29,7 +32,7 @@
             <li><a href="../../index.html">Trang chủ</a></li>
             <li><a href="Story_List.html">Danh sách truyện</a></li>
             <li><a href="Self-written_LightNovel.html">Truyện sáng tác</a></li>
-            <li><a href="../community/Discussion.html">Thảo luận</a></li>
+            <li><a href="../shelf/Bookshelf.html">Tủ sách</a></li>
           </ul>
         </div>
         <div class="navigation-bar-bottom-right_side">
@@ -37,10 +40,23 @@
             <input type="text" placeholder="Tìm kiếm truyện..." />
             <button type="submit" id="search-button">🔍︎</button>
           </div>
+          <a
+            href="../../pages/payment/Cart.html"
+            class="cart-icon"
+            title="Giỏ hàng"
+          >
+            🛒 <span id="cart-count">0</span>
+          </a>
           <button id="dark-mode-btn" onclick="toggleDarkMode()">
             ⏾ Tắt đèn
           </button>
-          <button type="submit" id="recharge">Nạp tiền</button>
+          <button
+            type="button"
+            id="recharge"
+            onclick="window.location.href = '../../pages/payment/Recharge.html'"
+          >
+            Nạp tiền
+          </button>
         </div>
       </div>
     </header>
