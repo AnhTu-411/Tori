@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="./styles/main_comment_box_style.css" />
     <link rel="stylesheet" href="./styles/footer_style.css" />
     <link rel="stylesheet" href="./styles/dark_mode_style.css" />
+    <link rel="stylesheet" href="./styles/animation_style.css" />
   </head>
   <body>
     <header class="header">
@@ -21,16 +22,24 @@
         </div>
         <ul id="auth-menu">
           <li><a href="pages/auth/Login.html">Đăng nhập</a></li>
-          <li><a href="pages/auth/Signup.html" class="button-general">Đăng ký</a></li>
+          <li>
+            <a href="pages/auth/Signup.html" class="button-general">Đăng ký</a>
+          </li>
         </ul>
       </div>
       <div class="navigation-bar-bottom">
         <div class="navigation-bar-bottom-left_side">
           <ul>
             <li><a href="index.html">Trang chủ</a></li>
-            <li><a href="pages/stories/Story_List.html">Danh sách truyện</a></li>
-            <li><a href="pages/stories/Self-written_LightNovel.html">Truyện sáng tác</a></li>
-            <li><a href="pages/community/Discussion.html">Thảo luận</a></li>
+            <li>
+              <a href="pages/stories/Story_List.html">Danh sách truyện</a>
+            </li>
+            <li>
+              <a href="pages/stories/Self-written_LightNovel.html"
+                >Truyện sáng tác</a
+              >
+            </li>
+            <li><a href="pages/shelf/Bookshelf.html">Tủ sách</a></li>
           </ul>
         </div>
         <div class="navigation-bar-bottom-right_side">
@@ -38,10 +47,23 @@
             <input type="text" placeholder="Tìm kiếm truyện..." />
             <button type="submit" id="search-button">🔍︎</button>
           </div>
+          <a
+            href="./pages/payment/Cart.html"
+            class="cart-icon"
+            title="Giỏ hàng"
+          >
+            🛒 <span id="cart-count">0</span>
+          </a>
           <button id="dark-mode-btn" onclick="toggleDarkMode()">
             ⏾ Tắt đèn
           </button>
-          <button type="submit" id="recharge">Nạp tiền</button>
+          <button
+            type="button"
+            id="recharge"
+            onclick="window.location.href = '../../pages/payment/Recharge.html'"
+          >
+            Nạp tiền
+          </button>
         </div>
       </div>
     </header>
@@ -74,18 +96,39 @@
       <!--cột comment-->
       <aside class="right-section">
         <div class="comment-box">
-          <h2 class="section-title">Bình Luận Mới</h2>
+          <h2
+            class="section-title"
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              margin-bottom: 15px;
+            "
+          >
+            <span>Có thể bạn sẽ thích</span>
+            <button
+              onclick="loadRandomStory()"
+              style="
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 22px;
+                color: inherit;
+                transition: transform 0.4s ease;
+                padding: 0;
+              "
+              title="Đổi truyện khác"
+              onmouseover="this.style.transform = 'rotate(180deg)'"
+              onmouseout="this.style.transform = 'rotate(0deg)'"
+            >
+              ↻
+            </button>
+          </h2>
 
-          <div class="comment-content">
-            <!-- Nội dung bình luận mẫu -->
-            <div class="comment-item">
-              <p><strong>Nana:</strong> WYSI</p>
-            </div>
-            <hr class="comment-divider" />
-            <div class="comment-item">
-              <p><strong>Cookiezi:</strong> 727</p>
-            </div>
-          </div>
+          <div
+            id="random-story-container"
+            style="display: flex; justify-content: center"
+          ></div>
         </div>
       </aside>
     </main>
@@ -102,5 +145,6 @@
     <script src="./scripts/stories/Fake_List.js"></script>
     <script src="./scripts/ui/Dark_Mode.js"></script>
     <script src="./scripts/auth/Auth.js"></script>
+    <script src="./scripts/stories/Random_Story.js"></script>
   </body>
 </html>
