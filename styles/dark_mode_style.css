@@ -9,11 +9,11 @@
 }
 /*Khi bật Dark Mode: Làm mờ nền sáng, làm rõ nền tối */
 body.dark-mode::before {
-  opacity: 0; /* Mờ dần ảnh sáng */
+  opacity: 0; /*Mờ dần ảnh sáng*/
 }
 
 body.dark-mode::after {
-  opacity: 1; /* Hiện dần ảnh tối */
+  opacity: 1; /*Hiện dần ảnh tối */
 }
 
 #dark-mode-btn {
@@ -113,4 +113,8 @@ body.dark-mode .sort-container select {
   background-color: #2d3446;
   color: #e0e0e0;
   border: 1px solid #555;
+}
+
+body.dark-mode .cart-icon {
+  color: #f1c40f;
 }
