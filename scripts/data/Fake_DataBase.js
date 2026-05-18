@@ -363,7 +363,7 @@ const mockStories = [
   },
 ];
 
-// ================= 2. HÀM VẼ TRANG CHỦ & DANH SÁCH =================
+//
 function getStoryDetailHref(storyId) {
   const currentPath = window.location.pathname.replace(/\\/g, "/");
   let storyPagePrefix = "pages/stories/";
