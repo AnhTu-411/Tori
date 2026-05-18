@@ -32,10 +32,10 @@ function handleSignup() {
     alert("Mật khẩu xác nhận không khớp!");
     return;
   }
-  //Tìm trogn localStorage của web xem đã có ds tk chx
-  //Nếu chx có thìtạo 1 mảng rỗng để chứa các tk đk mới
+  //Tìm trong localStorage của web xem đã có ds tk chx
+  //Nếu chx có thì tạo 1 mảng rỗng để chứa các tk đk mới
   let users = JSON.parse(localStorage.getItem("tori_users")) || [];
-  //Tìmtrong danh sách xem đã có tên trùng chx
+  //Tìm trong danh sách xem đã có tên trùng chx
   const isExist = users.find((u) => u.username === username);
   if (isExist) {
     alert("Tên đăng nhập đã tồn tại, vui lòng chọn tên khác!");

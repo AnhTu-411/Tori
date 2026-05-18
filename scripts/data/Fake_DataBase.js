@@ -1,4 +1,4 @@
-// Dữ liệ fake
+// Dữ liệu fake
 const mockStories = [
   {
     id: 1,
@@ -13,7 +13,7 @@ const mockStories = [
     summary:
       "Asamura Yuuta, một học sinh cao trung bắt đầu sống cùng dưới một mái nhà với cô nữ sinh đẹp nhất khối- Ayase Saki dưới danh nghĩa anh em sau khi bố mẹ cả hai quyết định tái hôn...",
 
-    //dữ liệu giả của chương chuyện, etc
+    //Dữ liệu giả của chương chuyện, etc
     volumes: [
       {
         volTitle: "Vol 1: Siêu hội trưởng và tên trợ lý không lương",
@@ -24,7 +24,7 @@ const mockStories = [
             badge: "Mới",
             title: "Chương 1: Người mà tôi không nên thích",
             date: "14/05/2026",
-            //nội dung test lấy từ chương 31 oregairu
+            //Nội dung test lấy từ chương 31 oregairu
             content: [
               "Thịch.",
               "Tiếng của trái bóng cam va xuống sàn gỗ của nhà thể chất. Trường cấp ba Hosoku đang bị dẫn hai điểm và tôi là người nhận trách nhiệm ném phạt khi thời gian trận đấu chỉ còn hai giây đếm ngược. Cả đội không còn lần gọi timeout nào và lượt ném phạt này của tôi là thứ quyết định xem cả ngôi trường này có thể đi vào trận chung kết hay không.",
