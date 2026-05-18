@@ -1,18 +1,5 @@
-function getCurrentPath() {
-  return window.location.pathname.replace(/\\/g, "/");
-}
-
-function getHomeHref() {
-  return getCurrentPath().includes("/pages/")
-    ? "../../index.html"
-    : "index.html";
-}
-
-function getAuthHref(pageName) {
-  const currentPath = getCurrentPath();
-  if (currentPath.includes("/pages/auth/")) return pageName;
-  if (currentPath.includes("/pages/")) return `../auth/${pageName}`;
-  return `pages/auth/${pageName}`;
+function getAuthHref(routeName) {
+  return ToriRoutes.href(routeName);
 }
 
 function handleSignup() {
@@ -43,7 +30,7 @@ function handleSignup() {
   localStorage.setItem("tori_users", JSON.stringify(users));
 
   alert("Đăng ký thành công! Vui lòng hãy đăng nhập.");
-  window.location.href = getAuthHref("Login.html");
+  ToriRoutes.go("login");
 }
 
 function handleLogin() {
@@ -63,7 +50,7 @@ function handleLogin() {
   if (validUser) {
     alert("Đăng nhập thành công!");
     localStorage.setItem("tori_current_user", JSON.stringify(validUser));
-    window.location.href = getHomeHref();
+    ToriRoutes.go("home");
   } else {
     alert("Sai tên đăng nhập hoặc mật khẩu!");
   }
@@ -87,8 +74,8 @@ function checkLoginState() {
         `;
   } else {
     authMenu.innerHTML = `
-            <li><a href="${getAuthHref("Login.html")}">Đăng nhập</a></li>
-            <li><a href="${getAuthHref("Signup.html")}" class="button-general">Đăng ký</a></li>
+            <li><a href="${getAuthHref("login")}">Đăng nhập</a></li>
+            <li><a href="${getAuthHref("signup")}" class="button-general">Đăng ký</a></li>
         `;
   }
 }

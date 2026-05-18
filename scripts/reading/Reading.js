@@ -56,9 +56,9 @@ function loadReadingContent() {
   const hasNext = chapIndex < vol.chapters.length - 1;
 
   navBox.innerHTML = `
-          ${hasPrev ? `<a href="Reading.html?storyId=${storyId}&vol=${volIndex}&chap=${chapIndex - 1}" class="nav-btn">❮❮ Trước</a>` : `<span class="nav-btn" style="color:#aaa; cursor:not-allowed;">❮❮ Trước</span>`}
-          <a href="Story_Detail.html?id=${storyId}" class="nav-btn">🏠︎ Mục lục</a>
-          ${hasNext ? `<a href="Reading.html?storyId=${storyId}&vol=${volIndex}&chap=${chapIndex + 1}" class="nav-btn">Tiếp ❯❯</a>` : `<span class="nav-btn" style="color:#aaa; cursor:not-allowed;">Hết Tập ❯❯</span>`}
+          ${hasPrev ? `<a href="${ToriRoutes.href("reading", { storyId, vol: volIndex, chap: chapIndex - 1 })}" class="nav-btn">❮❮ Trước</a>` : `<span class="nav-btn" style="color:#aaa; cursor:not-allowed;">❮❮ Trước</span>`}
+          <a href="${ToriRoutes.href("storyDetail", { id: storyId })}" class="nav-btn">🏠︎ Mục lục</a>
+          ${hasNext ? `<a href="${ToriRoutes.href("reading", { storyId, vol: volIndex, chap: chapIndex + 1 })}" class="nav-btn">Tiếp ❯❯</a>` : `<span class="nav-btn" style="color:#aaa; cursor:not-allowed;">Hết Tập ❯❯</span>`}
         `;
 
   // ================= ĐOẠN CODE THÊM MỚI BẮT ĐẦU TỪ ĐÂY =================
@@ -68,12 +68,16 @@ function loadReadingContent() {
   const sidebarNext = document.getElementById("sidebar-next-btn");
 
   if (sidebarHome) {
-    sidebarHome.href = `Story_Detail.html?id=${storyId}`; // Luôn trỏ về đúng truyện đang đọc
+    sidebarHome.href = ToriRoutes.href("storyDetail", { id: storyId }); // Luôn trỏ về đúng truyện đang đọc
   }
 
   if (sidebarPrev) {
     if (hasPrev) {
-      sidebarPrev.href = `Reading.html?storyId=${storyId}&vol=${volIndex}&chap=${chapIndex - 1}`;
+      sidebarPrev.href = ToriRoutes.href("reading", {
+        storyId,
+        vol: volIndex,
+        chap: chapIndex - 1,
+      });
       sidebarPrev.style.opacity = "1";
       sidebarPrev.style.pointerEvents = "auto";
     } else {
@@ -85,7 +89,11 @@ function loadReadingContent() {
 
   if (sidebarNext) {
     if (hasNext) {
-      sidebarNext.href = `Reading.html?storyId=${storyId}&vol=${volIndex}&chap=${chapIndex + 1}`;
+      sidebarNext.href = ToriRoutes.href("reading", {
+        storyId,
+        vol: volIndex,
+        chap: chapIndex + 1,
+      });
       sidebarNext.style.opacity = "1";
       sidebarNext.style.pointerEvents = "auto";
     } else {

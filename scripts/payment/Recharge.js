@@ -12,7 +12,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  let cart = JSON.parse(localStorage.getItem("tori_cart")) || [];
+  const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+  const userSuffix = currentUser ? "_" + currentUser.username : "";
+  let cart = JSON.parse(localStorage.getItem("tori_cart" + userSuffix)) || [];
   const countSpan = document.getElementById("cart-count");
   if (countSpan) countSpan.innerText = cart.length;
 });
@@ -22,7 +24,7 @@ function submitRecharge() {
 
   if (!currentUser) {
     alert("Vui lòng đăng nhập tài khoản để thực hiện chức năng nạp tiền!");
-    window.location.href = "../auth/Login.html";
+    ToriRoutes.go("login");
     return;
   }
 
@@ -30,9 +32,9 @@ function submitRecharge() {
   const qrImg = document.getElementById("dynamic-qr-img");
 
   if (method === "Bank") {
-    qrImg.src = "../../assets/images/VNPAY_QR.jpg";
+    qrImg.src = ToriRoutes.asset("bankQr");
   } else if (method === "VNPay") {
-    qrImg.src = "../../assets/images/Bank_QR.jpg";
+    qrImg.src = ToriRoutes.asset("vnpayQr");
   }
 
   const modal = document.getElementById("payment-modal");
@@ -71,5 +73,5 @@ function processPaymentSuccess(currentUser) {
   alert(
     `Giao dịch qua ${method.toUpperCase()} thành công!\nTài khoản của bạn vừa được nạp thêm ${selectedCoins} Coin.`,
   );
-  window.location.href = "Cart.html";
+  ToriRoutes.go("cart");
 }

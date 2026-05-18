@@ -365,16 +365,7 @@ const mockStories = [
 
 //
 function getStoryDetailHref(storyId) {
-  const currentPath = window.location.pathname.replace(/\\/g, "/");
-  let storyPagePrefix = "pages/stories/";
-
-  if (currentPath.includes("/pages/stories/")) {
-    storyPagePrefix = "";
-  } else if (currentPath.includes("/pages/")) {
-    storyPagePrefix = "../stories/";
-  }
-
-  return `${storyPagePrefix}Story_Detail.html?id=${storyId}`;
+  return ToriRoutes.href("storyDetail", { id: storyId });
 }
 
 function renderStories(storiesArray) {
@@ -447,7 +438,7 @@ function loadStoryDetail() {
         chaptersHtml += `
           <div class="chap-row">
             <div class="chap-left">
-              ${badgeHtml} <a href="Reading.html?storyId=${story.id}&vol=${i}&chap=${j}">${iconHtml}${chap.title}</a>
+              ${badgeHtml} <a href="${ToriRoutes.href("reading", { storyId: story.id, vol: i, chap: j })}">${iconHtml}${chap.title}</a>
             </div>
             <div class="chap-right">${chap.date}</div>
           </div>

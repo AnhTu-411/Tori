@@ -52,7 +52,7 @@ function loadStoryDetail() {
           chaptersHtml += `
             <div class="chap-row">
               <div class="chap-left">
-                ${badgeHtml} <a href="Reading.html?storyId=${story.id}&vol=${i}&chap=${j}">${iconHtml}${chap.title}</a>
+                ${badgeHtml} <a href="${ToriRoutes.href("reading", { storyId: story.id, vol: i, chap: j })}">${iconHtml}${chap.title}</a>
               </div>
               <div class="chap-right">${chap.date}</div>
             </div>
@@ -140,7 +140,7 @@ function requirePurchase() {
   let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
   if (!currentUser) {
     alert("Vui lòng đăng nhập để có thể mua và đọc bộ truyện này!");
-    window.location.href = "../auth/Login.html";
+    ToriRoutes.go("login");
   } else {
     alert(
       "Bạn cần trả phí để mở khóa nội dung Tập này! Vui lòng bấm nút 'Mua Tập' ở phía trên.",
@@ -152,7 +152,7 @@ function addVolToCart(storyId, title, volIndex, volName, cover, price) {
   let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
   if (!currentUser) {
     alert("Vui lòng đăng nhập để mua sắm!");
-    window.location.href = "../auth/Login.html";
+    ToriRoutes.go("login");
     return;
   }
 

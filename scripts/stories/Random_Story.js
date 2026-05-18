@@ -19,7 +19,7 @@ function loadRandomStory() {
   const detailHref =
     typeof getStoryDetailHref === "function"
       ? getStoryDetailHref(story.id)
-      : `pages/stories/Story_Detail.html?id=${story.id}`;
+      : ToriRoutes.href("storyDetail", { id: story.id });
 
   // 4. Vẽ lại cái thẻ truyện y hệt như bên phần Truyện Nổi Bật
   // Tôi ép style width: 100% để nó nở to ra cho vừa cái cột bên phải

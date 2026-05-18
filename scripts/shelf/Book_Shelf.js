@@ -49,7 +49,7 @@ function loadFollowingStories() {
       const detailHref =
         typeof getStoryDetailHref === "function"
           ? getStoryDetailHref(story.id)
-          : `../stories/Story_Detail.html?id=${story.id}`;
+          : ToriRoutes.href("storyDetail", { id: story.id });
 
       html += `
         <a href="${detailHref}" class="story-card" style="text-decoration: none; display: block;">
@@ -91,7 +91,7 @@ function loadPurchasedHistory() {
     const detailHref =
       typeof getStoryDetailHref === "function"
         ? getStoryDetailHref(item.storyId)
-        : `../stories/Story_Detail.html?id=${item.storyId}`;
+        : ToriRoutes.href("storyDetail", { id: item.storyId });
 
     html += `
       <a href="${detailHref}" style="text-decoration: none; display: block;">

@@ -30,7 +30,7 @@ function renderUpdateList(page) {
     const detailHref =
       typeof getStoryDetailHref === "function"
         ? getStoryDetailHref(story.id)
-        : `pages/stories/Story_Detail.html?id=${story.id}`;
+        : ToriRoutes.href("storyDetail", { id: story.id });
 
     html += `
           <a href="${detailHref}" style="text-decoration: none;">

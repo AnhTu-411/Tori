@@ -16,30 +16,30 @@
     <header class="header">
       <div class="navigation-bar-top">
         <div class="logo">
-          <a href="index.html"
-            ><img src="./assets/images/Tori_Logo_Transparent.png" alt=""
+          <a href="#" data-route="home"
+            ><img data-asset="logo" alt=""
           /></a>
         </div>
         <ul id="auth-menu">
-          <li><a href="pages/auth/Login.html">Đăng nhập</a></li>
+          <li><a href="#" data-route="login">Đăng nhập</a></li>
           <li>
-            <a href="pages/auth/Signup.html" class="button-general">Đăng ký</a>
+            <a href="#" data-route="signup" class="button-general">Đăng ký</a>
           </li>
         </ul>
       </div>
       <div class="navigation-bar-bottom">
         <div class="navigation-bar-bottom-left_side">
           <ul>
-            <li><a href="index.html">Trang chủ</a></li>
+            <li><a href="#" data-route="home">Trang chủ</a></li>
             <li>
-              <a href="pages/stories/Story_List.html">Danh sách truyện</a>
+              <a href="#" data-route="storyList">Danh sách truyện</a>
             </li>
             <li>
-              <a href="pages/stories/Self-written_LightNovel.html"
+              <a href="#" data-route="selfWritten"
                 >Truyện sáng tác</a
               >
             </li>
-            <li><a href="pages/shelf/Bookshelf.html">Tủ sách</a></li>
+            <li><a href="#" data-route="bookshelf">Tủ sách</a></li>
           </ul>
         </div>
         <div class="navigation-bar-bottom-right_side">
@@ -48,7 +48,8 @@
             <button type="submit" id="search-button">🔍︎</button>
           </div>
           <a
-            href="./pages/payment/Cart.html"
+            href="#"
+            data-route="cart"
             class="cart-icon"
             title="Giỏ hàng"
           >
@@ -60,7 +61,7 @@
           <button
             type="button"
             id="recharge"
-            onclick="window.location.href = '../../pages/payment/Recharge.html'"
+            data-route-click="recharge"
           >
             Nạp tiền
           </button>
@@ -140,6 +141,7 @@
         <a href="">Liên hệ</a>
       </div>
     </footer>
+    <script src="./scripts/ui/Routes.js"></script>
     <script src="./scripts/data/Fake_DataBase.js"></script>
     <script src="./scripts/ui/Navigation_Animation.js"></script>
     <script src="./scripts/stories/Fake_List.js"></script>

@@ -67,7 +67,7 @@ function processCheckout() {
 
   if (!currentUser) {
     alert("Vui lòng đăng nhập để tiến hành thanh toán!");
-    window.location.href = "../auth/Login.html";
+    ToriRoutes.go("login");
     return;
   }
 
@@ -84,7 +84,7 @@ function processCheckout() {
 
   if (userCoins < totalPay) {
     alert(`Không đủ tiền! Còn thiếu ${totalPay - userCoins} Coin.`);
-    window.location.href = "Recharge.html";
+    ToriRoutes.go("recharge");
     return;
   }
 
@@ -112,7 +112,7 @@ function processCheckout() {
   localStorage.removeItem("tori_cart" + userSuffix);
 
   alert("🎉 Thanh toán thành công! Truyện đã vào Tủ sách.");
-  window.location.href = "../shelf/Bookshelf.html";
+  ToriRoutes.go("bookshelf");
 }
 
 document.addEventListener("DOMContentLoaded", () => {

@@ -16,29 +16,29 @@
     <header class="header">
       <div class="navigation-bar-top">
         <div class="logo">
-          <a href="../../index.html"
+          <a href="#" data-route="home"
             ><img
-              src="../../assets/images/Tori_Logo_Transparent.png"
+              data-asset="logo"
               alt="Logo"
           /></a>
         </div>
         <ul id="auth-menu">
-          <li><a href="Login.html">Đăng nhập</a></li>
-          <li><a href="Signup.html" class="button-general">Đăng ký</a></li>
+          <li><a href="#" data-route="login">Đăng nhập</a></li>
+          <li><a href="#" data-route="signup" class="button-general">Đăng ký</a></li>
         </ul>
       </div>
       <div class="navigation-bar-bottom">
         <div class="navigation-bar-bottom-left_side">
           <ul>
-            <li><a href="../../index.html">Trang chủ</a></li>
-            <li><a href="../stories/Story_List.html">Danh sách truyện</a></li>
+            <li><a href="#" data-route="home">Trang chủ</a></li>
+            <li><a href="#" data-route="storyList">Danh sách truyện</a></li>
             <li>
-              <a href="../stories/Self-written_LightNovel.html"
+              <a href="#" data-route="selfWritten"
                 >Truyện sáng tác</a
               >
             </li>
             <li>
-              <a href="../shelf/Bookshelf.html" class="active">Tủ sách</a>
+              <a href="#" data-route="bookshelf" class="active">Tủ sách</a>
             </li>
           </ul>
         </div>
@@ -48,7 +48,7 @@
             <button type="submit" id="search-button">🔍︎</button>
           </div>
 
-          <a href="../payment/Cart.html" class="cart-icon" title="Giỏ hàng">
+          <a href="#" data-route="cart" class="cart-icon" title="Giỏ hàng">
             🛒 <span id="cart-count">0</span>
           </a>
 
@@ -58,7 +58,7 @@
           <button
             type="button"
             id="recharge"
-            onclick="window.location.href = '../../pages/payment/Recharge.html'"
+            data-route-click="recharge"
           >
             Nạp tiền
           </button>
@@ -99,6 +99,7 @@
         <a href="">Liên hệ</a>
       </div>
     </footer>
+    <script src="../../scripts/ui/Routes.js"></script>
     <script src="../../scripts/data/Fake_DataBase.js"></script>
     <script src="../../scripts/ui/Dark_Mode.js"></script>
     <script src="../../scripts/auth/Auth.js"></script>

@@ -10,15 +10,15 @@
   <body>
     <header class="authentication-header">
       <div class="logo">
-        <a href="../../index.html"
-          ><img src="../../assets/images/Tori_Logo_Transparent.png" alt=""
+        <a href="#" data-route="home"
+          ><img data-asset="logo" alt=""
         /></a>
       </div>
       <div class="navigation-bar-top">
         <ul>
-          <li><a href="Login.html">Đăng nhập</a></li>
+          <li><a href="#" data-route="login">Đăng nhập</a></li>
           <li>
-            <a href="Signup.html" class="button-general">Đăng ký</a>
+            <a href="#" data-route="signup" class="button-general">Đăng ký</a>
           </li>
         </ul>
       </div>
@@ -27,7 +27,7 @@
       <div class="authentication-main-content-tittle">
         <h2>Đăng ký tài khoản</h2>
         <p>Hoặc</p>
-        <a href="Login.html">đăng nhập nếu đã có tài khoản</a>
+        <a href="#" data-route="login">đăng nhập nếu đã có tài khoản</a>
       </div>
       <div class="authentication-main-content-form">
         <form id="myform">
@@ -96,6 +96,7 @@
         <a href="">Liên hệ</a>
       </div>
     </footer>
+    <script src="../../scripts/ui/Routes.js"></script>
     <script src="../../scripts/auth/Auth.js"></script>
   </body>
 </html>
