@@ -1,0 +1,28 @@
+html {
+  scroll-behavior: smooth;
+}
+
+/*Hiệu ứng hiện dần khi start trang*/
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.main-content {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/*hiệu ứng hover*/
+.story-card,
+.update-item {
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  will-change: transform; /* Tối ưu hóa render cho trình duyệt */
+}
