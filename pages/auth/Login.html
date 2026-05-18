@@ -4,21 +4,21 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Bảng điều khiển</title>
-    <link rel="stylesheet" href="./styles/authentication_style.css" />
-    <link rel="stylesheet" href="./styles/footer_style.css" />
+    <link rel="stylesheet" href="../../styles/authentication_style.css" />
+    <link rel="stylesheet" href="../../styles/footer_style.css" />
   </head>
   <body>
     <header class="authentication-header">
       <div class="logo">
-        <a href="Home_Page.html"
-          ><img src="./assets/images/Tori_Logo_Transparent.png" alt=""
+        <a href="#" data-route="home"
+          ><img data-asset="logo" alt=""
         /></a>
       </div>
       <div class="navigation-bar-top">
         <ul>
-          <li><a href="Login.html">Đăng nhập</a></li>
+          <li><a href="#" data-route="login">Đăng nhập</a></li>
           <li>
-            <a href="Signup.html" class="button-general">Đăng ký</a>
+            <a href="#" data-route="signup" class="button-general">Đăng ký</a>
           </li>
         </ul>
       </div>
@@ -62,7 +62,7 @@
             <label for="remember"
               ><input type="checkbox" id="remember" />Duy trì đăng nhập</label
             >
-            <a href="Password_Recover.html">Quên mật khẩu?</a>
+            <a href="#" data-route="passwordRecover">Quên mật khẩu?</a>
           </div>
 
           <button type="button" class="button-general" onclick="handleLogin()">
@@ -79,6 +79,7 @@
         <a href="">Liên hệ</a>
       </div>
     </footer>
-    <script src="./scripts/auth/Auth.js"></script>
+    <script src="../../scripts/ui/Routes.js"></script>
+    <script src="../../scripts/auth/Auth.js"></script>
   </body>
 </html>

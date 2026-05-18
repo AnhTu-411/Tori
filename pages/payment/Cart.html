@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Giỏ Hàng Của Bạn - Tori Lightnovel</title>
+
+    <link rel="stylesheet" href="../../styles/main_style.css" />
+    <link rel="stylesheet" href="../../styles/footer_style.css" />
+    <link rel="stylesheet" href="../../styles/main_header_style.css" />
+    <link rel="stylesheet" href="../../styles/dark_mode_style.css" />
+    <link rel="stylesheet" href="../../styles/cart.css" />
+    <link rel="stylesheet" href="../../styles/animation_style.css" />
+  </head>
+  <body>
+    <header class="header">
+      <div class="navigation-bar-top">
+        <div class="logo">
+          <a href="#" data-route="home"
+            ><img
+              data-asset="logo"
+              alt="Logo"
+          /></a>
+        </div>
+        <ul id="auth-menu">
+          <li><a href="#" data-route="login">Đăng nhập</a></li>
+          <li>
+            <a href="#" data-route="signup" class="button-general">Đăng ký</a>
+          </li>
+        </ul>
+      </div>
+      <div class="navigation-bar-bottom">
+        <div class="navigation-bar-bottom-left_side">
+          <ul>
+            <li><a href="#" data-route="home">Trang chủ</a></li>
+            <li><a href="#" data-route="storyList">Danh sách truyện</a></li>
+            <li>
+              <a href="#" data-route="selfWritten"
+                >Truyện sáng tác</a
+              >
+            </li>
+            <li><a href="#" data-route="bookshelf">Tủ sách</a></li>
+          </ul>
+        </div>
+        <div class="navigation-bar-bottom-right_side">
+          <div class="search-bar">
+            <input type="text" placeholder="Tìm kiếm truyện..." />
+            <button type="submit" id="search-button">🔍︎</button>
+          </div>
+          <a href="#" data-route="cart" class="cart-icon active" title="Giỏ hàng">
+            🛒 <span id="cart-count">0</span>
+          </a>
+          <button id="dark-mode-btn" onclick="toggleDarkMode()">
+            ⏾ Tắt đèn
+          </button>
+          <button
+            type="button"
+            id="recharge"
+            data-route-click="recharge"
+          >
+            Nạp tiền
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content">
+      <section class="left-section">
+        <h2 class="section-title">🛒 Giỏ hàng của bạn</h2>
+        <table class="cart-table">
+          <thead>
+            <tr>
+              <th>Sản phẩm</th>
+              <th>Giá tiền (Coin)</th>
+              <th>Thao tác</th>
+            </tr>
+          </thead>
+          <tbody id="cart-items-tbody"></tbody>
+        </table>
+      </section>
+
+      <section class="right-section">
+        <h2 class="section-title">Tổng đơn</h2>
+        <div class="summary-box">
+          <div class="summary-row">
+            <span>Số lượng:</span><span id="summary-qty">0 tập</span>
+          </div>
+          <div class="summary-row">
+            <span>Số dư hiện tại:</span
+            ><span id="summary-balance" style="font-weight: bold; color: green"
+              >0 Coin</span
+            >
+          </div>
+          <div class="summary-row summary-total">
+            <span>Tổng cộng:</span><span id="summary-total-price">0 Coin</span>
+          </div>
+          <button
+            class="button-general"
+            onclick="processCheckout()"
+            style="width: 100%; margin-top: 20px"
+          >
+            💳 Thanh toán ngay
+          </button>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <p>© 2026 Tori Lightnovel. Nền tảng đọc truyện trực tuyến.</p>
+      <div class="footer-links">
+        <a href="">Điều khoản</a>
+        <a href="">Bảo mật</a>
+        <a href="">Liên hệ</a>
+      </div>
+    </footer>
+    <script src="../../scripts/ui/Routes.js"></script>
+    <script src="../../scripts/data/Fake_DataBase.js"></script>
+    <script src="../../scripts/ui/Dark_Mode.js"></script>
+    <script src="../../scripts/auth/Auth.js"></script>
+    <script src="../../scripts/payment/cart.js"></script>
+  </body>
+</html>

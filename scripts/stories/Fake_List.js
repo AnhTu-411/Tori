@@ -1,7 +1,7 @@
 const newUpdateStories = [];
 for (let i = 1; i <= 12; i++) {
   newUpdateStories.push({
-    id: i + 100,
+    id: i <= 8 ? i : 1, //làm tạm tại chx có database, cho trỏ lại về id 1 khi quá 8
     title: `The NOexistenceN of you AND me ${i}`,
     uploader: "Lilith",
     words: (i * 1000 + 105).toLocaleString(), //chx có giữ liệu nên ngẫu nhiên độ dài
@@ -27,8 +27,13 @@ function renderUpdateList(page) {
   let html = "";
   for (let i = 0; i < itemsToShow.length; i++) {
     const story = itemsToShow[i];
+    const detailHref =
+      typeof getStoryDetailHref === "function"
+        ? getStoryDetailHref(story.id)
+        : ToriRoutes.href("storyDetail", { id: story.id });
+
     html += `
-          <a href="Story_Detail.html?id=${story.id}" style="text-decoration: none;">
+          <a href="${detailHref}" style="text-decoration: none;">
             <div class="update-item">
                 <div class="update-cover">
                     <img src="${story.cover}" alt="Bìa">

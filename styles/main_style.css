@@ -8,11 +8,40 @@
 body {
   background-color: #f8f9fa;
   color: rgb(45, 45, 45);
+  position: relative; /* Trục tọa độ để gắn ảnh nền */
+  min-height: 100vh;
+}
+
+/* lớp nền ảnh sáng (ở dưới cùng)*/
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   background-image: url("../assets/images/Tori_Background.png");
   background-size: cover;
   background-position: center;
-  background-attachment: fixed; /* Khóa ảnh nền không cho cuộn */
-  color: rgb(45, 45, 45);
+  z-index: -2; /*cho xuống lớp sâu nhất*/
+  opacity: 1; /* Mặc định là hiện rõ */
+  transition: opacity 0.5s ease-in-out; /*transition khi bật/tắt dảk mode*/
+}
+
+/* Lớp nền ảnh tối (trên lớp sáng) */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("../assets/images/Tori_Dark_Background.jpg");
+  background-size: cover;
+  background-position: center;
+  z-index: -1; /* Nằm trên nền sáng, nhưng vẫn dưới các thẻ truyện */
+  opacity: 0; /* Mặc định là nhìn xuyên */
+  transition: opacity 0.5s ease-in-out;
 }
 p {
   font-size: 14px;
@@ -106,7 +135,7 @@ p {
 
 /* Tính toán hiển thị số lượng truyện theo màn hình */
 .story-grid-carousel .story-card {
-  flex: 0 0 calc((100% - 60px) / 4); /* PC: 4 truyện */
+  flex: 0 0 calc((100% - 60px) / 4); /* mặc định là 4 truyện hiển thị vs pc*/
   position: relative;
 }
 @media (max-width: 1024px) {
@@ -129,17 +158,9 @@ p {
   flex: 2.5;
   min-width: 280px;
 }
-.section-title {
-  color: #000080;
-  font-size: 20px;
-  font-weight: 700;
-  border-bottom: 2px solid #000080;
-  padding-bottom: 10px;
-  margin-bottom: 20px;
-}
 
 .New-update {
-  margin-top: 40px; /* ạo khoảng cách với Slider phía trên */
+  margin-top: 40px; /* Tạoj khoảng cách với Slider phía trên */
 }
 
 /* Khung viền bọc ngoài toàn bộ danh sách */

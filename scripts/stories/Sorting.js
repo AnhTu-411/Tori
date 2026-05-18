@@ -9,11 +9,11 @@ function sortStories(order) {
     sortedArray.sort((a, b) => b.title.localeCompare(a.title, "vi"));
   }
 
-  // Vẽ lại truyện
+  //Vẽ lại truyện
   renderStories(sortedArray);
 }
 
-// Kích hoạt vẽ lần đầu khi mở trang Web
+//Kích hoạt vẽ lần đầu khi mở trang Web
 document.addEventListener("DOMContentLoaded", () => {
   renderStories(mockStories);
 });
