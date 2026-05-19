@@ -2,27 +2,55 @@ html {
   scroll-behavior: smooth;
 }
 
-/*Hiệu ứng hiện dần khi start trang*/
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.main-content {
-  animation: fadeInUp 0.6s ease-out forwards;
-}
-
-/*hiệu ứng hover*/
+/*hiệu ứng hover phần truyện ms cập nhật*/
 .story-card,
 .update-item {
   transition:
     transform 0.3s ease,
     box-shadow 0.3s ease;
   will-change: transform; /* Tối ưu hóa render cho trình duyệt*/
+}
+/* Hiệu ứng nổi thẻ phần truyện ms cập nhật */
+.story-card:hover,
+.update-item:hover {
+  transform: translateY(-5px); /* Nhấc thẻ nảy lên 5px */
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Đổ bóng xám nhạt xung quanh */
+}
+
+/* Hiệu ứng mượt cho chữ "Chương x" khi rê chuột vào cả khối truyện */
+.update-chapter {
+  transition:
+    transform 0.3s ease,
+    color 0.3s ease;
+  display: inline-block; /* Cần thiết để transform chạy được trên chữ */
+}
+
+.update-item:hover .update-chapter {
+  transform: translateX(5px); /* Chữ hơi trượt nhẹ sang phải */
+  color: #000080; /* Chữ đậm lên màu xanh */
+}
+/* Hiệu ứng thanh nav bar*/
+.navigation-bar-bottom-left_side ul li a {
+  position: relative;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+/* Tạo đường gạch chân ẩn (chiều rộng = 0) ở dưới cùng */
+.navigation-bar-bottom-left_side ul li a::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 3px;
+  bottom: -5px; /* Nằm cách đáy chữ 5px */
+  left: 0;
+  background-color: #000080; /* Màu xanh tím chủ đạo (Sáng) */
+  transition: width 0.3s ease-in-out;
+  border-radius: 2px;
+}
+
+/* Lúc rê chuột HOẶC lúc đang ở trang đó (.active) thì vạch xanh chạy ra 100% */
+.navigation-bar-bottom-left_side ul li a:hover::after,
+.navigation-bar-bottom-left_side ul li a.active::after {
+  width: 100%;
 }

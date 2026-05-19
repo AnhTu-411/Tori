@@ -118,3 +118,12 @@ body.dark-mode .sort-container select {
 body.dark-mode .cart-icon {
   color: #f1c40f;
 }
+/* Hiệu ứng darkmode thanh nav */
+body.dark-mode .navigation-bar-bottom-left_side ul li a::after {
+  background-color: #ffd700; /* Chuyển gạch chân thành màu vàng kim */
+}
+
+body.dark-mode .navigation-bar-bottom-left_side ul li a:hover,
+body.dark-mode .navigation-bar-bottom-left_side ul li a.active {
+  color: #ffd700; /* Chữ cũng đổi màu vàng kim cho đồng bộ */
+}
