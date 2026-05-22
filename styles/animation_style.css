@@ -29,28 +29,43 @@ html {
   transform: translateX(5px); /* Chữ hơi trượt nhẹ sang phải */
   color: #000080; /* Chữ đậm lên màu xanh */
 }
-/* Hiệu ứng thanh nav bar*/
+/*Hiệu ứng thanh nav bar*/
 .navigation-bar-bottom-left_side ul li a {
   position: relative;
   text-decoration: none;
   transition: color 0.3s ease;
 }
 
-/* Tạo đường gạch chân ẩn (chiều rộng = 0) ở dưới cùng */
+/*Tạo đường gạch chân ẩn, ĐẶT MỐC TỪ CHÍNH GIỮA */
 .navigation-bar-bottom-left_side ul li a::after {
   content: "";
   position: absolute;
   width: 0;
   height: 3px;
   bottom: -5px; /* Nằm cách đáy chữ 5px */
-  left: 0;
-  background-color: #000080; /* Màu xanh tím chủ đạo (Sáng) */
-  transition: width 0.3s ease-in-out;
+  left: 50%; /* Căn mốc ở giữa */
+  transform: translateX(-50%); /* Dịch chuyển trọng tâm về đúng giữa */
+  background-color: #000080; /* Màu xanh tím chủ đạo */
+  transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1); /* Hiệu ứng gia tốc mượt hơn */
   border-radius: 2px;
 }
 
-/* Lúc rê chuột HOẶC lúc đang ở trang đó (.active) thì vạch xanh chạy ra 100% */
-.navigation-bar-bottom-left_side ul li a:hover::after,
+/*class active thì sẽ hiển thị vạch to nhất*/
 .navigation-bar-bottom-left_side ul li a.active::after {
+  width: 100%;
+}
+
+/*khi hover vào mục khác trên thanh nav thì vạch sẽ thu laij*/
+.navigation-bar-bottom-left_side ul:hover li a.active::after {
+  width: 0;
+}
+
+/*Vạch của mục đang đc hover vào sẽ kéo dãn*/
+.navigation-bar-bottom-left_side ul li a:hover::after {
+  width: 100% !important;
+}
+
+/*Giữ cho vạch đang hover không bị thu lại nếu nó trùng với mục active */
+.navigation-bar-bottom-left_side ul li a.active:hover::after {
   width: 100%;
 }

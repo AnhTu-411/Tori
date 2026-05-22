@@ -47,20 +47,3 @@
   color: #888;
   font-style: italic;
 }
-
-/*Dark Mode cho UI Tab*/
-body.dark-mode .tab-btn {
-  color: #aaa;
-}
-body.dark-mode .tab-btn:hover {
-  color: #b3d4ff;
-}
-body.dark-mode .tab-btn.active {
-  color: #b3d4ff;
-}
-body.dark-mode .tab-btn.active::after {
-  background-color: #b3d4ff;
-}
-body.dark-mode .bookshelf-tabs {
-  border-bottom-color: #333;
-}
