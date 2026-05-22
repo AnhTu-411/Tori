@@ -127,3 +127,19 @@ body.dark-mode .navigation-bar-bottom-left_side ul li a:hover,
 body.dark-mode .navigation-bar-bottom-left_side ul li a.active {
   color: #ffd700; /* Chữ cũng đổi màu vàng kim cho đồng bộ */
 }
+/*Dark Mode cho UI Tab*/
+body.dark-mode .tab-btn {
+  color: #aaa;
+}
+body.dark-mode .tab-btn:hover {
+  color: #b3d4ff;
+}
+body.dark-mode .tab-btn.active {
+  color: #b3d4ff;
+}
+body.dark-mode .tab-btn.active::after {
+  background-color: #b3d4ff;
+}
+body.dark-mode .bookshelf-tabs {
+  border-bottom-color: #333;
+}
