@@ -2,12 +2,16 @@ function getAuthHref(routeName) {
   return ToriRoutes.href(routeName);
 }
 
-function handleSignup() {
+// =======================================================================
+// HÀM ĐĂNG KÝ (ĐÃ NÂNG CẤP DÙNG BACKEND MONGODB)
+// =======================================================================
+async function handleSignup() {
   const username = document.getElementById("reg-username").value.trim();
   const email = document.getElementById("reg-email").value.trim();
   const password = document.getElementById("reg-password").value;
   const confirm = document.getElementById("reg-confirm").value;
 
+  // 1. Kiểm tra lặt vặt ở Frontend
   if (!username || !email || !password || !confirm) {
     alert("Vui lòng điền đầy đủ thông tin!");
     return;
@@ -16,24 +20,41 @@ function handleSignup() {
     alert("Mật khẩu xác nhận không khớp!");
     return;
   }
-  //Tìm trong localStorage của web xem đã có ds tk chx
-  //Nếu chx có thì tạo 1 mảng rỗng để chứa các tk đk mới
-  let users = JSON.parse(localStorage.getItem("tori_users")) || [];
-  //Tìm trong danh sách xem đã có tên trùng chx
-  const isExist = users.find((u) => u.username === username);
-  if (isExist) {
-    alert("Tên đăng nhập đã tồn tại, vui lòng chọn tên khác!");
-    return;
+
+  try {
+    // 2. GỌI ĐIỆN CHO BACKEND
+    const response = await fetch("http://localhost:5000/api/register", {
+      method: "POST", // Hành động Gửi dữ liệu đi
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: username,
+        email: email,
+        password: password,
+      }),
+    });
+
+    // 3. Chờ Backend trả lời và dịch câu trả lời
+    const data = await response.json();
+
+    // 4. Xử lý kết quả
+    if (response.ok) {
+      alert("🎉 Đăng ký thành công! Vui lòng hãy đăng nhập.");
+      ToriRoutes.go("login");
+    } else {
+      alert("Lỗi: " + data.message);
+    }
+  } catch (error) {
+    console.error("Lỗi kết nối:", error);
+    alert("Không thể kết nối đến Máy chủ. Đảm bảo Backend đang chạy!");
   }
-
-  users.push({ username, email, password, coins: 0 });
-  localStorage.setItem("tori_users", JSON.stringify(users));
-
-  alert("Đăng ký thành công! Vui lòng hãy đăng nhập.");
-  ToriRoutes.go("login");
 }
 
-function handleLogin() {
+// =======================================================================
+// HÀM ĐĂNG NHẬP (ĐÃ NÂNG CẤP DÙNG BACKEND MONGODB)
+// =======================================================================
+async function handleLogin() {
   const username = document.getElementById("log-username").value.trim();
   const password = document.getElementById("log-password").value;
 
@@ -42,20 +63,36 @@ function handleLogin() {
     return;
   }
 
-  let users = JSON.parse(localStorage.getItem("tori_users")) || [];
-  const validUser = users.find(
-    (u) => u.username === username && u.password === password,
-  );
+  try {
+    // 1. Gọi điện lên Backend để kiểm tra tài khoản
+    const response = await fetch("http://localhost:5000/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
 
-  if (validUser) {
-    alert("Đăng nhập thành công!");
-    localStorage.setItem("tori_current_user", JSON.stringify(validUser));
-    ToriRoutes.go("home");
-  } else {
-    alert("Sai tên đăng nhập hoặc mật khẩu!");
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Đăng nhập thành công!");
+      // 2. Lưu thông tin phiên đăng nhập của user vào localStorage để các trang khác biết ai đang dùng
+      localStorage.setItem("tori_current_user", JSON.stringify(data.user));
+      ToriRoutes.go("home"); // Về trang chủ
+    } else {
+      // Hiện lỗi từ Backend (Ví dụ: Sai mật khẩu, Không tồn tại tài khoản)
+      alert("Lỗi: " + data.message);
+    }
+  } catch (error) {
+    console.error("Lỗi kết nối:", error);
+    alert("Không thể kết nối đến Máy chủ. Đảm bảo Backend đang chạy!");
   }
 }
 
+// =======================================================================
+// CÁC HÀM XỬ LÝ GIAO DIỆN (GIỮ NGUYÊN)
+// =======================================================================
 function handleLogout() {
   localStorage.removeItem("tori_current_user");
   window.location.reload();
@@ -85,7 +122,6 @@ function checkCartCount() {
   if (!countSpan) return;
 
   let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
-  // Nếu là khách, giỏ hàng đếm = 0. Nếu là user, lấy đúng hậu tố tên của họ.
   let userSuffix = currentUser ? "_" + currentUser.username : "";
   let cart = JSON.parse(localStorage.getItem("tori_cart" + userSuffix)) || [];
 
