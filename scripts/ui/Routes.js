@@ -89,6 +89,8 @@
     bookshelf: "pages/shelf/Bookshelf.html",
     cart: "pages/payment/Cart.html",
     recharge: "pages/payment/Recharge.html",
+    adminDashboard: "pages/admin/Admin_Stories.html",
+    publisherRegister: "pages/account/Publisher_Register.html",
   };
 
   // Đường dẫn ảnh

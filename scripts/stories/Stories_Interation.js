@@ -1,223 +1,371 @@
 // =================== HÀM VẼ CHI TIẾT TRUYỆN ===================
-function loadStoryDetail() {
+async function loadStoryDetail() {
   const detailContainer = document.getElementById("story-detail-container");
   if (!detailContainer) return;
 
   const urlParams = new URLSearchParams(window.location.search);
-  const storyId = parseInt(urlParams.get("id"));
-  // Nếu gặp lỗi mockStories không tồn tại, hãy chắc chắn Fake_DataBase.js được nhúng trước file này trong HTML
-  const story = mockStories.find((s) => s.id === storyId);
+  const storyId = urlParams.get("id");
 
-  if (!story) {
+  if (!storyId) {
     detailContainer.innerHTML = `<h2 style="text-align: center; color: red;">Không tìm thấy truyện!</h2>`;
     return;
   }
 
-  document.title = story.title + " - Tori Lightnovel";
+  try {
+    const API_URL = "http://localhost:5000/api";
+    // 1. Fetch Story Detail
+    const storyRes = await fetch(`${API_URL}/stories/${storyId}`);
+    if (!storyRes.ok) throw new Error("Story not found");
+    const story = await storyRes.json();
 
-  // CÁ NHÂN HÓA: Tìm lịch sử mua của đúng người dùng hiện tại
-  let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
-  let userSuffix = currentUser ? "_" + currentUser.username : "";
-  let purchasedList =
-    JSON.parse(localStorage.getItem("tori_purchased" + userSuffix)) || [];
+    // 2. Fetch Chapters
+    const chaptersRes = await fetch(`${API_URL}/stories/${storyId}/chapters`);
+    const chapters = await chaptersRes.json();
 
-  const VOL_PRICE = 50;
+    document.title = story.title + " - Tori Lightnovel";
 
-  let tagsHtml = "";
-  if (story.tags) {
-    for (let i = 0; i < story.tags.length; i++) {
-      tagsHtml += `<span class="tag-badge">${story.tags[i]}</span>`;
+    let tagsHtml = "";
+    if (story.isPremium) {
+      tagsHtml += `<span class="tag-badge" style="background: #ffd700; color: #000; font-weight: bold; border: 1px solid #cca300;">Truyện Thu Phí (${story.price} Coin)</span>`;
     }
-  }
+    if (story.genres && story.genres.length > 0) {
+      for (let i = 0; i < story.genres.length; i++) {
+        tagsHtml += `<span class="tag-badge">${story.genres[i]}</span>`;
+      }
+    }
 
-  let volumesHtml = "";
-  if (story.volumes && story.volumes.length > 0) {
-    for (let i = 0; i < story.volumes.length; i++) {
-      const vol = story.volumes[i];
+    // Kiểm tra lịch sử mua truyện (Nếu truyện thu phí)
+    let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+    let isPurchased = false;
+    let isAdmin = currentUser && currentUser.role === "admin";
 
-      const isPurchased = purchasedList.some(
-        (item) => item.storyId === story.id && item.volIndex === i,
-      );
+    if (story.isPremium && currentUser && !isAdmin) {
+      try {
+        const txRes = await fetch(`${API_URL}/users/${currentUser.username}/transactions`);
+        if (txRes.ok) {
+          const txs = await txRes.json();
+          isPurchased = txs.some(tx => tx.story && tx.story._id === story._id);
+        }
+      } catch (err) {}
+    } else if (story.isPremium && isAdmin) {
+      isPurchased = true;
+    } else if (!story.isPremium) {
+      isPurchased = true; // Truyện miễn phí thì mặc định là đã mua (được phép đọc)
+    }
 
-      let chaptersHtml = "";
+    let buyActionHtml = "";
+    if (story.isPremium) {
+      if (!isPurchased) {
+        buyActionHtml = `
+          <div style="margin-top: 15px;">
+            <button onclick="buyPremiumStory('${story._id}', ${story.price})" class="button-general" style="background: #28a745; color: white; border: none; padding: 10px 20px; font-size: 16px; font-weight: bold; cursor: pointer; border-radius: 5px;">
+              💳 Mua Toàn Bộ Truyện (${story.price} Coin)
+            </button>
+          </div>
+        `;
+      } else if (currentUser && !isAdmin) {
+        buyActionHtml = `
+          <div style="margin-top: 15px;">
+            <span style="color: #28a745; font-weight: bold; border: 1px solid #28a745; padding: 5px 10px; border-radius: 5px; background: #e8f5e9;">✔️ Bạn đã mua truyện này</span>
+          </div>
+        `;
+      }
+    }
 
-      for (let j = 0; j < vol.chapters.length; j++) {
-        const chap = vol.chapters[j];
-        const badgeHtml = chap.badge
-          ? `<span class="chap-badge">${chap.badge}</span>`
-          : "";
-        const iconHtml = chap.title.includes("Ảnh") ? `🖼️ ` : `📄 `;
+    let chaptersHtml = "";
+    if (chapters && chapters.length > 0) {
+      for (let j = 0; j < chapters.length; j++) {
+        const chap = chapters[j];
+        const iconHtml = chap.imageFolderPath ? `🖼️ ` : `📄 `;
 
         if (isPurchased) {
           chaptersHtml += `
             <div class="chap-row">
               <div class="chap-left">
-                ${badgeHtml} <a href="${ToriRoutes.href("reading", { storyId: story.id, vol: i, chap: j })}">${iconHtml}${chap.title}</a>
+                <a href="${ToriRoutes.href("reading", { storyId: story._id, chapterId: chap._id })}">${iconHtml} Chương ${chap.chapterNumber}: ${chap.title}</a>
               </div>
-              <div class="chap-right">${chap.date}</div>
+              <div class="chap-right">${new Date(chap.createdAt).toLocaleDateString("vi-VN")}</div>
             </div>
           `;
         } else {
-          chaptersHtml += `
+           chaptersHtml += `
             <div class="chap-row" style="opacity: 0.5;">
               <div class="chap-left">
-                ${badgeHtml} <span onclick="requirePurchase()" style="cursor: pointer;">${iconHtml}${chap.title} 🔒</span>
+                <span style="cursor: pointer;" onclick="alert('Bạn cần mua truyện để đọc chương này!')">${iconHtml} Chương ${chap.chapterNumber}: ${chap.title} 🔒</span>
               </div>
-              <div class="chap-right">${chap.date}</div>
+              <div class="chap-right">VIP</div>
             </div>
           `;
         }
       }
+    } else {
+        chaptersHtml = "<p style='padding: 15px;'>Chưa có chương nào.</p>";
+    }
 
-      let buyButtonHtml = "";
-      if (isPurchased) {
-        buyButtonHtml = `<span style="color: green; font-weight: bold; font-size: 14px; float: right;">✅ Đã sở hữu</span>`;
-      } else {
-        buyButtonHtml = `<button onclick="addVolToCart(${story.id}, '${story.title.replace(/'/g, "\\'")}', ${i}, '${vol.volTitle.replace(/'/g, "\\'")}', '${vol.volCover}', ${VOL_PRICE})" class="button-general" style="float: right; padding: 5px 15px; font-size: 12px; margin-top: -5px;">🛒 Mua Tập (${VOL_PRICE} Coin)</button>`;
-      }
-
-      volumesHtml += `
+    let volumesHtml = `
         <div class="vol-box">
           <div class="vol-header">
-            <h3>${vol.volTitle} <span style="color: red;">*</span></h3>
-            ${buyButtonHtml}
+            <h3>Danh sách chương</h3>
             <div style="clear: both;"></div> 
           </div>
           <div class="vol-body">
-            <div class="vol-cover">
-              <img src="${vol.volCover}" alt="Bìa Vol">
-            </div>
-            <div class="vol-chap-list">
+            <div class="vol-chap-list" style="width: 100%;">
               ${chaptersHtml}
             </div>
           </div>
         </div>
       `;
-    }
+
+    const htmlContent = `
+      <div class="story-detail-header">
+        <div class="detail-cover">
+          <img src="${story.coverImg || 'https://via.placeholder.com/200x280?text=No+Cover'}" alt="Bìa truyện">
+        </div>
+        <div class="detail-info">
+          <h1 class="detail-title">${story.title}</h1>
+          <div class="detail-tags">${tagsHtml}</div>
+          <p class="detail-meta"><strong>Tác giả:</strong> ${story.author}</p>
+          <p class="detail-meta"><strong>Tình trạng:</strong> ${story.status || "Đang tiến hành"}</p>
+          
+          ${buyActionHtml}
+
+          <div class="detail-actions" style="${story.isPremium ? 'margin-top: 15px;' : ''}">
+            <div class="action-item" onclick="toggleFavorite('${story._id}')" style="cursor: pointer;"><span id="fav-icon-${story._id}">♡</span><p>Thích</p></div>
+            <div class="action-item" onclick="toggleFollowing('${story._id}')" style="cursor: pointer;"><span id="follow-icon-${story._id}" style="color: inherit;">☆</span><p>Theo dõi</p></div>
+            <div class="action-item" onclick="document.querySelector('.vol-box').scrollIntoView({behavior: 'smooth'})" style="cursor: pointer;"><span>☰</span><p></p></div>
+          </div>
+          <div class="detail-stats">
+            <div><p>Số từ</p><strong>N/A</strong></div>
+            <div><p>Đánh giá</p><strong>0 / 0</strong></div>
+            <div><p>Lượt xem</p><strong>0</strong></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="story-summary-box">
+        <h3>Tóm tắt</h3>
+        <p>${story.description || "Chưa có tóm tắt cho truyện này."}</p>
+      </div>
+
+      <div style="margin-top: 40px;">
+          ${volumesHtml}
+      </div>
+    `;
+
+    detailContainer.innerHTML = htmlContent;
+    checkFavoriteStatus(story._id);
+    checkFollowingStatus(story._id);
+    
+    // Tải bình luận
+    fetchStoryComments(story._id);
+
+  } catch (err) {
+      detailContainer.innerHTML = `<h2 style="text-align: center; color: red;">Lỗi khi tải chi tiết truyện!</h2>`;
+      console.error(err);
   }
-
-  const htmlContent = `
-    <div class="story-detail-header">
-      <div class="detail-cover">
-        <img src="${story.coverUrl}" alt="Bìa truyện">
-      </div>
-      <div class="detail-info">
-        <h1 class="detail-title">${story.title}</h1>
-        <div class="detail-tags">${tagsHtml}</div>
-        <p class="detail-meta"><strong>Tác giả:</strong> ${story.author}</p>
-        <p class="detail-meta"><strong>Tình trạng:</strong> ${story.status || "Đang tiến hành"}</p>
-        <div class="detail-actions">
-          <div class="action-item" onclick="toggleFavorite(${story.id})" style="cursor: pointer;"><span id="fav-icon-${story.id}">♡</span><p></p></div>
-          <div class="action-item"><span style="color: gold;">☆</span><p></p></div>
-          <div class="action-item" onclick="document.querySelector('.vol-box').scrollIntoView({behavior: 'smooth'})" style="cursor: pointer;"><span>☰</span><p></p></div>
-        </div>
-        <div class="detail-stats">
-          <div><p>Số từ</p><strong>${story.words || "0"}</strong></div>
-          <div><p>Đánh giá</p><strong>0 / 0</strong></div>
-          <div><p>Lượt xem</p><strong>${story.views || "0"}</strong></div>
-        </div>
-      </div>
-    </div>
-
-    <div class="story-summary-box">
-      <h3>Tóm tắt</h3>
-      <p>${story.summary || "Chưa có tóm tắt cho truyện này."}</p>
-    </div>
-
-    <div style="margin-top: 40px;">
-        ${volumesHtml}
-    </div>
-  `;
-
-  detailContainer.innerHTML = htmlContent;
-
-  checkFavoriteStatus(story.id);
 }
 
 //Tương tác
 
-function requirePurchase() {
+// Mua nguyên bộ truyện
+async function buyPremiumStory(storyId, price) {
   let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
   if (!currentUser) {
-    alert("Vui lòng đăng nhập để có thể mua và đọc bộ truyện này!");
-    ToriRoutes.go("login");
-  } else {
-    alert(
-      "Bạn cần trả phí để mở khóa nội dung Tập này! Vui lòng bấm nút 'Mua Tập' ở phía trên.",
-    );
-  }
-}
-
-function addVolToCart(storyId, title, volIndex, volName, cover, price) {
-  let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
-  if (!currentUser) {
-    alert("Vui lòng đăng nhập để mua sắm!");
-    ToriRoutes.go("login");
+    alert("Vui lòng đăng nhập để có thể thanh toán!");
+    window.location.href = ToriRoutes.href("login");
     return;
   }
 
-  // Lấy đúng giỏ hàng của user
-  let userSuffix = "_" + currentUser.username;
-  let cart = JSON.parse(localStorage.getItem("tori_cart" + userSuffix)) || [];
+  if (confirm(`Bạn có chắc muốn mua nguyên bộ truyện này với giá ${price} Coin?`)) {
+    try {
+      const response = await fetch("http://localhost:5000/api/transactions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: currentUser.username,
+          storyId: storyId,
+          price: price
+        })
+      });
 
-  let isExist = cart.find(
-    (item) => item.storyId === storyId && item.volIndex === volIndex,
-  );
-  if (isExist) {
-    alert(
-      "Tập này đã có trong Giỏ Hàng của bạn rồi! Vui lòng vào giỏ hàng để thanh toán.",
-    );
-    return;
+      if (response.ok) {
+        const data = await response.json();
+        alert("Thanh toán thành công! Bạn đã mở khóa toàn bộ nội dung của truyện.");
+        
+        // Cập nhật lại localStorage để số dư Coin trên Header đúng
+        if (data.newCoins !== undefined) {
+          currentUser.coins = data.newCoins;
+        }
+        if (!currentUser.unlockedStories) currentUser.unlockedStories = [];
+        if (!currentUser.unlockedStories.includes(storyId)) {
+          currentUser.unlockedStories.push(storyId);
+        }
+        localStorage.setItem("tori_current_user", JSON.stringify(currentUser));
+        
+        window.location.reload();
+      } else {
+        const data = await response.json();
+        alert("Lỗi thanh toán: " + data.message);
+      }
+    } catch (err) {
+      alert("Lỗi kết nối tới máy chủ!");
+      console.error(err);
+    }
   }
-
-  const newItem = { storyId, title, volIndex, volName, cover, price };
-  cart.push(newItem);
-  localStorage.setItem("tori_cart" + userSuffix, JSON.stringify(cart));
-
-  alert("Đã thêm Tập truyện vào giỏ hàng thành công!");
-
-  if (typeof checkCartCount === "function") checkCartCount();
 }
 
-function toggleFavorite(storyId) {
+async function toggleFavorite(storyId) {
   let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
   if (!currentUser) {
-    alert("Vui lòng đăng nhập để lưu truyện!");
+    alert("Vui lòng đăng nhập để thích truyện!");
     return;
   }
 
-  let userSuffix = "_" + currentUser.username;
-  let favList =
-    JSON.parse(localStorage.getItem("tori_favorites" + userSuffix)) || [];
-  let index = favList.indexOf(storyId);
-  let icon = document.getElementById(`fav-icon-${storyId}`);
-
-  if (index === -1) {
-    favList.push(storyId);
-    icon.innerText = "♥";
-    icon.style.color = "red";
-  } else {
-    favList.splice(index, 1);
-    icon.innerText = "♡";
-    icon.style.color = "inherit";
+  try {
+    const API_URL = "http://localhost:5000/api";
+    const response = await fetch(`${API_URL}/users/${currentUser.username}/favorites`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ storyId })
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      const isFav = data.favorites.includes(storyId);
+      let icon = document.getElementById(`fav-icon-${storyId}`);
+      if (icon) {
+        if (isFav) {
+          icon.innerText = "♥";
+          icon.style.color = "red";
+        } else {
+          icon.innerText = "♡";
+          icon.style.color = "inherit";
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Lỗi khi thích truyện", error);
   }
-
-  localStorage.setItem("tori_favorites" + userSuffix, JSON.stringify(favList));
 }
 
-function checkFavoriteStatus(storyId) {
+async function checkFavoriteStatus(storyId) {
   let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
   if (!currentUser) return;
 
-  let userSuffix = "_" + currentUser.username;
-  let favList =
-    JSON.parse(localStorage.getItem("tori_favorites" + userSuffix)) || [];
-  if (favList.includes(storyId)) {
-    let icon = document.getElementById(`fav-icon-${storyId}`);
-    if (icon) {
-      icon.innerText = "♥";
-      icon.style.color = "red";
+  try {
+    const API_URL = "http://localhost:5000/api";
+    const response = await fetch(`${API_URL}/users/${currentUser.username}/favorites`);
+    if (response.ok) {
+      const favorites = await response.json();
+      const isFav = favorites.some(fav => (typeof fav === 'string' ? fav : fav._id) === storyId);
+      if (isFav) {
+        let icon = document.getElementById(`fav-icon-${storyId}`);
+        if (icon) {
+          icon.innerText = "♥";
+          icon.style.color = "red";
+        }
+      }
     }
+  } catch (error) {
+    console.error("Lỗi kiểm tra yêu thích", error);
+  }
+}
+
+async function toggleFollowing(storyId) {
+  let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+  if (!currentUser) {
+    alert("Vui lòng đăng nhập để theo dõi truyện!");
+    return;
+  }
+
+  try {
+    const API_URL = "http://localhost:5000/api";
+    const response = await fetch(`${API_URL}/users/${currentUser.username}/following`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ storyId })
+    });
+    
+    if (response.ok) {
+      const data = await response.json();
+      const isFollow = data.followedStories.includes(storyId);
+      let icon = document.getElementById(`follow-icon-${storyId}`);
+      if (icon) {
+        if (isFollow) {
+          icon.innerText = "★";
+          icon.style.color = "gold";
+        } else {
+          icon.innerText = "☆";
+          icon.style.color = "inherit";
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Lỗi khi theo dõi truyện", error);
+  }
+}
+
+// =================== LOGIC TẢI BÌNH LUẬN TRUYỆN ===================
+
+async function fetchStoryComments(storyId) {
+  const commentsList = document.getElementById("story-comments-list");
+  if (!commentsList) return;
+
+  try {
+    const API_URL = "http://localhost:5000/api";
+    const response = await fetch(`${API_URL}/stories/${storyId}/comments`);
+    if (!response.ok) throw new Error("Lỗi tải bình luận");
+    const comments = await response.json();
+
+    if (comments.length === 0) {
+      commentsList.innerHTML = `<p style="text-align: center; color: #888;">Chưa có bình luận nào cho bộ truyện này.</p>`;
+      return;
+    }
+
+    let html = "";
+    comments.forEach(c => {
+      const dateStr = new Date(c.createdAt).toLocaleString("vi-VN");
+      const chapterTitle = c.chapter ? `Chương ${c.chapter.chapterNumber}: ${c.chapter.title}` : "Chương không xác định";
+      html += `
+        <div style="background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 10px;">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
+            <div>
+              <strong style="color: #e67e22;">${c.user ? c.user.username : 'Ẩn danh'}</strong>
+              <span style="font-size: 13px; color: #7f8c8d; margin-left: 10px; background: #ecf0f1; padding: 2px 6px; border-radius: 4px;">Tại ${chapterTitle}</span>
+            </div>
+            <span style="font-size: 12px; color: #95a5a6;">${dateStr}</span>
+          </div>
+          <p style="margin-top: 8px; line-height: 1.5; color: #2c3e50;">${c.content}</p>
+        </div>
+      `;
+    });
+    commentsList.innerHTML = html;
+  } catch (error) {
+    console.error("Lỗi:", error);
+    commentsList.innerHTML = `<p style="text-align: center; color: red;">Lỗi tải bình luận.</p>`;
+  }
+}
+
+async function checkFollowingStatus(storyId) {
+  let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+  if (!currentUser) return;
+
+  try {
+    const API_URL = "http://localhost:5000/api";
+    const response = await fetch(`${API_URL}/users/${currentUser.username}/following`);
+    if (response.ok) {
+      const followed = await response.json();
+      const isFollow = followed.some(f => (typeof f === 'string' ? f : f._id) === storyId);
+      if (isFollow) {
+        let icon = document.getElementById(`follow-icon-${storyId}`);
+        if (icon) {
+          icon.innerText = "★";
+          icon.style.color = "gold";
+        }
+      }
+    }
+  } catch (error) {
+    console.error("Lỗi kiểm tra theo dõi", error);
   }
 }
 

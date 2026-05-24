@@ -61,12 +61,21 @@
     <main class="main-content">
       <section class="left-section" style="flex: 1">
         <div class="bookshelf-tabs">
+          <button class="tab-btn" onclick="switchShelfTab('favorite')">
+            ❤️ Truyện đã thích
+          </button>
           <button class="tab-btn active" onclick="switchShelfTab('following')">
             📖 Truyện theo dõi
           </button>
           <button class="tab-btn" onclick="switchShelfTab('purchased')">
             💰 Lịch sử mua truyện
           </button>
+        </div>
+
+        <div id="shelf-favorite" class="shelf-content">
+          <div class="story-grid" id="favorite-grid">
+            <p class="empty-message">Bạn chưa thích bộ truyện nào.</p>
+          </div>
         </div>
 
         <div id="shelf-following" class="shelf-content active">

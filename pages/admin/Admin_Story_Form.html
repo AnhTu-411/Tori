@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thêm/Sửa Truyện - Tori Admin</title>
+  <link rel="icon" sizes="16x16" href="../../assets/images/Falvicon.ico" />
+  <link rel="stylesheet" href="../../styles/main_style.css" />
+  <link rel="stylesheet" href="../../styles/main_header_style.css" />
+  <link rel="stylesheet" href="../../styles/footer_style.css" />
+  <link rel="stylesheet" href="../../styles/dark_mode_style.css" />
+  <link rel="stylesheet" href="../../styles/admin_style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="navigation-bar-top">
+      <div class="logo">
+        <a href="../../index.html"><img src="../../assets/images/Tori_Logo_Transparent.png" alt="Tori" style="height: 80px" /></a>
+      </div>
+      <ul id="auth-menu">
+        <li><a href="../auth/Login.html">Đăng nhập</a></li>
+        <li><a href="../auth/Signup.html" class="button-general">Đăng ký</a></li>
+      </ul>
+    </div>
+    <div class="navigation-bar-bottom">
+      <div class="navigation-bar-bottom-left_side">
+        <ul>
+          <li><a href="../../index.html">Trang chủ</a></li>
+          <li><a href="../stories/Story_List.html">Danh sách truyện</a></li>
+          <li><a href="../stories/Self-written_LightNovel.html">Truyện sáng tác</a></li>
+          <li><a href="../shelf/Bookshelf.html">Tủ sách</a></li>
+        </ul>
+      </div>
+      <div class="navigation-bar-bottom-right_side">
+        <button id="dark-mode-btn" onclick="toggleDarkMode()">⏾ Tắt đèn</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content" style="min-height: 70vh;">
+    <aside class="admin-sidebar">
+      <h2>Tori Admin</h2>
+      <nav>
+        <ul>
+          <li><a href="Admin_Stories.html" class="active">Quản lý Truyện</a></li>
+          <li id="menu-publisher-requests"><a href="Admin_Publisher_Requests.html">Duyệt NXB</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <div class="admin-main">
+      <div class="admin-header">
+        <h1 id="form-title">Thêm Truyện Mới</h1>
+        <a href="Admin_Stories.html" class="btn" style="background-color: #95a5a6; color: white;">← Quay lại</a>
+      </div>
+
+      <div class="admin-form-container">
+        <form id="story-form">
+          <div class="form-group">
+            <label for="title">Tên Truyện</label>
+            <input type="text" id="title" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="author">Tác giả</label>
+            <input type="text" id="author" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="coverImg">Link Ảnh Bìa</label>
+            <input type="url" id="coverImg" class="form-control" placeholder="https://..." required>
+            <img id="cover-preview" class="thumbnail-preview" src="" alt="Cover Preview">
+          </div>
+          <div class="form-group">
+            <label for="status">Trạng thái</label>
+            <select id="status" class="form-control">
+              <option value="Đang tiến hành">Đang tiến hành</option>
+              <option value="Hoàn thành">Hoàn thành</option>
+              <option value="Tạm ngưng">Tạm ngưng</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="price">Giá bán toàn bộ truyện (Nhập 0 nếu miễn phí)</label>
+            <input type="number" id="price" class="form-control" value="0" min="0">
+          </div>
+          <div class="form-group" style="display: none;">
+            <label>
+              <input type="checkbox" id="isPremium"> Là truyện có bản quyền (Thu phí)?
+            </label>
+          </div>
+          <div class="form-group">
+            <label for="description">Mô tả nội dung</label>
+            <textarea id="description" class="form-control" required></textarea>
+          </div>
+          <button type="submit" class="button-general" style="width: 100%; padding: 12px; font-size: 16px;">Lưu Truyện</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Tori Lightnovel. Nền tảng đọc truyện trực tuyến.</p>
+    <div class="footer-links">
+      <a href="">Điều khoản</a>
+      <a href="">Bảo mật</a>
+      <a href="">Liên hệ</a>
+    </div>
+  </footer>
+
+  <script src="../../scripts/ui/Routes.js"></script>
+  <script src="../../scripts/auth/Auth.js"></script>
+  <script src="../../scripts/admin/admin_story_form.js"></script>
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      localStorage.setItem('tori_dark_mode', isDarkMode);
+      const btn = document.getElementById('dark-mode-btn');
+      if(btn) btn.innerHTML = isDarkMode ? '☀ Bật đèn' : '⏾ Tắt đèn';
+    }
+    
+    if (localStorage.getItem('tori_dark_mode') === 'true') {
+      document.body.classList.add('dark-mode');
+      const btn = document.getElementById('dark-mode-btn');
+      if(btn) btn.innerHTML = '☀ Bật đèn';
+    }
+  </script>
+</body>
+</html>

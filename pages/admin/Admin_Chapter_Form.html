@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thêm/Sửa Chương - Tori Admin</title>
+  <link rel="icon" sizes="16x16" href="../../assets/images/Falvicon.ico" />
+  <link rel="stylesheet" href="../../styles/main_style.css" />
+  <link rel="stylesheet" href="../../styles/main_header_style.css" />
+  <link rel="stylesheet" href="../../styles/footer_style.css" />
+  <link rel="stylesheet" href="../../styles/dark_mode_style.css" />
+  <link rel="stylesheet" href="../../styles/admin_style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="navigation-bar-top">
+      <div class="logo">
+        <a href="../../index.html"><img src="../../assets/images/Tori_Logo_Transparent.png" alt="Tori" style="height: 80px" /></a>
+      </div>
+      <ul id="auth-menu">
+        <li><a href="../auth/Login.html">Đăng nhập</a></li>
+        <li><a href="../auth/Signup.html" class="button-general">Đăng ký</a></li>
+      </ul>
+    </div>
+    <div class="navigation-bar-bottom">
+      <div class="navigation-bar-bottom-left_side">
+        <ul>
+          <li><a href="../../index.html">Trang chủ</a></li>
+          <li><a href="../stories/Story_List.html">Danh sách truyện</a></li>
+          <li><a href="../stories/Self-written_LightNovel.html">Truyện sáng tác</a></li>
+          <li><a href="../shelf/Bookshelf.html">Tủ sách</a></li>
+        </ul>
+      </div>
+      <div class="navigation-bar-bottom-right_side">
+        <button id="dark-mode-btn" onclick="toggleDarkMode()">⏾ Tắt đèn</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content" style="min-height: 70vh;">
+    <aside class="admin-sidebar">
+      <h2>Tori Admin</h2>
+      <nav>
+        <ul>
+          <li><a href="Admin_Stories.html" class="active">Quản lý Truyện</a></li>
+          <li id="menu-publisher-requests"><a href="Admin_Publisher_Requests.html">Duyệt NXB</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <div class="admin-main">
+      <div class="admin-header">
+        <h1 id="form-title">Thêm Chương Mới</h1>
+        <a href="Admin_Chapters.html" id="btn-back" class="btn" style="background-color: #95a5a6; color: white;">← Quay lại</a>
+      </div>
+
+      <div class="admin-form-container">
+        <form id="chapter-form">
+          <div class="form-group">
+            <label for="chapter-number">Chương số (VD: 1, 2, 3)</label>
+            <input type="number" id="chapter-number" class="form-control" required min="1">
+          </div>
+          <div class="form-group">
+            <label for="chapter-title">Tiêu đề chương</label>
+            <input type="text" id="chapter-title" class="form-control" required>
+          </div>
+          <div class="form-group">
+            <label for="chapter-price">Giá mở khoá (Coin) - Nhập 0 nếu miễn phí</label>
+            <input type="number" id="chapter-price" class="form-control" value="0" min="0">
+          </div>
+          
+          <div style="background-color: #f8f9fa; padding: 15px; border-radius: 5px; margin-bottom: 20px; border: 1px solid #e9ecef;">
+            <p style="margin-bottom: 10px; font-weight: bold; color: #e74c3c;">Lưu ý về Nội dung chữ và Truyện tranh:</p>
+            <ul style="margin-left: 20px; font-size: 13px; color: #555;">
+              <li>Nếu là <b>Truyện Chữ (Light Novel)</b>: Vui lòng nhập nội dung vào khung "Nội dung chữ" bên dưới, để trống phần Link Ảnh.</li>
+              <li>Nếu là <b>Truyện Tranh (Manga/Comic)</b>: Vui lòng dán danh sách link ảnh vào mục "Link Ảnh", để trống phần Nội dung chữ.</li>
+              <li>Bạn cũng có thể kết hợp cả 2 nếu chương đó vừa có chữ vừa có tranh minh hoạ.</li>
+            </ul>
+          </div>
+
+          <div class="form-group">
+            <label for="chapter-content">Nội dung chữ (Light Novel)</label>
+            <textarea id="chapter-content" class="form-control" placeholder="Nhập nội dung truyện tại đây..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="imageLinks1">Link Ảnh Truyện Tranh (Server 1)</label>
+            <textarea id="imageLinks1" class="form-control" placeholder="Dán các link ảnh vào đây, mỗi link 1 dòng (hoặc cách nhau bằng dấu phẩy)"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label for="imageLinks2">Link Ảnh Dự Phòng (Server 2)</label>
+            <textarea id="imageLinks2" class="form-control" placeholder="Dán các link ảnh dự phòng vào đây, mỗi link 1 dòng (hoặc cách nhau bằng dấu phẩy)"></textarea>
+          </div>
+
+          <button type="submit" class="button-general" style="width: 100%; padding: 12px; font-size: 16px;">Lưu Chương</button>
+        </form>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Tori Lightnovel. Nền tảng đọc truyện trực tuyến.</p>
+    <div class="footer-links">
+      <a href="">Điều khoản</a>
+      <a href="">Bảo mật</a>
+      <a href="">Liên hệ</a>
+    </div>
+  </footer>
+
+  <script src="../../scripts/ui/Routes.js"></script>
+  <script src="../../scripts/auth/Auth.js"></script>
+  <script src="../../scripts/admin/admin_chapter_form.js"></script>
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      localStorage.setItem('tori_dark_mode', isDarkMode);
+      const btn = document.getElementById('dark-mode-btn');
+      if(btn) btn.innerHTML = isDarkMode ? '☀ Bật đèn' : '⏾ Tắt đèn';
+    }
+    
+    if (localStorage.getItem('tori_dark_mode') === 'true') {
+      document.body.classList.add('dark-mode');
+      const btn = document.getElementById('dark-mode-btn');
+      if(btn) btn.innerHTML = '☀ Bật đèn';
+    }
+  </script>
+</body>
+</html>

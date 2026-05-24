@@ -13,11 +13,56 @@ function switchShelfTab(tabName) {
     loadFollowingStories();
   } else if (tabName === "purchased") {
     loadPurchasedHistory();
+  } else if (tabName === "favorite") {
+    loadFavoriteStories();
+  }
+}
+
+// Truyện đã thích
+async function loadFavoriteStories() {
+  const grid = document.getElementById("favorite-grid");
+  if (!grid) return;
+
+  let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+  if (!currentUser) {
+    grid.innerHTML = `<p class="empty-message">Vui lòng đăng nhập để xem Tủ sách cá nhân.</p>`;
+    return;
+  }
+
+  try {
+    const API_URL = "http://localhost:5000/api";
+    const response = await fetch(`${API_URL}/users/${currentUser.username}/favorites`);
+    if (!response.ok) throw new Error("Lỗi tải data");
+    const favList = await response.json();
+
+    if (favList.length === 0) {
+      grid.innerHTML = `<p class="empty-message">Bạn chưa thích bộ truyện nào.</p>`;
+      return;
+    }
+
+    let html = "";
+    favList.forEach((story) => {
+      const detailHref = ToriRoutes.href("storyDetail", { id: story._id });
+
+      html += `
+        <a href="${detailHref}" class="story-card" style="text-decoration: none; display: block;">
+          <img src="${story.coverImg || 'https://via.placeholder.com/200x280?text=No+Cover'}" alt="Bìa truyện ${story.title}">
+          <div class="story-info">
+            <h3 class="story-title">${story.title}</h3>
+            <p class="story-author">Tác giả: ${story.author}</p>
+          </div>
+        </a>
+      `;
+    });
+    grid.innerHTML = html;
+  } catch (err) {
+    grid.innerHTML = `<p class="empty-message" style="color:red;">Lỗi kết nối Server!</p>`;
+    console.error(err);
   }
 }
 
 //truyện theo dõi
-function loadFollowingStories() {
+async function loadFollowingStories() {
   const grid = document.getElementById("following-grid");
   if (!grid) return;
 
@@ -27,46 +72,40 @@ function loadFollowingStories() {
     return;
   }
 
-  //Đọc đúng kho truyện theo dõi của user
-  let userSuffix = "_" + currentUser.username;
-  let favList =
-    JSON.parse(localStorage.getItem("tori_favorites" + userSuffix)) || [];
+  try {
+    const API_URL = "http://localhost:5000/api";
+    const response = await fetch(`${API_URL}/users/${currentUser.username}/following`);
+    if (!response.ok) throw new Error("Lỗi tải data");
+    const favList = await response.json();
 
-  if (favList.length === 0) {
-    grid.innerHTML = `<p class="empty-message">Bạn chưa theo dõi bộ truyện nào.</p>`;
-    return;
-  }
+    if (favList.length === 0) {
+      grid.innerHTML = `<p class="empty-message">Bạn chưa theo dõi bộ truyện nào.</p>`;
+      return;
+    }
 
-  if (typeof mockStories === "undefined") {
-    grid.innerHTML = `<p class="empty-message" style="color:red;">Lỗi: Không tìm thấy Cơ sở dữ liệu!</p>`;
-    return;
-  }
-
-  let html = "";
-  favList.forEach((storyId) => {
-    const story = mockStories.find((s) => s.id === storyId);
-    if (story) {
-      const detailHref =
-        typeof getStoryDetailHref === "function"
-          ? getStoryDetailHref(story.id)
-          : ToriRoutes.href("storyDetail", { id: story.id });
+    let html = "";
+    favList.forEach((story) => {
+      const detailHref = ToriRoutes.href("storyDetail", { id: story._id });
 
       html += `
         <a href="${detailHref}" class="story-card" style="text-decoration: none; display: block;">
-          <img src="${story.coverUrl}" alt="Bìa truyện ${story.title}">
+          <img src="${story.coverImg || 'https://via.placeholder.com/200x280?text=No+Cover'}" alt="Bìa truyện ${story.title}">
           <div class="story-info">
             <h3 class="story-title">${story.title}</h3>
             <p class="story-author">Tác giả: ${story.author}</p>
           </div>
         </a>
       `;
-    }
-  });
-  grid.innerHTML = html;
+    });
+    grid.innerHTML = html;
+  } catch (err) {
+    grid.innerHTML = `<p class="empty-message" style="color:red;">Lỗi kết nối Server!</p>`;
+    console.error(err);
+  }
 }
 
 //lịch sử mua
-function loadPurchasedHistory() {
+async function loadPurchasedHistory() {
   const listContainer = document.getElementById("purchased-list");
   if (!listContainer) return;
 
@@ -76,42 +115,51 @@ function loadPurchasedHistory() {
     return;
   }
 
-  // Đọc đúng kho truyện đã mua của user
-  let userSuffix = "_" + currentUser.username;
-  let purchasedList =
-    JSON.parse(localStorage.getItem("tori_purchased" + userSuffix)) || [];
+  try {
+    const API_URL = "http://localhost:5000/api";
+    const response = await fetch(`${API_URL}/users/${currentUser.username}/transactions`);
+    if (!response.ok) throw new Error("Lỗi tải lịch sử giao dịch");
+    const transactions = await response.json();
 
-  if (purchasedList.length === 0) {
-    listContainer.innerHTML = `<p class="empty-message">Bạn chưa mua nội dung trả phí nào.</p>`;
-    return;
-  }
+    if (transactions.length === 0) {
+      listContainer.innerHTML = `<p class="empty-message">Bạn chưa mua nội dung trả phí nào.</p>`;
+      return;
+    }
 
-  let html = "";
-  purchasedList.forEach((item) => {
-    const detailHref =
-      typeof getStoryDetailHref === "function"
-        ? getStoryDetailHref(item.storyId)
-        : ToriRoutes.href("storyDetail", { id: item.storyId });
+    let html = "";
+    transactions.forEach((tx) => {
+      const story = tx.story;
+      if (!story) return;
 
-    html += `
-      <a href="${detailHref}" style="text-decoration: none; display: block;">
-        <div class="update-item" style="align-items: center;">
-          <div class="update-cover" style="height: 90px; width: 65px; min-width: 65px;">
-            <img src="${item.cover}" alt="Bìa">
-          </div>
-          <div class="update-info">
-            <div class="update-title" style="font-size: 16px; color: #000080;">${item.title}</div>
-            <div class="update-desc" style="margin-bottom: 5px;">Tập đã mở khóa: <strong>${item.volName}</strong></div>
-            <div class="update-meta" style="margin-bottom: 0;">
-                <span style="color: green; font-weight: bold;">💳 Đã thanh toán: ${item.price} Coin</span>
+      const detailHref = ToriRoutes.href("storyDetail", { id: story._id });
+      const txDate = new Date(tx.createdAt).toLocaleString("vi-VN");
+
+      html += `
+        <a href="${detailHref}" style="text-decoration: none; display: block; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px;">
+          <div class="update-item" style="align-items: center; border: none; padding: 0; margin: 0;">
+            <div class="update-cover" style="height: 90px; width: 65px; min-width: 65px;">
+              <img src="${story.coverImg || 'https://via.placeholder.com/65x90?text=No+Cover'}" alt="Bìa">
+            </div>
+            <div class="update-info">
+              <div class="update-title" style="font-size: 16px; color: #000080;">${story.title}</div>
+              <div class="update-desc" style="margin-bottom: 5px;">Mở khóa: <strong>Toàn bộ truyện</strong></div>
+              <div class="update-meta" style="margin-bottom: 5px; color: #666; font-size: 13px;">
+                Mã GD: <strong>${tx.transactionId}</strong> | Ngày: ${txDate}
+              </div>
+              <div class="update-meta" style="margin-bottom: 0;">
+                  <span style="color: green; font-weight: bold;">💳 Đã thanh toán: ${tx.price} Coin (${tx.status})</span>
+              </div>
             </div>
           </div>
-        </div>
-      </a>
-    `;
-  });
+        </a>
+      `;
+    });
 
-  listContainer.innerHTML = html;
+    listContainer.innerHTML = html;
+  } catch (err) {
+    listContainer.innerHTML = `<p class="empty-message" style="color:red;">Lỗi kết nối Server!</p>`;
+    console.error(err);
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {

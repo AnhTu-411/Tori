@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý Chương - Tori Admin</title>
+  <link rel="icon" sizes="16x16" href="../../assets/images/Falvicon.ico" />
+  <link rel="stylesheet" href="../../styles/main_style.css" />
+  <link rel="stylesheet" href="../../styles/main_header_style.css" />
+  <link rel="stylesheet" href="../../styles/footer_style.css" />
+  <link rel="stylesheet" href="../../styles/dark_mode_style.css" />
+  <link rel="stylesheet" href="../../styles/admin_style.css">
+</head>
+<body>
+  <!-- Header gốc từ trang chủ -->
+  <header class="header">
+    <div class="navigation-bar-top">
+      <div class="logo">
+        <a href="../../index.html"><img src="../../assets/images/Tori_Logo_Transparent.png" alt="Tori" style="height: 80px" /></a>
+      </div>
+      <ul id="auth-menu">
+        <li><a href="../auth/Login.html">Đăng nhập</a></li>
+        <li><a href="../auth/Signup.html" class="button-general">Đăng ký</a></li>
+      </ul>
+    </div>
+    <div class="navigation-bar-bottom">
+      <div class="navigation-bar-bottom-left_side">
+        <ul>
+          <li><a href="../../index.html">Trang chủ</a></li>
+          <li><a href="../stories/Story_List.html">Danh sách truyện</a></li>
+          <li><a href="../stories/Self-written_LightNovel.html">Truyện sáng tác</a></li>
+          <li><a href="../shelf/Bookshelf.html">Tủ sách</a></li>
+        </ul>
+      </div>
+      <div class="navigation-bar-bottom-right_side">
+        <button id="dark-mode-btn" onclick="toggleDarkMode()">⏾ Tắt đèn</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content" style="min-height: 70vh;">
+    <aside class="admin-sidebar">
+      <h2>Tori Admin</h2>
+      <nav>
+        <ul>
+          <li><a href="Admin_Stories.html" class="active">Quản lý Truyện</a></li>
+          <li id="menu-publisher-requests"><a href="Admin_Publisher_Requests.html">Duyệt NXB</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <div class="admin-main">
+      <div class="admin-header">
+        <div>
+          <h1>Danh sách Chương</h1>
+          <p id="story-title-display" style="color: #7f8c8d; margin-top: 5px;">Đang tải...</p>
+        </div>
+        <div style="display: flex; gap: 10px;">
+          <a href="Admin_Stories.html" class="btn" style="background-color: #95a5a6; color: white;">← Quay Lại</a>
+          <a href="#" id="btn-add-chapter" class="btn btn-primary">+ Thêm Chương Mới</a>
+        </div>
+      </div>
+
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>Chương số</th>
+              <th>Tiêu đề</th>
+              <th>Giá (Coins)</th>
+              <th>Ngày tạo</th>
+              <th>Kiểm Duyệt</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="chapters-table-body">
+            <!-- Dữ liệu sẽ được render bằng JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Tori Lightnovel. Nền tảng đọc truyện trực tuyến.</p>
+    <div class="footer-links">
+      <a href="">Điều khoản</a>
+      <a href="">Bảo mật</a>
+      <a href="">Liên hệ</a>
+    </div>
+  </footer>
+
+  <script src="../../scripts/ui/Routes.js"></script>
+  <script src="../../scripts/auth/Auth.js"></script>
+  <script src="../../scripts/admin/admin_chapters.js"></script>
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      localStorage.setItem('tori_dark_mode', isDarkMode);
+      const btn = document.getElementById('dark-mode-btn');
+      if(btn) btn.innerHTML = isDarkMode ? '☀ Bật đèn' : '⏾ Tắt đèn';
+    }
+    
+    if (localStorage.getItem('tori_dark_mode') === 'true') {
+      document.body.classList.add('dark-mode');
+      const btn = document.getElementById('dark-mode-btn');
+      if(btn) btn.innerHTML = '☀ Bật đèn';
+    }
+  </script>
+</body>
+</html>

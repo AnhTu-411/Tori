@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Duyệt Nhà Xuất Bản - Tori Admin</title>
+  <link rel="icon" sizes="16x16" href="../../assets/images/Falvicon.ico" />
+  <link rel="stylesheet" href="../../styles/main_style.css" />
+  <link rel="stylesheet" href="../../styles/main_header_style.css" />
+  <link rel="stylesheet" href="../../styles/footer_style.css" />
+  <link rel="stylesheet" href="../../styles/dark_mode_style.css" />
+  <link rel="stylesheet" href="../../styles/admin_style.css">
+</head>
+<body>
+  <header class="header">
+    <div class="navigation-bar-top">
+      <div class="logo">
+        <a href="../../index.html"><img src="../../assets/images/Tori_Logo_Transparent.png" alt="Tori" style="height: 80px" /></a>
+      </div>
+      <ul id="auth-menu">
+        <li><a href="../auth/Login.html">Đăng nhập</a></li>
+        <li><a href="../auth/Signup.html" class="button-general">Đăng ký</a></li>
+      </ul>
+    </div>
+    <div class="navigation-bar-bottom">
+      <div class="navigation-bar-bottom-left_side">
+        <ul>
+          <li><a href="../../index.html">Trang chủ</a></li>
+          <li><a href="../stories/Story_List.html">Danh sách truyện</a></li>
+          <li><a href="../stories/Self-written_LightNovel.html">Truyện sáng tác</a></li>
+          <li><a href="../shelf/Bookshelf.html">Tủ sách</a></li>
+        </ul>
+      </div>
+      <div class="navigation-bar-bottom-right_side">
+        <button id="dark-mode-btn" onclick="toggleDarkMode()">⏾ Tắt đèn</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-content" style="min-height: 70vh;">
+    <aside class="admin-sidebar">
+      <h2>Tori Admin</h2>
+      <nav>
+        <ul>
+          <li><a href="Admin_Stories.html">Quản lý Truyện</a></li>
+          <li id="menu-publisher-requests"><a href="Admin_Publisher_Requests.html" class="active">Duyệt NXB</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <div class="admin-main">
+      <div class="admin-header">
+        <h1>Danh sách Đơn xin làm Nhà Xuất Bản</h1>
+      </div>
+
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID User</th>
+              <th>Tên User</th>
+              <th>Lý do / Kinh nghiệm</th>
+              <th>Ngày gửi</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="requests-table-body">
+            <!-- Dữ liệu sẽ được render bằng JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Tori Lightnovel. Nền tảng đọc truyện trực tuyến.</p>
+    <div class="footer-links">
+      <a href="">Điều khoản</a>
+      <a href="">Bảo mật</a>
+      <a href="">Liên hệ</a>
+    </div>
+  </footer>
+
+  <script src="../../scripts/ui/Routes.js"></script>
+  <script src="../../scripts/auth/Auth.js"></script>
+  <script src="../../scripts/admin/admin_publisher_requests.js"></script>
+  <script>
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+      const isDarkMode = document.body.classList.contains('dark-mode');
+      localStorage.setItem('tori_dark_mode', isDarkMode);
+      const btn = document.getElementById('dark-mode-btn');
+      if(btn) btn.innerHTML = isDarkMode ? '☀ Bật đèn' : '⏾ Tắt đèn';
+    }
+    
+    if (localStorage.getItem('tori_dark_mode') === 'true') {
+      document.body.classList.add('dark-mode');
+      const btn = document.getElementById('dark-mode-btn');
+      if(btn) btn.innerHTML = '☀ Bật đèn';
+    }
+  </script>
+</body>
+</html>

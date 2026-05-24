@@ -105,7 +105,17 @@ function checkLoginState() {
   const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
 
   if (currentUser) {
+    let adminLink = "";
+    if (currentUser.role === "admin") {
+      adminLink = `<li><a href="${getAuthHref("adminDashboard")}" style="color: #f39c12; font-weight: bold;">[Quản Trị Viên]</a></li>`;
+    } else if (currentUser.role === "publisher") {
+      adminLink = `<li><a href="${getAuthHref("adminDashboard")}" style="color: #f39c12; font-weight: bold;">[Nhà Xuất Bản]</a></li>`;
+    } else {
+      adminLink = `<li><a href="${getAuthHref("publisherRegister")}" style="color: #3498db; font-weight: bold;">[Trở thành NXB]</a></li>`;
+    }
+
     authMenu.innerHTML = `
+            ${adminLink}
             <li><a href="#" class="user-greeting">${currentUser.username}</a></li>
             <li><button onclick="handleLogout()" class="button-general logout-btn">Đăng xuất</button></li>
         `;
