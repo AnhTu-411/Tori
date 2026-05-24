@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tìm Kiếm Nâng Cao - Tori Lightnovel</title>
+    <link rel="stylesheet" href="../../styles/main_style.css" />
+    <link rel="stylesheet" href="../../styles/main_header_style.css" />
+    <link rel="stylesheet" href="../../styles/card_style.css" />
+    <link rel="stylesheet" href="../../styles/footer_style.css" />
+    <link rel="stylesheet" href="../../styles/dark_mode_style.css" />
+    <link rel="stylesheet" href="../../styles/advanced_search_style.css" />
+    <link rel="stylesheet" href="../../styles/animation_style.css" />
+  </head>
+  <body>
+    <header class="header">
+      x
+      <div class="navigation-bar-top">
+        <div class="logo">
+          <a href="#" data-route="home"><img data-asset="logo" alt="Logo" /></a>
+        </div>
+        <ul id="auth-menu">
+          <li><a href="#" data-route="login">Đăng nhập</a></li>
+          <li>
+            <a href="#" data-route="signup" class="button-general">Đăng ký</a>
+          </li>
+        </ul>
+      </div>
+      <div class="navigation-bar-bottom">
+        <div class="navigation-bar-bottom-left_side">
+          <ul>
+            <li><a href="#" data-route="home">Trang chủ</a></li>
+            <li><a href="#" data-route="storyList">Danh sách truyện</a></li>
+            <li><a href="#" data-route="selfWritten">Truyện sáng tác</a></li>
+            <li><a href="#" data-route="bookshelf">Tủ sách</a></li>
+            <li>
+              <a href="#" data-route="advancedSearch" class="active"
+                >Tìm kiếm nâng cao</a
+              >
+            </li>
+          </ul>
+        </div>
+        <div class="navigation-bar-bottom-right_side">
+          <div class="search-bar">
+            <input type="text" placeholder="Tìm kiếm truyện..." />
+            <button type="submit" id="search-button">🔍︎</button>
+          </div>
+          <a href="#" data-route="cart" class="cart-icon" title="Giỏ hàng">
+            🛒 <span id="cart-count">0</span>
+          </a>
+          <button id="dark-mode-btn" onclick="toggleDarkMode()">
+            ⏾ Tắt đèn
+          </button>
+          <button type="button" id="recharge" data-route-click="recharge">
+            Nạp tiền
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="main-content" style="display: block">
+      <section class="advanced-search-section">
+        <div class="section-header">
+          <h2 class="section-title">Thể loại truyện</h2>
+        </div>
+
+        
+        <div class="genre-grid">
+          
+           <label class="genre-item"
+            ><input type="checkbox" value="isekai" /> Action </label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="adventure" /> Adventure</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="comedy" /> Comedy</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="drama" /> Drama</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="detective" /> Detective</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="fantasy" /> Fantasy</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="gender-bender" /> Gender
+            Bender</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="game" /> Game
+            Bender</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="historical" /> Historical</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="horror" /> Horror</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="mystery" /> Mystery</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="romance" /> Romance</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="sci-fi" /> Sci-fi</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="supernatural" /> Supernatural</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="anime" /> Slice of Life</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="co-dai" /> School Life</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="seinen" /> Seinen</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="shoujo" /> Shoujo</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="shoujo-ai" /> Shoujo Ai</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="shounen" /> Shounen</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="sports" /> Sports</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="magic" /> Magic</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="mecha" /> Mecha</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="music" /> Music</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="military" /> Military</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="martial-arts" /> Martial Arts</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="one-shot" /> One shot</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="otome-game" /> Otome Game</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="mystery" /> Yuri</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="tragedy" /> Tragedy</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="demons" /> Web Novel</label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="isekai" /> Isekai </label
+          >
+          <label class="genre-item"
+            ><input type="checkbox" value="chuyen-sinh" /> Harem</label
+          >
+        </div>
+        <div class="filter-controls">
+          <div class="filter-group">
+            <label for="status-select"><strong>Tình trạng:</strong></label>
+            <select id="status-select">
+              <option value="all">Tất cả</option>
+              <option value="ongoing">Đang tiến hành</option>
+              <option value="completed">Đã hoàn thành</option>
+              <option value="paused">Tạm ngưng</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="sort-select"><strong>Sắp xếp:</strong></label>
+            <select id="sort-select">
+              <option value="newest">Mới cập nhật</option>
+              <option value="views">Lượt xem nhiều nhất</option>
+              <option value="rating">Đánh giá cao nhất</option>
+              <option value="chapters">Nhiều chương nhất</option>
+            </select>
+          </div>
+          <button class="btn-reset" onclick="resetFilters()">
+            Reset ↺ 
+          </button>
+        </div>
+      </section>
+    </main>
+    <footer class="footer">
+      <p>© 2026 Tori Lightnovel. Nền tảng đọc truyện trực tuyến.</p>
+      <div class="footer-links">
+        <a href="">Điều khoản</a>
+        <a href="">Bảo mật</a>
+        <a href="">Liên hệ</a>
+      </div>
+    </footer>
+
+    <script src="../../scripts/ui/Routes.js""></script>
+    <script src="../../scripts/data/Fake_DataBase.js"></script>
+    <script src="../../scripts/ui/Navigation_Animation.js"></script>
+    <script src="../../scripts/ui/Dark_Mode.js"></script>
+    <script src="../../scripts/auth/Auth.js"></script>
+
+    <script>
+      function resetFilters() {
+        const checkboxes = document.querySelectorAll(
+          '.genre-item input[type="checkbox"]',
+        );
+        checkboxes.forEach((cb) => (cb.checked = false));
+        document.getElementById("status-select").value = "all";
+        document.getElementById("sort-select").value = "newest";
+      }
+    </script>
+  </body>
+</html>

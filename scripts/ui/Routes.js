@@ -75,7 +75,6 @@
 */
 
 (function () {
-  
   // Các đường dẫn tính từ thư mục gốc (Tori/).
   const ROUTES = {
     home: "index.html",
@@ -87,6 +86,7 @@
     storyDetail: "pages/stories/Story_Detail.html",
     reading: "pages/stories/Reading.html",
     bookshelf: "pages/shelf/Bookshelf.html",
+    advancedSearch: "pages/shelf/Advanced_Search.html",
     cart: "pages/payment/Cart.html",
     recharge: "pages/payment/Recharge.html",
   };
