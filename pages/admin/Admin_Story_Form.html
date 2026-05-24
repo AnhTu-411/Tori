@@ -12,30 +12,7 @@
   <link rel="stylesheet" href="../../styles/admin_style.css">
 </head>
 <body>
-  <header class="header">
-    <div class="navigation-bar-top">
-      <div class="logo">
-        <a href="../../index.html"><img src="../../assets/images/Tori_Logo_Transparent.png" alt="Tori" style="height: 80px" /></a>
-      </div>
-      <ul id="auth-menu">
-        <li><a href="../auth/Login.html">Đăng nhập</a></li>
-        <li><a href="../auth/Signup.html" class="button-general">Đăng ký</a></li>
-      </ul>
-    </div>
-    <div class="navigation-bar-bottom">
-      <div class="navigation-bar-bottom-left_side">
-        <ul>
-          <li><a href="../../index.html">Trang chủ</a></li>
-          <li><a href="../stories/Story_List.html">Danh sách truyện</a></li>
-          <li><a href="../stories/Self-written_LightNovel.html">Truyện sáng tác</a></li>
-          <li><a href="../shelf/Bookshelf.html">Tủ sách</a></li>
-        </ul>
-      </div>
-      <div class="navigation-bar-bottom-right_side">
-        <button id="dark-mode-btn" onclick="toggleDarkMode()">⏾ Tắt đèn</button>
-      </div>
-    </div>
-  </header>
+  
 
   <main class="main-content" style="min-height: 70vh;">
     <aside class="admin-sidebar">
@@ -96,32 +73,12 @@
     </div>
   </main>
 
-  <footer class="footer">
-    <p>© 2026 Tori Lightnovel. Nền tảng đọc truyện trực tuyến.</p>
-    <div class="footer-links">
-      <a href="">Điều khoản</a>
-      <a href="">Bảo mật</a>
-      <a href="">Liên hệ</a>
-    </div>
-  </footer>
+  
 
   <script src="../../scripts/ui/Routes.js"></script>
   <script src="../../scripts/auth/Auth.js"></script>
   <script src="../../scripts/admin/admin_story_form.js"></script>
-  <script>
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
-      const isDarkMode = document.body.classList.contains('dark-mode');
-      localStorage.setItem('tori_dark_mode', isDarkMode);
-      const btn = document.getElementById('dark-mode-btn');
-      if(btn) btn.innerHTML = isDarkMode ? '☀ Bật đèn' : '⏾ Tắt đèn';
-    }
-    
-    if (localStorage.getItem('tori_dark_mode') === 'true') {
-      document.body.classList.add('dark-mode');
-      const btn = document.getElementById('dark-mode-btn');
-      if(btn) btn.innerHTML = '☀ Bật đèn';
-    }
-  </script>
+  
+<script src="../../scripts/ui/Navbar.js"></script>
 </body>
 </html>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Danh sách truyện - Tori Lightnovel</title>
+    <link rel="icon" sizes="16x16" href="../../assets/images/Falvicon.ico" />
     <link rel="stylesheet" href="../../styles/main_style.css" />
     <link rel="stylesheet" href="../../styles/card_style.css" />
     <link rel="stylesheet" href="../../styles/footer_style.css" />
@@ -12,84 +13,83 @@
     <link rel="stylesheet" href="../../styles/animation_style.css" />
   </head>
   <body>
-    <header class="header">
-      <div class="navigation-bar-top">
-        <div class="logo">
-          <a href="#" data-route="home"><img data-asset="logo" alt="" /></a>
-        </div>
-        <ul id="auth-menu">
-          <li><a href="#" data-route="login">Đăng nhập</a></li>
-          <li>
-            <a href="#" data-route="signup" class="button-general">Đăng ký</a>
-          </li>
-        </ul>
-      </div>
-      <div class="navigation-bar-bottom">
-        <div class="navigation-bar-bottom-left_side">
-          <ul>
-            <li><a href="#" data-route="home">Trang chủ</a></li>
-            <li>
-              <a href="#" data-route="storyList" class="active"
-                >Danh sách truyện</a
-              >
-            </li>
-            <li><a href="#" data-route="selfWritten">Truyện sáng tác</a></li>
-            <li><a href="#" data-route="bookshelf">Tủ sách</a></li>
-            <li>
-              <a href="#" data-route="advancedSearch">Tìm kiếm năng cao</a>
-            </li>
-          </ul>
-        </div>
-        <div class="navigation-bar-bottom-right_side">
-          <div class="search-bar">
-            <input type="text" placeholder="Tìm kiếm truyện..." />
-            <button type="submit" id="search-button">🔍︎</button>
-          </div>
-          <a href="#" data-route="cart" class="cart-icon" title="Giỏ hàng">
-            🛒 <span id="cart-count">0</span>
-          </a>
-          <button id="dark-mode-btn" onclick="toggleDarkMode()">
-            ⏾ Tắt đèn
-          </button>
-          <button type="button" id="recharge" data-route-click="recharge">
-            Nạp tiền
-          </button>
-        </div>
-      </div>
-    </header>
+    
     <main class="main-content">
       <!--danh sach truyen-->
       <section class="left-section">
         <h2 class="section-title">Danh sách truyện</h2>
-        <div class="sort-container" style="font-weight: bold; color: #000080">
-          <label for="sort-select">Sắp xếp: </label>
-          <select
-            id="sort-select"
-            onchange="sortStories(this.value)"
-            style="padding: 5px; border-radius: 5px; cursor: pointer"
-          >
-            <option value="default">Mặc định</option>
-            <option value="az">Tên: A - Z</option>
-            <option value="za">Tên: Z - A</option>
-          </select>
+        <div class="sort-container" style="font-weight: bold; color: #000080; display: flex; justify-content: space-between; align-items: center;">
+          <div>
+            <label for="sort-select">Sắp xếp: </label>
+            <select
+              id="sort-select"
+              onchange="sortStories(this.value)"
+              style="padding: 5px; border-radius: 5px; cursor: pointer"
+            >
+              <option value="default">Mặc định</option>
+              <option value="az">Tên: A - Z</option>
+              <option value="za">Tên: Z - A</option>
+            </select>
+          </div>
         </div>
         <!--Container chua truyen-->
         <div id="story-list-container" class="story-grid"></div>
       </section>
+
+      <!-- BỘ LỌC TÌM KIẾM NÂNG CAO -->
+      <aside class="right-section filter-sidebar" style="background: #fff; padding: 20px; border-radius: 8px; border: 1px solid #eee; height: fit-content; margin-top: 50px;">
+        <h3 style="border-bottom: 2px solid #000080; padding-bottom: 10px; margin-bottom: 15px; color: #000080;">Tìm kiếm nâng cao</h3>
+        
+        <form id="advanced-search-form">
+          <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 5px;">Từ khoá</label>
+            <input type="text" id="filter-title" placeholder="Tên truyện..." style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;" />
+          </div>
+
+          <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 5px;">Tình trạng</label>
+            <select id="filter-status" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+              <option value="Tất cả">Tất cả</option>
+              <option value="Đang tiến hành">Đang tiến hành</option>
+              <option value="Hoàn thành">Hoàn thành</option>
+              <option value="Tạm ngưng">Tạm ngưng</option>
+            </select>
+          </div>
+
+          <div style="margin-bottom: 15px;">
+            <label style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 5px;">Năm xuất bản</label>
+            <select id="filter-year" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+              <option value="Tất cả">Tất cả thời gian</option>
+              <option value="2026">2026</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+            </select>
+          </div>
+
+          <div style="margin-bottom: 20px;">
+            <label style="font-weight: bold; font-size: 14px; display: block; margin-bottom: 5px;">Thể loại</label>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; font-size: 14px; max-height: 150px; overflow-y: auto; padding-right: 5px;">
+              <label><input type="checkbox" name="genres" value="Hành động"> Hành động</label>
+              <label><input type="checkbox" name="genres" value="Phiêu lưu"> Phiêu lưu</label>
+              <label><input type="checkbox" name="genres" value="Tình cảm"> Tình cảm</label>
+              <label><input type="checkbox" name="genres" value="Hài hước"> Hài hước</label>
+              <label><input type="checkbox" name="genres" value="Kinh dị"> Kinh dị</label>
+              <label><input type="checkbox" name="genres" value="Trinh thám"> Trinh thám</label>
+              <label><input type="checkbox" name="genres" value="Viễn tưởng"> Viễn tưởng</label>
+              <label><input type="checkbox" name="genres" value="Đời thường"> Đời thường</label>
+            </div>
+          </div>
+
+          <button type="button" id="btn-apply-filter" class="button-general" style="width: 100%; padding: 10px;">Lọc Truyện</button>
+        </form>
+      </aside>
     </main>
-    <div class="footer">
-      <p>© 2026 Tori Lightnovel. Nền tảng đọc truyện trực tuyến.</p>
-      <div class="footer-links">
-        <a href="">Điều khoản</a>
-        <a href="">Bảo mật</a>
-        <a href="">Liên hệ</a>
-      </div>
-    </div>
-    <script src="../../styles/animation_style.css"></script>
+
     <script src="../../scripts/ui/Routes.js"></script>
-    <script src="../../scripts/data/Fake_DataBase.js"></script>
+    <script src="../../scripts/stories/Story_List.js"></script>
     <script src="../../scripts/stories/Sorting.js"></script>
-    <script src="../../scripts/ui/Dark_Mode.js"></script>
     <script src="../../scripts/auth/Auth.js"></script>
+    <script src="../../scripts/ui/Navbar.js"></script>
   </body>
 </html>

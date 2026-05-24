@@ -387,11 +387,25 @@ app.put("/api/publisher-requests/:id", async (req, res) => {
 // 1. API lấy toàn bộ danh sách truyện (Dùng cho Trang chủ và Admin)
 app.get("/api/stories", async (req, res) => {
   try {
-    const { publisherId, role } = req.query;
+    const { publisherId, role, title, genres, status, year } = req.query;
     let query = {};
     if (publisherId) {
       query.publisherId = publisherId;
     }
+    
+    if (title) {
+      query.title = { $regex: title, $options: "i" };
+    }
+    
+    if (genres) {
+      const genreArray = Array.isArray(genres) ? genres : genres.split(",");
+      query.genres = { $in: genreArray };
+    }
+    
+    if (status && status !== "Tất cả" && status !== "") {
+      query.status = status;
+    }
+
     // Nếu không phải admin và không phải đang tìm truyện của chính mình, chỉ lấy truyện đã duyệt hoặc truyện cũ
     if (role !== "admin" && !publisherId) {
       query.$or = [
@@ -400,7 +414,15 @@ app.get("/api/stories", async (req, res) => {
       ];
     }
     
-    const stories = await Story.find(query).sort({ createdAt: -1 });
+    let stories = await Story.find(query).sort({ createdAt: -1 });
+
+    if (year && year !== "Tất cả" && year !== "") {
+      stories = stories.filter(story => {
+        const d = story.publishedDate ? new Date(story.publishedDate) : new Date(story.createdAt);
+        return d.getFullYear().toString() === year.toString();
+      });
+    }
+
     res.status(200).json(stories);
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
@@ -410,7 +432,7 @@ app.get("/api/stories", async (req, res) => {
 // 2. API thêm truyện mới (Dùng cho Admin/Publisher)
 app.post("/api/stories", async (req, res) => {
   try {
-    const { title, author, description, coverImg, status, isPremium, price, publisherId, role } = req.body;
+    const { title, author, description, coverImg, status, isPremium, price, publisherId, role, genres, publishedDate } = req.body;
     
     // Nếu admin tạo truyện thì duyệt luôn, ngược lại là false
     const approved = role === "admin" ? true : false;
@@ -421,6 +443,8 @@ app.post("/api/stories", async (req, res) => {
       description,
       coverImg,
       status,
+      genres: genres || [],
+      publishedDate: publishedDate ? new Date(publishedDate) : new Date(),
       isPremium: isPremium || false,
       price: price || 0,
       publisherId: publisherId || null,

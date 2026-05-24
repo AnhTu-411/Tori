@@ -13,54 +13,7 @@
     <link rel="stylesheet" href="../../styles/animation_style.css" />
   </head>
   <body>
-    <header class="header">
-      <div class="navigation-bar-top">
-        <div class="logo">
-          <a href="#" data-route="home"><img data-asset="logo" alt="Logo" /></a>
-        </div>
-        <ul id="auth-menu">
-          <li><a href="#" data-route="login">Đăng nhập</a></li>
-          <li>
-            <a href="#" data-route="signup" class="button-general">Đăng ký</a>
-          </li>
-        </ul>
-      </div>
-      <div class="navigation-bar-bottom">
-        <div class="navigation-bar-bottom-left_side">
-          <ul>
-            <li><a href="#" data-route="home">Trang chủ</a></li>
-            <li><a href="#" data-route="storyList">Danh sách truyện</a></li>
-            <li>
-              <a href="#" data-route="selfWritten">Truyện sáng tác</a>
-            </li>
-            <li><a href="#" data-route="bookshelf">Tủ sách</a></li>
-            <li>
-              <a href="#" data-route="advancedSearch">Tìm kiếm năng cao</a>
-            </li>
-          </ul>
-        </div>
-        <div class="navigation-bar-bottom-right_side">
-          <div class="search-bar">
-            <input type="text" placeholder="Tìm kiếm truyện..." />
-            <button type="submit" id="search-button">🔍︎</button>
-          </div>
-          <a
-            href="#"
-            data-route="cart"
-            class="cart-icon active"
-            title="Giỏ hàng"
-          >
-            🛒 <span id="cart-count">0</span>
-          </a>
-          <button id="dark-mode-btn" onclick="toggleDarkMode()">
-            ⏾ Tắt đèn
-          </button>
-          <button type="button" id="recharge" data-route-click="recharge">
-            Nạp tiền
-          </button>
-        </div>
-      </div>
-    </header>
+    
 
     <main class="main-content">
       <section class="left-section">
@@ -102,18 +55,12 @@
         </div>
       </section>
     </main>
-    <footer class="footer">
-      <p>© 2026 Tori Lightnovel. Nền tảng đọc truyện trực tuyến.</p>
-      <div class="footer-links">
-        <a href="">Điều khoản</a>
-        <a href="">Bảo mật</a>
-        <a href="">Liên hệ</a>
-      </div>
-    </footer>
+    
     <script src="../../scripts/ui/Routes.js"></script>
     <script src="../../scripts/data/Fake_DataBase.js"></script>
-    <script src="../../scripts/ui/Dark_Mode.js"></script>
+    
     <script src="../../scripts/auth/Auth.js"></script>
     <script src="../../scripts/payment/cart.js"></script>
-  </body>
+  <script src="../../scripts/ui/Navbar.js"></script>
+</body>
 </html>

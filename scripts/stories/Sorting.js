@@ -1,5 +1,8 @@
 function sortStories(order) {
-  let sortedArray = [...mockStories]; // Tạo bản sao để không làm mất gốc
+  // Sử dụng currentStories từ biến toàn cục đã được load từ DB
+  if (typeof currentStories === "undefined") return;
+
+  let sortedArray = [...currentStories]; 
 
   if (order === "az") {
     // A-Z
@@ -9,11 +12,12 @@ function sortStories(order) {
     sortedArray.sort((a, b) => b.title.localeCompare(a.title, "vi"));
   }
 
-  //Vẽ lại truyện
-  renderStories(sortedArray);
+  // Gọi hàm render tuỳ theo trang hiện tại đang xài hàm nào
+  if (typeof renderStories === "function") {
+    // Nếu ở trang Story_List
+    renderStories(sortedArray);
+  } else if (typeof renderCarousel === "function") {
+    // Nếu ở trang Home (index)
+    renderCarousel(sortedArray);
+  }
 }
-
-//Kích hoạt vẽ lần đầu khi mở trang Web
-document.addEventListener("DOMContentLoaded", () => {
-  renderStories(mockStories);
-});

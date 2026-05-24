@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tìm Kiếm Nâng Cao - Tori Lightnovel</title>
+    <link rel="icon" sizes="16x16" href="../../assets/images/Falvicon.ico" />
     <link rel="stylesheet" href="../../styles/main_style.css" />
     <link rel="stylesheet" href="../../styles/main_header_style.css" />
     <link rel="stylesheet" href="../../styles/card_style.css" />
@@ -13,212 +14,225 @@
     <link rel="stylesheet" href="../../styles/animation_style.css" />
   </head>
   <body>
-    <header class="header">
-      x
-      <div class="navigation-bar-top">
-        <div class="logo">
-          <a href="#" data-route="home"><img data-asset="logo" alt="Logo" /></a>
-        </div>
-        <ul id="auth-menu">
-          <li><a href="#" data-route="login">Đăng nhập</a></li>
-          <li>
-            <a href="#" data-route="signup" class="button-general">Đăng ký</a>
-          </li>
-        </ul>
-      </div>
-      <div class="navigation-bar-bottom">
-        <div class="navigation-bar-bottom-left_side">
-          <ul>
-            <li><a href="#" data-route="home">Trang chủ</a></li>
-            <li><a href="#" data-route="storyList">Danh sách truyện</a></li>
-            <li><a href="#" data-route="selfWritten">Truyện sáng tác</a></li>
-            <li><a href="#" data-route="bookshelf">Tủ sách</a></li>
-            <li>
-              <a href="#" data-route="advancedSearch" class="active"
-                >Tìm kiếm nâng cao</a
-              >
-            </li>
-          </ul>
-        </div>
-        <div class="navigation-bar-bottom-right_side">
-          <div class="search-bar">
-            <input type="text" placeholder="Tìm kiếm truyện..." />
-            <button type="submit" id="search-button">🔍︎</button>
-          </div>
-          <a href="#" data-route="cart" class="cart-icon" title="Giỏ hàng">
-            🛒 <span id="cart-count">0</span>
-          </a>
-          <button id="dark-mode-btn" onclick="toggleDarkMode()">
-            ⏾ Tắt đèn
-          </button>
-          <button type="button" id="recharge" data-route-click="recharge">
-            Nạp tiền
-          </button>
-        </div>
-      </div>
-    </header>
 
     <main class="main-content" style="display: block">
       <section class="advanced-search-section">
         <div class="section-header">
-          <h2 class="section-title">Thể loại truyện</h2>
+          <h2 class="section-title">Tìm kiếm nâng cao</h2>
         </div>
 
-        
-        <div class="genre-grid">
-          
-           <label class="genre-item"
-            ><input type="checkbox" value="isekai" /> Action </label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="adventure" /> Adventure</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="comedy" /> Comedy</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="drama" /> Drama</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="detective" /> Detective</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="fantasy" /> Fantasy</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="gender-bender" /> Gender
-            Bender</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="game" /> Game
-            Bender</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="historical" /> Historical</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="horror" /> Horror</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="mystery" /> Mystery</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="romance" /> Romance</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="sci-fi" /> Sci-fi</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="supernatural" /> Supernatural</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="anime" /> Slice of Life</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="co-dai" /> School Life</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="seinen" /> Seinen</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="shoujo" /> Shoujo</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="shoujo-ai" /> Shoujo Ai</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="shounen" /> Shounen</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="sports" /> Sports</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="magic" /> Magic</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="mecha" /> Mecha</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="music" /> Music</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="military" /> Military</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="martial-arts" /> Martial Arts</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="one-shot" /> One shot</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="otome-game" /> Otome Game</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="mystery" /> Yuri</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="tragedy" /> Tragedy</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="demons" /> Web Novel</label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="isekai" /> Isekai </label
-          >
-          <label class="genre-item"
-            ><input type="checkbox" value="chuyen-sinh" /> Harem</label
-          >
+        <!-- Ô tìm kiếm theo tên -->
+        <div class="search-keyword-box">
+          <label><strong>Từ khoá:</strong></label>
+          <input type="text" id="adv-search-title" placeholder="Nhập tên truyện, tác giả..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; margin-top: 8px;" />
         </div>
+
+        <!-- Thể loại -->
+        <div class="section-header" style="margin-top: 25px;">
+          <h3 class="section-title" style="font-size: 17px;">Thể loại</h3>
+        </div>
+        <div class="genre-grid">
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Hành động" /> Hành động</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Phiêu lưu" /> Phiêu lưu</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Tình cảm" /> Tình cảm</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Hài hước" /> Hài hước</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Kinh dị" /> Kinh dị</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Trinh thám" /> Trinh thám</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Viễn tưởng" /> Viễn tưởng</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Đời thường" /> Đời thường</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Fantasy" /> Fantasy</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Isekai" /> Isekai</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Romance" /> Romance</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Sci-fi" /> Sci-fi</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Supernatural" /> Supernatural</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Shounen" /> Shounen</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Shoujo" /> Shoujo</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Seinen" /> Seinen</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="School Life" /> School Life</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Slice of Life" /> Slice of Life</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Sports" /> Sports</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Mystery" /> Mystery</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Horror" /> Horror</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Harem" /> Harem</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Mecha" /> Mecha</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Drama" /> Drama</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="One shot" /> One shot</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Martial Arts" /> Martial Arts</label>
+          <label class="genre-item"><input type="checkbox" name="adv-genres" value="Tragedy" /> Tragedy</label>
+        </div>
+
+        <!-- Bộ lọc: Tình trạng + Năm xuất bản + Sắp xếp -->
         <div class="filter-controls">
           <div class="filter-group">
-            <label for="status-select"><strong>Tình trạng:</strong></label>
-            <select id="status-select">
-              <option value="all">Tất cả</option>
-              <option value="ongoing">Đang tiến hành</option>
-              <option value="completed">Đã hoàn thành</option>
-              <option value="paused">Tạm ngưng</option>
+            <label for="adv-status-select"><strong>Tình trạng:</strong></label>
+            <select id="adv-status-select">
+              <option value="Tất cả">Tất cả</option>
+              <option value="Đang tiến hành">Đang tiến hành</option>
+              <option value="Hoàn thành">Hoàn thành</option>
+              <option value="Tạm ngưng">Tạm ngưng</option>
             </select>
           </div>
 
           <div class="filter-group">
-            <label for="sort-select"><strong>Sắp xếp:</strong></label>
-            <select id="sort-select">
-              <option value="newest">Mới cập nhật</option>
-              <option value="views">Lượt xem nhiều nhất</option>
-              <option value="rating">Đánh giá cao nhất</option>
-              <option value="chapters">Nhiều chương nhất</option>
+            <label for="adv-year-select"><strong>Năm xuất bản:</strong></label>
+            <select id="adv-year-select">
+              <option value="Tất cả">Tất cả</option>
+              <option value="2026">2026</option>
+              <option value="2025">2025</option>
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+              <option value="2022">2022</option>
             </select>
           </div>
-          <button class="btn-reset" onclick="resetFilters()">
-            Reset ↺ 
-          </button>
+
+          <div class="filter-group">
+            <label for="adv-sort-select"><strong>Sắp xếp:</strong></label>
+            <select id="adv-sort-select">
+              <option value="newest">Mới nhất</option>
+              <option value="az">Tên: A → Z</option>
+              <option value="za">Tên: Z → A</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Nút hành động -->
+        <div style="display: flex; gap: 15px; margin-top: 20px;">
+          <button class="btn-search" id="btn-adv-search" style="padding: 10px 30px; background-color: #000080; color: white; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 15px; transition: background-color 0.3s;">🔍 Tìm kiếm</button>
+          <button class="btn-reset" onclick="resetFilters()">Reset ↺</button>
         </div>
       </section>
+
+      <!-- KẾT QUẢ TÌM KIẾM -->
+      <section class="advanced-search-section" id="search-results-section" style="margin-top: 20px; display: none;">
+        <div class="section-header">
+          <h2 class="section-title">Kết quả tìm kiếm (<span id="result-count">0</span> truyện)</h2>
+        </div>
+        <div id="adv-search-results" class="story-grid"></div>
+      </section>
     </main>
-    <footer class="footer">
-      <p>© 2026 Tori Lightnovel. Nền tảng đọc truyện trực tuyến.</p>
-      <div class="footer-links">
-        <a href="">Điều khoản</a>
-        <a href="">Bảo mật</a>
-        <a href="">Liên hệ</a>
-      </div>
-    </footer>
 
-    <script src="../../scripts/ui/Routes.js""></script>
-    <script src="../../scripts/data/Fake_DataBase.js"></script>
-    <script src="../../scripts/ui/Navigation_Animation.js"></script>
-    <script src="../../scripts/ui/Dark_Mode.js"></script>
+    <script src="../../scripts/ui/Routes.js"></script>
     <script src="../../scripts/auth/Auth.js"></script>
-
     <script>
-      function resetFilters() {
-        const checkboxes = document.querySelectorAll(
-          '.genre-item input[type="checkbox"]',
-        );
-        checkboxes.forEach((cb) => (cb.checked = false));
-        document.getElementById("status-select").value = "all";
-        document.getElementById("sort-select").value = "newest";
+      var API_URL = "http://localhost:5000/api";
+
+      // === TÌM KIẾM ===
+      async function doAdvancedSearch() {
+        var queryParams = new URLSearchParams();
+
+        // Từ khoá
+        var title = document.getElementById("adv-search-title").value.trim();
+        if (title) queryParams.append("title", title);
+
+        // Thể loại (checkbox)
+        var checkedGenres = document.querySelectorAll('input[name="adv-genres"]:checked');
+        if (checkedGenres.length > 0) {
+          var genres = Array.from(checkedGenres).map(function(cb) { return cb.value; }).join(",");
+          queryParams.append("genres", genres);
+        }
+
+        // Tình trạng
+        var status = document.getElementById("adv-status-select").value;
+        if (status && status !== "Tất cả") queryParams.append("status", status);
+
+        // Năm xuất bản
+        var year = document.getElementById("adv-year-select").value;
+        if (year && year !== "Tất cả") queryParams.append("year", year);
+
+        // Gọi API
+        try {
+          var res = await fetch(API_URL + "/stories?" + queryParams.toString());
+          if (!res.ok) throw new Error("Lỗi tải dữ liệu");
+          var stories = await res.json();
+
+          // Sắp xếp
+          var sortVal = document.getElementById("adv-sort-select").value;
+          if (sortVal === "az") {
+            stories.sort(function(a, b) { return a.title.localeCompare(b.title, "vi"); });
+          } else if (sortVal === "za") {
+            stories.sort(function(a, b) { return b.title.localeCompare(a.title, "vi"); });
+          }
+
+          renderResults(stories);
+        } catch (err) {
+          console.error(err);
+          document.getElementById("adv-search-results").innerHTML = '<p style="color:red; text-align:center;">Lỗi kết nối đến máy chủ!</p>';
+          document.getElementById("search-results-section").style.display = "block";
+        }
       }
+
+      // === VẼ KẾT QUẢ ===
+      function renderResults(stories) {
+        var section = document.getElementById("search-results-section");
+        var container = document.getElementById("adv-search-results");
+        var countSpan = document.getElementById("result-count");
+
+        section.style.display = "block";
+        countSpan.textContent = stories.length;
+
+        if (stories.length === 0) {
+          container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #888; font-style: italic; padding: 30px;">Không tìm thấy truyện nào phù hợp.</p>';
+          return;
+        }
+
+        var html = "";
+        for (var i = 0; i < stories.length; i++) {
+          var story = stories[i];
+          var detailHref = typeof ToriRoutes !== "undefined"
+            ? ToriRoutes.href("storyDetail", { id: story._id })
+            : "../stories/Story_Detail.html?id=" + story._id;
+
+          var premiumBadge = story.isPremium
+            ? '<span style="position:absolute; top:5px; right:5px; background: #ffd700; color:#000; font-size:10px; font-weight:bold; padding:2px 5px; border-radius:3px;">Trả phí</span>'
+            : "";
+
+          var genreTags = "";
+          if (story.genres && story.genres.length > 0) {
+            for (var j = 0; j < story.genres.length; j++) {
+              genreTags += '<span style="display:inline-block; background:#e8f4fd; color:#2b70a1; padding:1px 6px; border-radius:3px; font-size:11px; margin-right:4px; margin-top:4px;">' + story.genres[j] + '</span>';
+            }
+          }
+
+          html += '<a href="' + detailHref + '" class="story-card" style="text-decoration: none; display: block; position: relative;">' +
+            premiumBadge +
+            '<img src="' + story.coverImg + '" alt="Bìa ' + story.title + '">' +
+            '<div class="story-info">' +
+              '<h3 class="story-title">' + story.title + '</h3>' +
+              '<p class="story-author">Tác giả: ' + story.author + '</p>' +
+              '<div>' + genreTags + '</div>' +
+            '</div>' +
+          '</a>';
+        }
+        container.innerHTML = html;
+      }
+
+      // === RESET ===
+      function resetFilters() {
+        var checkboxes = document.querySelectorAll('input[name="adv-genres"]');
+        checkboxes.forEach(function(cb) { cb.checked = false; });
+        document.getElementById("adv-status-select").value = "Tất cả";
+        document.getElementById("adv-year-select").value = "Tất cả";
+        document.getElementById("adv-sort-select").value = "newest";
+        document.getElementById("adv-search-title").value = "";
+        document.getElementById("search-results-section").style.display = "none";
+      }
+
+      // === SỰ KIỆN ===
+      document.addEventListener("DOMContentLoaded", function() {
+        var searchBtn = document.getElementById("btn-adv-search");
+        if (searchBtn) {
+          searchBtn.addEventListener("click", doAdvancedSearch);
+        }
+
+        // Nếu có query param từ navbar search → tự động điền và tìm
+        var urlParams = new URLSearchParams(window.location.search);
+        var initTitle = urlParams.get("title");
+        if (initTitle) {
+          document.getElementById("adv-search-title").value = initTitle;
+          doAdvancedSearch();
+        }
+      });
     </script>
+    <script src="../../scripts/ui/Navbar.js"></script>
   </body>
 </html>
