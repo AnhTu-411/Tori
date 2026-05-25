@@ -106,8 +106,9 @@ const Chapter = mongoose.model("Chapter", chapterSchema);
 
 // --- 6.4. KHUÔN ĐÚC LỊCH SỬ GIAO DỊCH (TRANSACTION SCHEMA) ---
 const transactionSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Người mua
-  publisher: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Người nhận tiền
+  user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true }, // Người mua / Người nạp
+  type: { type: String, default: "Mua truyện" }, // Mua truyện hoặc Nạp tiền
+  publisher: { type: mongoose.Schema.Types.ObjectId, ref: "User" }, // Người nhận tiền (nếu mua truyện)
   transactionId: { 
     type: String, 
     required: true, 
@@ -500,6 +501,33 @@ app.post("/api/transactions", async (req, res) => {
     await user.save();
 
     res.status(201).json({ message: "Thanh toán thành công!", transaction: newTx, newCoins: user.coins });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi Server!", error: error.message });
+  }
+});
+
+// 6.5. API Nạp tiền (Recharge)
+app.post("/api/users/:username/recharge", async (req, res) => {
+  try {
+    const { coins, method } = req.body;
+    if (!coins || coins <= 0) return res.status(400).json({ message: "Số tiền nạp không hợp lệ" });
+
+    const user = await User.findOne({ username: req.params.username });
+    if (!user) return res.status(404).json({ message: "Không tìm thấy User" });
+
+    user.coins += coins;
+    await user.save();
+
+    // Ghi lịch sử giao dịch (Nạp tiền)
+    const newTx = new Transaction({
+      user: user._id,
+      type: "Nạp tiền",
+      price: coins, // số coin nạp
+      status: `Thành công qua ${method || "Hệ thống"}`
+    });
+    await newTx.save();
+
+    res.status(200).json({ message: "Nạp tiền thành công!", newCoins: user.coins, method: method, transaction: newTx });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }

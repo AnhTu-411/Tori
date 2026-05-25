@@ -43,35 +43,70 @@ function submitRecharge() {
   let timeLeft = 30;
   const countSpan = document.getElementById("countdown");
 
-  const timer = setInterval(() => {
+  // Lưu timer vào window để truy cập từ ngoài
+  window.rechargeTimer = setInterval(() => {
     timeLeft--;
     if (countSpan) countSpan.innerText = timeLeft;
 
     if (timeLeft <= 0) {
-      clearInterval(timer);
+      clearInterval(window.rechargeTimer);
       processPaymentSuccess(currentUser);
     }
   }, 1000);
 }
 
-function processPaymentSuccess(currentUser) {
+// Hàm giả lập nạp tiền thành công ngay lập tức khi người dùng click vào QR
+function processPaymentNow() {
+  if (window.rechargeTimer) {
+    clearInterval(window.rechargeTimer);
+  }
+  let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+  if (currentUser) {
+    processPaymentSuccess(currentUser);
+  }
+}
+
+async function processPaymentSuccess(currentUser) {
   const method = document.getElementById("payment-method").value;
 
-  let currentCoins = currentUser.coins || 0;
-  currentUser.coins = currentCoins + selectedCoins;
-  localStorage.setItem("tori_current_user", JSON.stringify(currentUser));
+  try {
+    const response = await fetch(`http://localhost:5000/api/users/${currentUser.username}/recharge`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        coins: selectedCoins,
+        method: method
+      })
+    });
 
-  let allUsers = JSON.parse(localStorage.getItem("tori_users")) || [];
-  let userIdx = allUsers.findIndex((u) => u.username === currentUser.username);
-  if (userIdx !== -1) {
-    allUsers[userIdx].coins = currentUser.coins;
-    localStorage.setItem("tori_users", JSON.stringify(allUsers));
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.message || 'Lỗi khi nạp tiền');
+    }
+
+    const data = await response.json();
+
+    // Cập nhật local storage
+    currentUser.coins = data.newCoins;
+    localStorage.setItem("tori_current_user", JSON.stringify(currentUser));
+
+    let allUsers = JSON.parse(localStorage.getItem("tori_users")) || [];
+    let userIdx = allUsers.findIndex((u) => u.username === currentUser.username);
+    if (userIdx !== -1) {
+      allUsers[userIdx].coins = data.newCoins;
+      localStorage.setItem("tori_users", JSON.stringify(allUsers));
+    }
+
+    document.getElementById("payment-modal").style.display = "none";
+
+    alert(
+      `Giao dịch qua ${method.toUpperCase()} thành công!\nTài khoản của bạn vừa được nạp thêm ${selectedCoins} Coin.`
+    );
+    ToriRoutes.go("cart");
+  } catch (err) {
+    alert("Nạp tiền thất bại: " + err.message);
+    document.getElementById("payment-modal").style.display = "none";
   }
-
-  document.getElementById("payment-modal").style.display = "none";
-
-  alert(
-    `Giao dịch qua ${method.toUpperCase()} thành công!\nTài khoản của bạn vừa được nạp thêm ${selectedCoins} Coin.`,
-  );
-  ToriRoutes.go("cart");
 }

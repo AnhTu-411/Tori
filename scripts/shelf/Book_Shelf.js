@@ -180,6 +180,32 @@ async function loadPurchasedHistory() {
 
     let html = "";
     transactions.forEach((tx) => {
+      const txDate = new Date(tx.createdAt).toLocaleString("vi-VN");
+
+      // Nếu là giao dịch nạp tiền
+      if (tx.type === "Nạp tiền") {
+        html += `
+          <div style="display: block; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px; cursor: default;">
+            <div class="update-item" style="align-items: center; border: none; padding: 0; margin: 0;">
+              <div class="update-cover" style="height: 60px; width: 60px; min-width: 60px; display: flex; align-items: center; justify-content: center; background: #fffde7; border: 1px solid #f1c40f; border-radius: 50%; margin-right: 15px;">
+                <span style="font-size: 28px;">💰</span>
+              </div>
+              <div class="update-info">
+                <div class="update-title" style="font-size: 16px; color: #d35400; font-weight: bold;">Nạp Coin vào tài khoản</div>
+                <div class="update-meta" style="margin-bottom: 5px; color: #666; font-size: 13px;">
+                  Mã GD: <strong>${tx.transactionId}</strong> | Ngày: ${txDate}
+                </div>
+                <div class="update-meta" style="margin-bottom: 0;">
+                    <span style="color: #27ae60; font-weight: bold;">💵 Đã nạp: +${tx.price} Coin (${tx.status})</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+        return;
+      }
+
+      // Nếu là giao dịch mua truyện
       let story = tx.story;
       let isFullStory = true;
       let chapterInfoText = "Toàn bộ truyện";
@@ -198,7 +224,6 @@ async function loadPurchasedHistory() {
       if (!story) return;
 
       const detailHref = ToriRoutes.href("storyDetail", { id: story._id });
-      const txDate = new Date(tx.createdAt).toLocaleString("vi-VN");
 
       html += `
         <a href="${detailHref}" style="text-decoration: none; display: block; border-bottom: 1px solid #ddd; padding-bottom: 10px; margin-bottom: 15px;">
@@ -213,7 +238,7 @@ async function loadPurchasedHistory() {
                 Mã GD: <strong>${tx.transactionId}</strong> | Ngày: ${txDate}
               </div>
               <div class="update-meta" style="margin-bottom: 0;">
-                  <span style="color: green; font-weight: bold;">💳 Đã thanh toán: ${tx.price} Coin (${tx.status})</span>
+                  <span style="color: #e74c3c; font-weight: bold;">💳 Đã thanh toán: -${tx.price} Coin (${tx.status})</span>
               </div>
             </div>
           </div>
