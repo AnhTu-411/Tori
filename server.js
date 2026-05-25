@@ -49,6 +49,20 @@ const userSchema = new mongoose.Schema({
 
   // Lịch sử mua truyện: Chứa danh sách ID của các bộ truyện đã mở khóa
   unlockedStories: [{ type: mongoose.Schema.Types.ObjectId, ref: "Story" }],
+
+  // Lịch sử mua chương lẻ: Chứa danh sách ID của các chương đã mở khoá
+  unlockedChapters: [{ type: mongoose.Schema.Types.ObjectId, ref: "Chapter" }],
+
+  // Giỏ hàng lưu trữ các chương muốn mua
+  cart: [{ type: mongoose.Schema.Types.ObjectId, ref: "Chapter" }],
+
+  // Danh sách các dấu trang (đang đọc)
+  bookmarks: [{
+    storyId: { type: mongoose.Schema.Types.ObjectId, ref: "Story" },
+    chapterId: { type: mongoose.Schema.Types.ObjectId, ref: "Chapter" },
+    chapterTitle: { type: String },
+    date: { type: Date, default: Date.now }
+  }]
 });
 
 const User = mongoose.model("User", userSchema);
@@ -100,7 +114,8 @@ const transactionSchema = new mongoose.Schema({
     unique: true, 
     default: () => "TX-" + Math.random().toString(36).substr(2, 9).toUpperCase() 
   },
-  story: { type: mongoose.Schema.Types.ObjectId, ref: "Story", required: true },
+  story: { type: mongoose.Schema.Types.ObjectId, ref: "Story" }, // Vẫn giữ để tương thích cũ (nếu có mua nguyên truyện)
+  chapters: [{ type: mongoose.Schema.Types.ObjectId, ref: "Chapter" }], // Danh sách chương vừa mua
   price: { type: Number, required: true },
   status: { type: String, default: "Thành công" },
   createdAt: { type: Date, default: Date.now },
@@ -124,10 +139,55 @@ const commentSchema = new mongoose.Schema({
   story: { type: mongoose.Schema.Types.ObjectId, ref: "Story", required: true },
   chapter: { type: mongoose.Schema.Types.ObjectId, ref: "Chapter", required: true },
   content: { type: String, required: true },
+  parentCommentId: { type: mongoose.Schema.Types.ObjectId, ref: "Comment", default: null },
   createdAt: { type: Date, default: Date.now }
 });
 
 const Comment = mongoose.model("Comment", commentSchema);
+
+// --- 6.7. KHUÔN ĐÚC LƯU TRỮ RÁC (TRASH SCHEMA) ---
+const trashStorySchema = new mongoose.Schema({
+  originalId: String,
+  data: mongoose.Schema.Types.Mixed, // Lưu nguyên bản JSON của truyện
+  deletedAt: { type: Date, default: Date.now }
+});
+const TrashStory = mongoose.model("TrashStory", trashStorySchema);
+
+const trashChapterSchema = new mongoose.Schema({
+  originalId: String,
+  data: mongoose.Schema.Types.Mixed, // Lưu nguyên bản JSON của chương
+  deletedAt: { type: Date, default: Date.now }
+});
+const TrashChapter = mongoose.model("TrashChapter", trashChapterSchema);
+
+const trashCommentSchema = new mongoose.Schema({
+  originalId: String,
+  data: mongoose.Schema.Types.Mixed,
+  deletedAt: { type: Date, default: Date.now }
+});
+const TrashComment = mongoose.model("TrashComment", trashCommentSchema);
+
+// --- 6.8. KHUÔN ĐÚC NHẬT KÝ ADMIN (ADMIN LOG SCHEMA) ---
+const adminLogSchema = new mongoose.Schema({
+  adminUsername: { type: String, required: true },
+  action: { type: String, required: true },
+  details: { type: String, required: true },
+  createdAt: { type: Date, default: Date.now }
+});
+const AdminLog = mongoose.model("AdminLog", adminLogSchema);
+
+// Hàm helper hỗ trợ ghi Log
+async function logAdminAction(username, role, action, details) {
+  if (role === "admin" && username) {
+    try {
+      const log = new AdminLog({ adminUsername: username, action, details });
+      await log.save();
+      console.log(`[ADMIN LOG] ${username} | ${action} | ${details}`);
+    } catch (err) {
+      console.error("Lỗi khi ghi Admin Log:", err);
+    }
+  }
+}
 
 // ==========================================================================
 // 7. VIẾT API (CÁC ĐƯỜNG LINK GIAO TIẾP VỚI FRONTEND)
@@ -167,7 +227,50 @@ app.post("/api/login", async (req, res) => {
   }
 });
 
-// --- CÁC API VỀ TỦ SÁCH CÁ NHÂN (YÊU THÍCH & THEO DÕI) ---
+// --- CÁC API VỀ TỦ SÁCH CÁ NHÂN (YÊU THÍCH, THEO DÕI, BOOKMARK) ---
+
+// 0. API Lấy và Thêm Dấu Trang (Bookmark)
+app.get("/api/users/:username/bookmarks", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username }).populate({
+      path: 'bookmarks.storyId',
+      select: 'title coverImg'
+    });
+    if (!user) return res.status(404).json({ message: "Không tìm thấy user" });
+    res.status(200).json(user.bookmarks || []);
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi Server!", error: error.message });
+  }
+});
+
+app.post("/api/users/:username/bookmarks", async (req, res) => {
+  try {
+    const { storyId, chapterId, chapterTitle } = req.body;
+    const user = await User.findOne({ username: req.params.username });
+    if (!user) return res.status(404).json({ message: "Không tìm thấy user" });
+
+    // Kiểm tra xem đã lưu bookmark cho truyện này chưa
+    const existingIdx = user.bookmarks.findIndex(b => b.storyId.toString() === storyId);
+    
+    const newBookmark = { 
+      storyId, 
+      chapterId, 
+      chapterTitle, 
+      date: new Date() 
+    };
+
+    if (existingIdx > -1) {
+      user.bookmarks[existingIdx] = newBookmark;
+    } else {
+      user.bookmarks.push(newBookmark);
+    }
+
+    await user.save();
+    res.status(200).json({ message: "Lưu dấu trang thành công!", bookmarks: user.bookmarks });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi Server!", error: error.message });
+  }
+});
 
 // 1. Lấy danh sách truyện đã thích của User
 app.get("/api/users/:username/favorites", async (req, res) => {
@@ -205,7 +308,28 @@ app.get("/api/users/:username/following", async (req, res) => {
   try {
     const user = await User.findOne({ username: req.params.username }).populate("followedStories");
     if (!user) return res.status(404).json({ message: "Không tìm thấy user" });
-    res.status(200).json(user.followedStories);
+
+    // Tìm chapter mới nhất cho mỗi truyện
+    const storiesWithChapters = await Promise.all(user.followedStories.map(async (story) => {
+      const latestChapter = await Chapter.findOne({ storyId: story._id }).sort({ createdAt: -1 });
+      return {
+        ...story.toObject(),
+        latestChapter: latestChapter ? {
+          chapterNumber: latestChapter.chapterNumber,
+          title: latestChapter.title,
+          createdAt: latestChapter.createdAt
+        } : null
+      };
+    }));
+
+    // Sắp xếp các truyện dựa trên thời gian cập nhật của chapter mới nhất
+    storiesWithChapters.sort((a, b) => {
+      const dateA = a.latestChapter ? new Date(a.latestChapter.createdAt).getTime() : 0;
+      const dateB = b.latestChapter ? new Date(b.latestChapter.createdAt).getTime() : 0;
+      return dateB - dateA; // Giảm dần (mới nhất lên đầu)
+    });
+
+    res.status(200).json(storiesWithChapters);
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }
@@ -247,51 +371,128 @@ app.get("/api/users/:username/transactions", async (req, res) => {
   }
 });
 
-// 6. Tạo giao dịch mới (Thanh toán nguyên bộ truyện)
+// API MỚI: QUẢN LÝ GIỎ HÀNG
+// API lấy thông tin cơ bản của user (bao gồm unlockedChapters)
+app.get("/api/users/:username/info", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username });
+    if (!user) return res.status(404).json({ message: "Không tìm thấy user" });
+    res.status(200).json({ unlockedChapters: user.unlockedChapters, coins: user.coins });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi Server!", error: error.message });
+  }
+});
+
+app.get("/api/users/:username/cart", async (req, res) => {
+  try {
+    const user = await User.findOne({ username: req.params.username }).populate({
+      path: "cart",
+      populate: { path: "storyId", select: "title coverImg" }
+    });
+    if (!user) return res.status(404).json({ message: "Không tìm thấy user" });
+    res.status(200).json(user.cart);
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi Server!", error: error.message });
+  }
+});
+
+app.post("/api/users/cart/add", async (req, res) => {
+  try {
+    const { username, chapterId } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) return res.status(404).json({ message: "Không tìm thấy user" });
+
+    // Đã mua rồi thì không thêm vào giỏ
+    if (user.unlockedChapters.includes(chapterId)) {
+      return res.status(400).json({ message: "Bạn đã mua chương này rồi!" });
+    }
+
+    if (!user.cart.includes(chapterId)) {
+      user.cart.push(chapterId);
+      await user.save();
+    }
+    res.status(200).json({ message: "Đã thêm vào giỏ hàng", cartCount: user.cart.length });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi Server!", error: error.message });
+  }
+});
+
+app.post("/api/users/cart/remove", async (req, res) => {
+  try {
+    const { username, chapterId } = req.body;
+    const user = await User.findOne({ username });
+    if (!user) return res.status(404).json({ message: "Không tìm thấy user" });
+
+    user.cart = user.cart.filter(id => id.toString() !== chapterId);
+    await user.save();
+    res.status(200).json({ message: "Đã xoá khỏi giỏ hàng", cartCount: user.cart.length });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi Server!", error: error.message });
+  }
+});
+
+// 6. Tạo giao dịch mới (Thanh toán giỏ hàng hoặc mua lẻ)
 app.post("/api/transactions", async (req, res) => {
   try {
-    const { username, storyId, price } = req.body;
+    const { username, chapterIds, totalAmount } = req.body; // Bỏ storyId, thay bằng chapterIds mảng
     const user = await User.findOne({ username });
     if (!user) return res.status(404).json({ message: "Không tìm thấy user" });
 
     // Kiểm tra số dư
-    if (user.coins < price) {
-      return res.status(400).json({ message: "Bạn không đủ Coin để mua truyện này!" });
+    if (user.coins < totalAmount) {
+      return res.status(400).json({ message: "Bạn không đủ Coin để thực hiện giao dịch này!" });
     }
 
-    const storyToBuy = await Story.findById(storyId);
-    if (!storyToBuy) return res.status(404).json({ message: "Không tìm thấy truyện!" });
+    if (!chapterIds || chapterIds.length === 0) {
+      return res.status(400).json({ message: "Giỏ hàng rỗng!" });
+    }
+
+    // Lấy thông tin các chương để chia tiền cho NXB
+    const chaptersToBuy = await Chapter.find({ _id: { $in: chapterIds } }).populate('storyId');
 
     // Trừ tiền người mua
-    user.coins -= price;
+    user.coins -= totalAmount;
     
-    // Cộng tiền NXB (nếu có)
-    let publisherObjId = null;
-    if (storyToBuy.publisherId) {
-      const publisher = await User.findById(storyToBuy.publisherId);
+    // Tính toán tiền cho từng NXB
+    const publisherEarnings = {};
+    for (let chap of chaptersToBuy) {
+      if (chap.storyId && chap.storyId.publisherId) {
+        const pubId = chap.storyId.publisherId.toString();
+        if (!publisherEarnings[pubId]) publisherEarnings[pubId] = 0;
+        publisherEarnings[pubId] += (chap.price || 0);
+      }
+    }
+
+    // Cập nhật ví NXB
+    for (let pubId in publisherEarnings) {
+      const publisher = await User.findById(pubId);
       if (publisher) {
-        publisher.coins += price;
-        publisherObjId = publisher._id;
+        publisher.coins += publisherEarnings[pubId];
         await publisher.save();
       }
     }
 
+    // Lưu Lịch sử giao dịch (có thể lưu nhiều Transaction nếu nhiều NXB, nhưng ở đây tạm gom làm 1 bill)
     const newTx = new Transaction({
       user: user._id,
-      publisher: publisherObjId,
-      story: storyId,
-      price: price
+      chapters: chapterIds,
+      price: totalAmount,
+      status: "Thành công"
     });
     await newTx.save();
 
-    // Thêm truyện vào danh sách đã mở khoá
-    if (!user.unlockedStories.includes(storyId)) {
-      user.unlockedStories.push(storyId);
+    // Thêm các chương vào danh sách đã mở khoá
+    for (let cid of chapterIds) {
+      if (!user.unlockedChapters.includes(cid)) {
+        user.unlockedChapters.push(cid);
+      }
+      // Xóa khỏi giỏ hàng luôn
+      user.cart = user.cart.filter(item => item.toString() !== cid);
     }
     
     await user.save();
 
-    res.status(201).json({ message: "Giao dịch thành công", transaction: newTx, newCoins: user.coins });
+    res.status(201).json({ message: "Thanh toán thành công!", transaction: newTx, newCoins: user.coins });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }
@@ -314,7 +515,41 @@ app.get("/api/publishers/:username/transactions", async (req, res) => {
   }
 });
 
-// --- CÁC API VỀ ĐƠN ĐĂNG KÝ NHÀ XUẤT BẢN ---
+// --- CÁC API VỀ ĐƠN ĐĂNG KÝ VÀ QUẢN LÝ NHÀ XUẤT BẢN ---
+
+// 0. Lấy danh sách tất cả các User đang là Nhà Xuất Bản
+app.get("/api/publishers", async (req, res) => {
+  try {
+    const publishers = await User.find({ role: "publisher" }).select("-password");
+    res.status(200).json(publishers);
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi Server!", error: error.message });
+  }
+});
+
+// 0.1 Gỡ quyền Nhà Xuất Bản của 1 User
+app.put("/api/publishers/:id/revoke", async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: "Không tìm thấy User" });
+    
+    if (user.role === "admin") {
+      return res.status(400).json({ message: "Không thể gỡ quyền Admin" });
+    }
+
+    user.role = "user";
+    await user.save();
+
+    // Ghi Log Admin
+    const { adminUsername } = req.body;
+    await logAdminAction(adminUsername, "admin", "REVOKE_PUBLISHER", `Đã gỡ quyền NXB của user: "${user.username}"`);
+
+    res.status(200).json({ message: "Đã gỡ quyền Nhà Xuất Bản thành công" });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi Server!", error: error.message });
+  }
+});
+
 
 // 1. Tạo đơn đăng ký mới (Dành cho User)
 app.post("/api/publisher-requests", async (req, res) => {
@@ -364,9 +599,6 @@ app.put("/api/publisher-requests/:id", async (req, res) => {
     const request = await PublisherRequest.findById(req.params.id);
     if (!request) return res.status(404).json({ message: "Không tìm thấy đơn này" });
 
-    request.status = status;
-    await request.save();
-
     // Nếu duyệt, thì nâng cấp user role lên publisher
     if (status === "Đã duyệt") {
       const user = await User.findById(request.user);
@@ -376,7 +608,14 @@ app.put("/api/publisher-requests/:id", async (req, res) => {
       }
     }
 
-    res.status(200).json({ message: `Cập nhật trạng thái đơn thành ${status} thành công!` });
+    // Xóa đơn sau khi đã xử lý (chấp nhận hoặc từ chối)
+    await PublisherRequest.findByIdAndDelete(req.params.id);
+
+    // Ghi Log Admin
+    const { adminUsername } = req.body;
+    await logAdminAction(adminUsername, "admin", "PROCESS_REQUEST", `Đã ${status} đơn xin làm NXB của User ID: ${request.user}`);
+
+    res.status(200).json({ message: `Cập nhật trạng thái đơn thành ${status} và xoá thành công!` });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }
@@ -451,6 +690,12 @@ app.post("/api/stories", async (req, res) => {
       isApproved: approved
     });
     await newStory.save();
+    
+    // Ghi Log Admin
+    if (role === "admin") {
+      await logAdminAction(req.body.adminUsername, role, "CREATE_STORY", `Đã thêm truyện mới: "${title}" (ID: ${newStory._id})`);
+    }
+
     res
       .status(201)
       .json({ message: "Thêm truyện thành công!", story: newStory });
@@ -483,6 +728,13 @@ app.put("/api/stories/:id", async (req, res) => {
     if (!updatedStory) {
       return res.status(404).json({ message: "Không tìm thấy truyện này!" });
     }
+
+    // Ghi Log Admin
+    const { role, adminUsername } = req.body;
+    if (role === "admin") {
+      await logAdminAction(adminUsername, role, "UPDATE_STORY", `Đã sửa truyện: "${updatedStory.title}" (ID: ${updatedStory._id})`);
+    }
+
     res.status(200).json({ message: "Cập nhật truyện thành công!", story: updatedStory });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
@@ -498,23 +750,56 @@ app.put("/api/stories/:id/approve", async (req, res) => {
       { new: true }
     );
     if (!updatedStory) return res.status(404).json({ message: "Không tìm thấy truyện!" });
+
+    // Ghi Log Admin
+    const { adminUsername } = req.body;
+    await logAdminAction(adminUsername, "admin", "APPROVE_STORY", `Đã duyệt truyện: "${updatedStory.title}" (ID: ${updatedStory._id})`);
+
     res.status(200).json({ message: "Đã duyệt truyện thành công!", story: updatedStory });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }
 });
 
-// 5. API xoá truyện và toàn bộ chapters thuộc về truyện đó
+// 5. API xoá truyện và toàn bộ chapters thuộc về truyện đó (Có chuyển vào Thùng rác)
 app.delete("/api/stories/:id", async (req, res) => {
   try {
     const storyId = req.params.id;
-    const deletedStory = await Story.findByIdAndDelete(storyId);
-    if (!deletedStory) {
+    
+    // Tìm truyện trước khi xoá
+    const storyToTrash = await Story.findById(storyId);
+    if (!storyToTrash) {
       return res.status(404).json({ message: "Không tìm thấy truyện này!" });
     }
-    // Xoá luôn các chapters thuộc truyện này
+
+    // Lưu truyện vào Trash
+    const trashStory = new TrashStory({
+      originalId: storyToTrash._id.toString(),
+      data: storyToTrash.toObject()
+    });
+    await trashStory.save();
+
+    // Tìm tất cả chapter thuộc truyện và lưu vào Trash
+    const chaptersToTrash = await Chapter.find({ storyId: storyId });
+    for (const chap of chaptersToTrash) {
+      const trashChap = new TrashChapter({
+        originalId: chap._id.toString(),
+        data: chap.toObject()
+      });
+      await trashChap.save();
+    }
+
+    // Tiến hành xoá thật khỏi Database chính
+    await Story.findByIdAndDelete(storyId);
     await Chapter.deleteMany({ storyId: storyId });
-    res.status(200).json({ message: "Đã xoá truyện và toàn bộ chương thành công!" });
+    
+    // Ghi Log Admin (Lấy query params adminUsername, role)
+    const { role, adminUsername } = req.query;
+    if (role === "admin") {
+      await logAdminAction(adminUsername, role, "DELETE_STORY", `Đã xóa truyện: "${storyToTrash.title}" (ID: ${storyId}) vào thùng rác`);
+    }
+
+    res.status(200).json({ message: "Đã xoá truyện và toàn bộ chương thành công (Đã chuyển vào thùng rác)!" });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }
@@ -525,7 +810,7 @@ app.delete("/api/stories/:id", async (req, res) => {
 // 1. Tạo bình luận mới
 app.post("/api/comments", async (req, res) => {
   try {
-    const { username, storyId, chapterId, content } = req.body;
+    const { username, storyId, chapterId, content, parentCommentId } = req.body;
     
     if (!content || content.trim() === "") {
       return res.status(400).json({ message: "Nội dung bình luận không được để trống" });
@@ -538,7 +823,8 @@ app.post("/api/comments", async (req, res) => {
       user: user._id,
       story: storyId,
       chapter: chapterId,
-      content: content.trim()
+      content: content.trim(),
+      parentCommentId: parentCommentId || null
     });
 
     await newComment.save();
@@ -557,7 +843,7 @@ app.get("/api/chapters/:chapterId/comments", async (req, res) => {
   try {
     const comments = await Comment.find({ chapter: req.params.chapterId })
       .populate("user", "username")
-      .sort({ createdAt: -1 }); // Mới nhất lên đầu
+      .sort({ createdAt: 1 }); // Xếp từ cũ đến mới để dễ đan xen cha con
     res.status(200).json(comments);
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
@@ -577,58 +863,50 @@ app.get("/api/stories/:storyId/comments", async (req, res) => {
   }
 });
 
-// --- CÁC API VỀ BÌNH LUẬN (COMMENTS) ---
-
-// 1. Tạo bình luận mới
-app.post("/api/comments", async (req, res) => {
+// 4. API xoá bình luận (Chỉ User sở hữu hoặc Admin mới được xoá)
+app.delete("/api/comments/:id", async (req, res) => {
   try {
-    const { username, storyId, chapterId, content } = req.body;
-    
-    if (!content || content.trim() === "") {
-      return res.status(400).json({ message: "Nội dung bình luận không được để trống" });
+    const { username, role } = req.query;
+    const commentId = req.params.id;
+
+    const comment = await Comment.findById(commentId).populate("user", "username");
+    if (!comment) return res.status(404).json({ message: "Không tìm thấy bình luận" });
+
+    const isOwner = comment.user.username === username;
+    const isAdmin = role === "admin";
+
+    if (!isOwner && !isAdmin) {
+      return res.status(403).json({ message: "Bạn không có quyền xoá bình luận này" });
     }
 
-    const user = await User.findOne({ username });
-    if (!user) return res.status(404).json({ message: "Không tìm thấy user" });
-
-    const newComment = new Comment({
-      user: user._id,
-      story: storyId,
-      chapter: chapterId,
-      content: content.trim()
+    // Lưu comment gốc vào Trash
+    const trashComment = new TrashComment({
+      originalId: comment._id.toString(),
+      data: comment.toObject()
     });
+    await trashComment.save();
 
-    await newComment.save();
+    // Tìm và lưu toàn bộ comment con vào Trash
+    const childComments = await Comment.find({ parentCommentId: commentId });
+    for (const child of childComments) {
+      const trashChild = new TrashComment({
+        originalId: child._id.toString(),
+        data: child.toObject()
+      });
+      await trashChild.save();
+    }
+
+    // Xóa comment gốc
+    await Comment.findByIdAndDelete(commentId);
     
-    // Trả về comment kèm theo thông tin user để frontend hiển thị luôn
-    await newComment.populate("user", "username");
+    // Xóa toàn bộ comment con (nếu có)
+    await Comment.deleteMany({ parentCommentId: commentId });
 
-    res.status(201).json({ message: "Bình luận thành công!", comment: newComment });
-  } catch (error) {
-    res.status(500).json({ message: "Lỗi Server!", error: error.message });
-  }
-});
+    if (isAdmin && !isOwner) {
+      await logAdminAction(username, "admin", "DELETE_COMMENT", `Đã xóa bình luận ID: ${commentId} của user: ${comment.user.username}`);
+    }
 
-// 2. Lấy danh sách bình luận của 1 chương
-app.get("/api/chapters/:chapterId/comments", async (req, res) => {
-  try {
-    const comments = await Comment.find({ chapter: req.params.chapterId })
-      .populate("user", "username")
-      .sort({ createdAt: -1 }); // Mới nhất lên đầu
-    res.status(200).json(comments);
-  } catch (error) {
-    res.status(500).json({ message: "Lỗi Server!", error: error.message });
-  }
-});
-
-// 3. Lấy danh sách bình luận của toàn bộ truyện
-app.get("/api/stories/:storyId/comments", async (req, res) => {
-  try {
-    const comments = await Comment.find({ story: req.params.storyId })
-      .populate("user", "username")
-      .populate("chapter", "chapterNumber title")
-      .sort({ createdAt: -1 }); // Mới nhất lên đầu
-    res.status(200).json(comments);
+    res.status(200).json({ message: "Đã xoá bình luận thành công!" });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }
@@ -683,6 +961,12 @@ app.post("/api/chapters", async (req, res) => {
       isApproved: approved
     });
     await newChapter.save();
+
+    // Ghi Log Admin
+    if (role === "admin") {
+      await logAdminAction(req.body.adminUsername, role, "CREATE_CHAPTER", `Đã thêm chương ${chapterNumber} truyện ID: ${storyId}`);
+    }
+
     res
       .status(201)
       .json({ message: "Thêm chương mới thành công!", chapter: newChapter });
@@ -700,7 +984,7 @@ app.get("/api/chapters/:id", async (req, res) => {
     }
 
     const story = chapter.storyId;
-    if (story && story.isPremium) {
+    if (chapter.price > 0 || (story && story.isPremium)) {
       const username = req.query.username;
       if (!username) {
         return res.status(403).json({ message: "Vui lòng đăng nhập để đọc nội dung trả phí." });
@@ -713,13 +997,19 @@ app.get("/api/chapters/:id", async (req, res) => {
 
       // Check quyền admin hoặc đã mua
       const isAdmin = user.role === "admin";
-      const hasPurchased = user.unlockedStories.includes(story._id);
+      // Ưu tiên check mua lẻ trước, fallback check mua nguyên bộ (unlockedStories) cho các user cũ
+      const hasPurchased = user.unlockedChapters.includes(chapter._id) || user.unlockedStories.includes(story._id);
+      
+      const isPublisher = story.publisherId && story.publisherId.toString() === user._id.toString();
 
-      if (!isAdmin && !hasPurchased) {
+      // Tuy nhiên nếu chương có giá = 0 thì được đọc luôn
+      if (chapter.price === 0 && !story.isPremium) {
+         // Free chapter
+      } else if (!isAdmin && !isPublisher && !hasPurchased) {
         return res.status(403).json({ 
-          message: "Bạn cần mua truyện này để đọc các chương bên trong.", 
-          price: story.price,
-          storyId: story._id
+          message: "Bạn cần mua chương truyện này để xem nội dung.", 
+          price: chapter.price,
+          chapterId: chapter._id
         });
       }
     }
@@ -741,6 +1031,13 @@ app.put("/api/chapters/:id", async (req, res) => {
     if (!updatedChapter) {
       return res.status(404).json({ message: "Không tìm thấy chương này!" });
     }
+
+    // Ghi Log Admin
+    const { role, adminUsername } = req.body;
+    if (role === "admin") {
+      await logAdminAction(adminUsername, role, "UPDATE_CHAPTER", `Đã sửa chương ${updatedChapter.chapterNumber} truyện ID: ${updatedChapter.storyId}`);
+    }
+
     res.status(200).json({ message: "Cập nhật chương thành công!", chapter: updatedChapter });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
@@ -756,20 +1053,45 @@ app.put("/api/chapters/:id/approve", async (req, res) => {
       { new: true }
     );
     if (!updatedChapter) return res.status(404).json({ message: "Không tìm thấy chương!" });
+
+    // Ghi Log Admin
+    const { adminUsername } = req.body;
+    await logAdminAction(adminUsername, "admin", "APPROVE_CHAPTER", `Đã duyệt chương ${updatedChapter.chapterNumber} truyện ID: ${updatedChapter.storyId}`);
+
     res.status(200).json({ message: "Đã duyệt chương thành công!", chapter: updatedChapter });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }
 });
 
-// API xoá một chương cụ thể
+// API xoá một chương cụ thể (Có chuyển vào Thùng rác)
 app.delete("/api/chapters/:id", async (req, res) => {
   try {
-    const deletedChapter = await Chapter.findByIdAndDelete(req.params.id);
-    if (!deletedChapter) {
+    const chapterId = req.params.id;
+
+    // Tìm chương trước khi xoá
+    const chapterToTrash = await Chapter.findById(chapterId);
+    if (!chapterToTrash) {
       return res.status(404).json({ message: "Không tìm thấy chương này!" });
     }
-    res.status(200).json({ message: "Đã xoá chương thành công!" });
+
+    // Lưu vào Thùng rác
+    const trashChap = new TrashChapter({
+      originalId: chapterToTrash._id.toString(),
+      data: chapterToTrash.toObject()
+    });
+    await trashChap.save();
+
+    // Xoá thật khỏi Database chính
+    await Chapter.findByIdAndDelete(chapterId);
+
+    // Ghi Log Admin
+    const { role, adminUsername } = req.query;
+    if (role === "admin") {
+      await logAdminAction(adminUsername, role, "DELETE_CHAPTER", `Đã xóa chương ID: ${chapterId} vào thùng rác`);
+    }
+
+    res.status(200).json({ message: "Đã xoá chương thành công (Đã chuyển vào thùng rác)!" });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }

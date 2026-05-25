@@ -15,6 +15,8 @@ function switchShelfTab(tabName) {
     loadPurchasedHistory();
   } else if (tabName === "favorite") {
     loadFavoriteStories();
+  } else if (tabName === "bookmark") {
+    loadBookmarks();
   }
 }
 
@@ -87,12 +89,24 @@ async function loadFollowingStories() {
     favList.forEach((story) => {
       const detailHref = ToriRoutes.href("storyDetail", { id: story._id });
 
+      let newChapterHtml = "";
+      if (story.latestChapter) {
+        const timeStr = new Date(story.latestChapter.createdAt).toLocaleString("vi-VN");
+        newChapterHtml = `
+          <div style="margin-top: 8px; font-size: 13px; color: #e74c3c; font-weight: bold;">
+            🔥 Mới: Chương ${story.latestChapter.chapterNumber}
+          </div>
+          <div style="font-size: 12px; color: #7f8c8d;">Cập nhật: ${timeStr}</div>
+        `;
+      }
+
       html += `
-        <a href="${detailHref}" class="story-card" style="text-decoration: none; display: block;">
+        <a href="${detailHref}" class="story-card" style="text-decoration: none; display: block; position: relative;">
           <img src="${story.coverImg || 'https://via.placeholder.com/200x280?text=No+Cover'}" alt="Bìa truyện ${story.title}">
           <div class="story-info">
             <h3 class="story-title">${story.title}</h3>
             <p class="story-author">Tác giả: ${story.author}</p>
+            ${newChapterHtml}
           </div>
         </a>
       `;
@@ -165,3 +179,76 @@ async function loadPurchasedHistory() {
 document.addEventListener("DOMContentLoaded", () => {
   loadFollowingStories();
 });
+
+// Load Dấu trang (Bookmark) từ server hoặc localStorage
+async function loadBookmarks() {
+  const list = document.getElementById("bookmark-list");
+  if (!list) return;
+
+  let bookmarks = [];
+  const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+  const API_URL = "http://localhost:5000/api";
+
+  list.innerHTML = `<p style="text-align: center; color: #7f8c8d;">Đang tải thông tin truyện...</p>`;
+
+  if (currentUser) {
+    try {
+      const response = await fetch(`${API_URL}/users/${currentUser.username}/bookmarks`);
+      if (response.ok) {
+        bookmarks = await response.json();
+      }
+    } catch (e) {
+      console.error("Lỗi lấy dấu trang từ server", e);
+    }
+  } else {
+    bookmarks = JSON.parse(localStorage.getItem("tori_bookmarks")) || [];
+  }
+  
+  if (bookmarks.length === 0) {
+    list.innerHTML = `<p class="empty-message">Bạn chưa lưu dấu trang nào.</p>`;
+    return;
+  }
+  
+  let html = "";
+  for (const b of bookmarks) {
+    try {
+      let coverImg = "https://via.placeholder.com/200x280?text=No+Cover";
+      let storyTitle = "Truyện không xác định";
+      let sId = b.storyId;
+
+      // Nếu b.storyId là một object (do populate từ server)
+      if (typeof b.storyId === 'object' && b.storyId !== null) {
+        sId = b.storyId._id;
+        coverImg = b.storyId.coverImg || coverImg;
+        storyTitle = b.storyId.title || storyTitle;
+      } else {
+        // Fallback: Tự fetch (khi dùng localStorage offline)
+        const response = await fetch(`${API_URL}/stories/${sId}`);
+        if (response.ok) {
+          const story = await response.json();
+          coverImg = story.coverImg || coverImg;
+          storyTitle = story.title || storyTitle;
+        }
+      }
+
+      const readHref = ToriRoutes.href("reading", { storyId: sId, chapterId: b.chapterId });
+      const dateStr = new Date(b.date).toLocaleString("vi-VN");
+
+      html += `
+        <div class="update-item" style="display: flex; gap: 15px; margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid #eee;">
+          <img src="${coverImg}" alt="${storyTitle}" style="width: 80px; height: 110px; object-fit: cover; border-radius: 4px;">
+          <div style="flex: 1;">
+            <h3 style="margin-bottom: 5px;">${storyTitle}</h3>
+            <p style="color: #1abc9c; font-weight: bold; margin-bottom: 5px;">${b.chapterTitle}</p>
+            <p style="color: #7f8c8d; font-size: 13px;">Lưu lúc: ${dateStr}</p>
+            <a href="${readHref}" class="btn" style="display: inline-block; background-color: #3498db; color: white; padding: 5px 15px; border-radius: 4px; text-decoration: none; margin-top: 10px;">Đọc tiếp</a>
+          </div>
+        </div>
+      `;
+    } catch (e) {
+      console.error("Lỗi lấy thông tin truyện cho bookmark", e);
+    }
+  }
+  
+  list.innerHTML = html;
+}

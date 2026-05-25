@@ -90,7 +90,8 @@ async function deleteStory(id) {
   }
 
   try {
-    const response = await fetch(`${API_URL}/stories/${id}`, {
+    const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+    const response = await fetch(`${API_URL}/stories/${id}?adminUsername=${currentUser.username}&role=${currentUser.role}`, {
       method: "DELETE",
     });
 
@@ -112,8 +113,11 @@ async function approveStory(id) {
   if (!confirm("Bạn chắc chắn muốn duyệt truyện này chứ? Truyện sẽ hiển thị công khai cho mọi người.")) return;
 
   try {
+    const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
     const response = await fetch(`${API_URL}/stories/${id}/approve`, {
-      method: "PUT"
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ adminUsername: currentUser.username })
     });
     if (response.ok) {
       alert("Đã duyệt truyện thành công!");

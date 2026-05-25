@@ -55,13 +55,17 @@
             </select>
           </div>
           <div class="form-group">
-            <label for="price">Giá bán toàn bộ truyện (Nhập 0 nếu miễn phí)</label>
-            <input type="number" id="price" class="form-control" value="0" min="0">
+            <label for="genres">Thể loại (ngăn cách bằng dấu phẩy)</label>
+            <input type="text" id="genres" class="form-control" placeholder="Hành động, Phiêu lưu, Tình cảm..." required>
           </div>
           <div class="form-group" style="display: none;">
             <label>
               <input type="checkbox" id="isPremium"> Là truyện có bản quyền (Thu phí)?
             </label>
+          </div>
+          <div class="form-group" id="price-group">
+            <label for="price">Giá bán toàn bộ truyện (Nhập 0 nếu miễn phí)</label>
+            <input type="number" id="price" class="form-control" value="0" min="0">
           </div>
           <div class="form-group">
             <label for="description">Mô tả nội dung</label>

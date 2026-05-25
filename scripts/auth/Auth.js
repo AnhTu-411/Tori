@@ -127,15 +127,28 @@ function checkLoginState() {
   }
 }
 
-function checkCartCount() {
+async function checkCartCount() {
   const countSpan = document.getElementById("cart-count");
   if (!countSpan) return;
 
-  let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
-  let userSuffix = currentUser ? "_" + currentUser.username : "";
-  let cart = JSON.parse(localStorage.getItem("tori_cart" + userSuffix)) || [];
+  const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+  if (!currentUser) {
+    countSpan.innerText = "0";
+    return;
+  }
 
-  countSpan.innerText = cart.length;
+  try {
+    const res = await fetch("http://localhost:5000/api/users/" + currentUser.username + "/cart");
+    if (res.ok) {
+      const cart = await res.json();
+      countSpan.innerText = cart.length;
+    } else {
+      countSpan.innerText = "0";
+    }
+  } catch (e) {
+    console.error("Lỗi đếm giỏ hàng:", e);
+    countSpan.innerText = "0";
+  }
 }
 
 document.addEventListener("DOMContentLoaded", () => {

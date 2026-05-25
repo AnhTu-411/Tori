@@ -99,14 +99,16 @@ function processFile(file, textArea) {
 
 async function fetchChapterDetails(id) {
   try {
-    const response = await fetch(`${API_URL}/chapters/${id}`);
+    const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+    const usernameQuery = currentUser ? `?username=${currentUser.username}` : "";
+    const response = await fetch(`${API_URL}/chapters/${id}${usernameQuery}`);
     if (!response.ok) throw new Error("Lỗi khi tải chi tiết chapter");
     const chapter = await response.json();
 
-    document.getElementById("chapterNumber").value = chapter.chapterNumber;
-    document.getElementById("title").value = chapter.title;
-    document.getElementById("content").value = chapter.content || "";
-    document.getElementById("price").value = chapter.price || 0;
+    document.getElementById("chapter-number").value = chapter.chapterNumber;
+    document.getElementById("chapter-title").value = chapter.title;
+    document.getElementById("chapter-content").value = chapter.content || "";
+    document.getElementById("chapter-price").value = chapter.price || 0;
     if (chapter.imageLinks && chapter.imageLinks.length > 0) {
       document.getElementById("imageLinks1").value = chapter.imageLinks.join("\n");
     }
@@ -123,10 +125,10 @@ async function fetchChapterDetails(id) {
 async function saveChapter(e) {
   e.preventDefault();
 
-  const chapterNumber = parseInt(document.getElementById("chapterNumber").value);
-  const title = document.getElementById("title").value.trim();
-  const content = document.getElementById("content").value.trim();
-  const price = parseInt(document.getElementById("price").value);
+  const chapterNumber = parseInt(document.getElementById("chapter-number").value);
+  const title = document.getElementById("chapter-title").value.trim();
+  const content = document.getElementById("chapter-content").value.trim();
+  const price = parseInt(document.getElementById("chapter-price").value) || 0;
   
   // Xử lý list ảnh Server 1
   const imageLinksRaw1 = document.getElementById("imageLinks1").value.trim();
@@ -142,6 +144,8 @@ async function saveChapter(e) {
     imageLinks2 = imageLinksRaw2.split(/[\r\n,]+/).map(l => l.trim()).filter(l => l !== "");
   }
 
+  const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+
   const payload = {
     storyId: currentStoryId,
     chapterNumber,
@@ -150,7 +154,8 @@ async function saveChapter(e) {
     imageLinks,
     imageLinks2,
     price,
-    role: currentUser ? currentUser.role : ""
+    role: currentUser ? currentUser.role : "",
+    adminUsername: currentUser ? currentUser.username : ""
   };
 
   try {

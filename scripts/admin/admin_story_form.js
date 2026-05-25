@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Preview ảnh bìa
   const coverInput = document.getElementById("coverImg");
-  const previewImg = document.getElementById("preview-cover");
+  const previewImg = document.getElementById("cover-preview");
   coverInput.addEventListener("input", (e) => {
     if (e.target.value) {
       previewImg.src = e.target.value;
@@ -64,7 +64,7 @@ async function fetchStoryDetails(id) {
     }
 
     if (story.coverImg) {
-      const previewImg = document.getElementById("preview-cover");
+      const previewImg = document.getElementById("cover-preview");
       previewImg.src = story.coverImg;
       previewImg.style.display = "block";
     }
@@ -105,6 +105,7 @@ async function saveStory(e) {
   
   if (currentUser) {
     payload.role = currentUser.role;
+    payload.adminUsername = currentUser.username;
   }
 
   try {

@@ -27,9 +27,11 @@
 
     <div class="admin-main">
       <div class="admin-header">
-        <h1>Danh sách Đơn xin làm Nhà Xuất Bản</h1>
+        <h1>Quản lý Nhà Xuất Bản</h1>
       </div>
 
+      <!-- Bảng Đơn xin duyệt -->
+      <h2 style="margin-top: 20px; margin-bottom: 15px;">1. Đơn xin làm Nhà Xuất Bản</h2>
       <div class="admin-table-container">
         <table class="admin-table">
           <thead>
@@ -42,6 +44,25 @@
             </tr>
           </thead>
           <tbody id="requests-table-body">
+            <!-- Dữ liệu sẽ được render bằng JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Bảng Danh sách hiện tại -->
+      <h2 style="margin-top: 40px; margin-bottom: 15px;">2. Danh sách Nhà Xuất Bản hiện tại</h2>
+      <div class="admin-table-container">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th>ID User</th>
+              <th>Tên User</th>
+              <th>Email</th>
+              <th>Số dư (Coin)</th>
+              <th>Hành động</th>
+            </tr>
+          </thead>
+          <tbody id="publishers-table-body">
             <!-- Dữ liệu sẽ được render bằng JS -->
           </tbody>
         </table>

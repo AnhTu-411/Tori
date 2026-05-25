@@ -22,8 +22,15 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  document.getElementById("story-id-display").innerText = `Story ID: ${currentStoryId}`;
-  document.getElementById("btn-add-chapter").href = `Admin_Chapter_Form.html?storyId=${currentStoryId}`;
+  const storyTitleDisplay = document.getElementById("story-title-display");
+  if (storyTitleDisplay) {
+    storyTitleDisplay.innerText = `Story ID: ${currentStoryId}`;
+  }
+  
+  const btnAddChapter = document.getElementById("btn-add-chapter");
+  if (btnAddChapter) {
+    btnAddChapter.href = `Admin_Chapter_Form.html?storyId=${currentStoryId}`;
+  }
 
   fetchStoryInfo();
   fetchChapters();
@@ -34,7 +41,10 @@ async function fetchStoryInfo() {
     const response = await fetch(`${API_URL}/stories/${currentStoryId}`);
     if (response.ok) {
       const story = await response.json();
-      document.getElementById("story-title").innerText = `Chapters: ${story.title}`;
+      const storyTitleDisplay = document.getElementById("story-title-display");
+      if (storyTitleDisplay) {
+        storyTitleDisplay.innerText = `Chapters: ${story.title}`;
+      }
     }
   } catch (error) {
     console.error("Không thể tải thông tin truyện", error);
@@ -98,7 +108,8 @@ async function deleteChapter(chapterId) {
   }
 
   try {
-    const response = await fetch(`${API_URL}/chapters/${chapterId}`, {
+    const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+    const response = await fetch(`${API_URL}/chapters/${chapterId}?adminUsername=${currentUser.username}&role=${currentUser.role}`, {
       method: "DELETE",
     });
 
@@ -119,8 +130,11 @@ async function approveChapter(chapterId) {
   if (!confirm("Bạn chắc chắn muốn duyệt chương này chứ? Chương sẽ được hiển thị công khai.")) return;
 
   try {
+    const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
     const response = await fetch(`${API_URL}/chapters/${chapterId}/approve`, {
-      method: "PUT"
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ adminUsername: currentUser.username })
     });
     if (response.ok) {
       alert("Đã duyệt chương thành công!");

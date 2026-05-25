@@ -27,6 +27,9 @@
           <button class="tab-btn" onclick="switchShelfTab('purchased')">
             💰 Lịch sử mua truyện
           </button>
+          <button class="tab-btn" onclick="switchShelfTab('bookmark')">
+            🔖 Dấu trang (Đang đọc)
+          </button>
         </div>
 
         <div id="shelf-favorite" class="shelf-content">
@@ -44,6 +47,12 @@
         <div id="shelf-purchased" class="shelf-content">
           <div class="update-list" id="purchased-list">
             <p class="empty-message">Bạn chưa mua nội dung trả phí nào.</p>
+          </div>
+        </div>
+
+        <div id="shelf-bookmark" class="shelf-content">
+          <div class="update-list" id="bookmark-list">
+            <p class="empty-message">Bạn chưa lưu dấu trang nào.</p>
           </div>
         </div>
       </section>

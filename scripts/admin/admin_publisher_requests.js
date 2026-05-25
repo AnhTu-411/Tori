@@ -10,7 +10,69 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   fetchRequests();
+  fetchCurrentPublishers();
 });
+
+async function fetchCurrentPublishers() {
+  try {
+    const response = await fetch(`${API_URL}/publishers`);
+    if (!response.ok) throw new Error("Lỗi khi tải danh sách NXB");
+    const publishers = await response.json();
+    renderPublishers(publishers);
+  } catch (error) {
+    console.error(error);
+    alert("Không thể tải danh sách Nhà Xuất Bản hiện tại!");
+  }
+}
+
+function renderPublishers(publishers) {
+  const tbody = document.getElementById("publishers-table-body");
+  if (!tbody) return;
+  tbody.innerHTML = "";
+
+  if (publishers.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center;">Hiện chưa có Nhà Xuất Bản nào.</td></tr>`;
+    return;
+  }
+
+  publishers.forEach((pub) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td><strong>${pub._id}</strong></td>
+      <td><strong>${pub.username}</strong></td>
+      <td>${pub.email}</td>
+      <td style="color: green; font-weight: bold;">${pub.coins || 0}</td>
+      <td class="action-btns">
+        <button class="btn btn-reject" onclick="revokePublisher('${pub._id}', '${pub.username}')">Gỡ quyền</button>
+      </td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+async function revokePublisher(pubId, pubUsername) {
+  if (!confirm(`CẢNH BÁO: Bạn chắc chắn muốn gỡ quyền Nhà Xuất Bản của user "${pubUsername}"? Họ sẽ không thể vào Admin đăng truyện được nữa.`)) return;
+
+  try {
+    const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+    const response = await fetch(`${API_URL}/publishers/${pubId}/revoke`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ adminUsername: currentUser.username })
+    });
+
+    if (response.ok) {
+      alert(`Đã gỡ quyền NXB của "${pubUsername}" thành công!`);
+      fetchCurrentPublishers(); // Tải lại bảng NXB
+    } else {
+      const data = await response.json();
+      alert("Lỗi: " + data.message);
+    }
+  } catch (error) {
+    console.error(error);
+    alert("Lỗi kết nối máy chủ khi gỡ quyền.");
+  }
+}
 
 async function fetchRequests() {
   try {
@@ -66,10 +128,11 @@ async function updateRequestStatus(reqId, newStatus) {
   if (!confirm(`Bạn chắc chắn muốn ${newStatus} đơn đăng ký này chứ?`)) return;
 
   try {
+    const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
     const response = await fetch(`${API_URL}/publisher-requests/${reqId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: newStatus })
+      body: JSON.stringify({ status: newStatus, adminUsername: currentUser.username })
     });
 
     if (response.ok) {
