@@ -32,21 +32,21 @@ function renderCarousel(storiesArray) {
         : ToriRoutes.href("storyDetail", { id: story._id });
 
     htmlContent += `
-      <div class="atropos atropos-card-${story._id}" style="width: 100%; height: 100%;">
+      <a href="${detailHref}" onclick="window.location.href='${detailHref}'" class="atropos atropos-card-${story._id}" style="text-decoration: none; display: flex; flex-direction: column; height: 100%; cursor: pointer;">
         <div class="atropos-scale">
           <div class="atropos-rotate">
             <div class="atropos-inner">
-              <a href="${detailHref}" class="story-card" style="text-decoration: none; display: flex; flex-direction: column; height: 100%;">
+              <div class="story-card" style="text-decoration: none; display: flex; flex-direction: column; height: 100%;">
                 <img src="${story.coverImg}" alt="Bìa ${story.title}" data-atropos-offset="-5">
                 <div class="story-info" data-atropos-offset="5" style="flex: 1;">
                   <h3 class="story-title">${story.title}</h3>
                   <p class="story-author">Tác giả: ${story.author}</p>
                 </div>
-              </a>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      </a>
       `;
   }
   container.innerHTML = htmlContent;
@@ -85,7 +85,7 @@ function renderUpdateList(page) {
         : ToriRoutes.href("storyDetail", { id: story._id });
 
     html += `
-          <a href="${detailHref}" class="atropos atropos-update-${story._id}" style="text-decoration: none; display: block; width: 100%;">
+          <a href="${detailHref}" onclick="window.location.href='${detailHref}'" class="atropos atropos-update-${story._id}" style="text-decoration: none; display: block; width: 100%; cursor: pointer;">
             <div class="atropos-scale">
               <div class="atropos-rotate">
                 <div class="atropos-inner">

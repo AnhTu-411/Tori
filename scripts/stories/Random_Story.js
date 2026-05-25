@@ -18,7 +18,7 @@ function loadRandomStory() {
       : ToriRoutes.href("storyDetail", { id: story._id });
 
   container.innerHTML = `
-    <div class="atropos atropos-random" style="width: 100%; height: 100%;">
+    <div class="atropos atropos-random" style="width: 100%; height: 100%; cursor: pointer;" onclick="window.location.href='${detailHref}'">
       <div class="atropos-scale">
         <div class="atropos-rotate">
           <div class="atropos-inner">

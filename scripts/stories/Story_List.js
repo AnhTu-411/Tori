@@ -67,7 +67,7 @@ function renderStories(storiesArray) {
     let premiumBadge = story.isPremium ? `<span class="tag-badge" style="position:absolute; top:5px; right:5px; background: #ffd700; color:#000; font-size:10px; font-weight:bold; padding:2px 5px; border-radius:3px;">Trả phí</span>` : "";
 
     htmlContent += `
-      <div class="atropos atropos-search-${story._id}" style="width: 100%; height: 100%;">
+      <div class="atropos atropos-search-${story._id}" style="width: 100%; height: 100%; cursor: pointer;" onclick="window.location.href='${detailHref}'">
         <div class="atropos-scale">
           <div class="atropos-rotate">
             <div class="atropos-inner">

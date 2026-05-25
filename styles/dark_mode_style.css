@@ -159,3 +159,22 @@ body.dark-mode .tab-btn.active::after {
 body.dark-mode .bookshelf-tabs {
   border-bottom-color: #333;
 }
+
+/* Dark mode cho filter sidebar */
+body.dark-mode .filter-sidebar {
+  background-color: #1f2430;
+  border-color: #2d3446;
+}
+body.dark-mode .filter-sidebar-title {
+  border-bottom-color: #b3d4ff;
+  color: #b3d4ff;
+}
+body.dark-mode .filter-sidebar label {
+  color: #e0e0e0;
+}
+body.dark-mode .filter-sidebar input[type="text"],
+body.dark-mode .filter-sidebar select {
+  background-color: #2a2a3e !important;
+  color: #ddd !important;
+  border-color: #555 !important;
+}

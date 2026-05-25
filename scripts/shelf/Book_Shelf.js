@@ -47,7 +47,7 @@ async function loadFavoriteStories() {
       const detailHref = ToriRoutes.href("storyDetail", { id: story._id });
 
       html += `
-        <div class="atropos atropos-fav-${story._id}" style="width: 100%; height: 100%;">
+        <div class="atropos atropos-fav-${story._id}" style="width: 100%; height: 100%; cursor: pointer;" onclick="window.location.href='${detailHref}'">
           <div class="atropos-scale">
             <div class="atropos-rotate">
               <div class="atropos-inner">
@@ -120,7 +120,7 @@ async function loadFollowingStories() {
       }
 
       html += `
-        <div class="atropos atropos-following-${story._id}" style="width: 100%; height: 100%;">
+        <div class="atropos atropos-following-${story._id}" style="width: 100%; height: 100%; cursor: pointer;" onclick="window.location.href='${detailHref}'">
           <div class="atropos-scale">
             <div class="atropos-rotate">
               <div class="atropos-inner">
