@@ -1,18 +1,15 @@
 /*biaf truyeenj*/
 .story-card {
-  background-color: #2a2a2a;
+  background-color: #ffffff;
   border-radius: 8px;
   overflow: hidden;
-  color: white;
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+  color: #2d2d2d;
+  transition: transform 0.3s ease;
   cursor: pointer;
 }
 
 .story-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+  transform: translateY(-3px);
 }
 
 .story-card img {
@@ -29,10 +26,11 @@
   font-size: 16px;
   margin: 0 0 5px 0;
   font-weight: bold;
+  color: #1a1a2e;
 }
 
 .story-author {
   font-size: 13px;
-  color: #b3b3b3;
+  color: #666666;
   margin: 0;
 }

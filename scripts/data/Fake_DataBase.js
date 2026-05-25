@@ -32,16 +32,36 @@ function renderCarousel(storiesArray) {
         : ToriRoutes.href("storyDetail", { id: story._id });
 
     htmlContent += `
-      <a href="${detailHref}" class="story-card" style="text-decoration: none; display: block;">
-        <img src="${story.coverImg}" alt="Bìa ${story.title}">
-        <div class="story-info">
-          <h3 class="story-title">${story.title}</h3>
-          <p class="story-author">Tác giả: ${story.author}</p>
+      <div class="atropos atropos-card-${story._id}" style="width: 100%; height: 100%;">
+        <div class="atropos-scale">
+          <div class="atropos-rotate">
+            <div class="atropos-inner">
+              <a href="${detailHref}" class="story-card" style="text-decoration: none; display: flex; flex-direction: column; height: 100%;">
+                <img src="${story.coverImg}" alt="Bìa ${story.title}" data-atropos-offset="-5">
+                <div class="story-info" data-atropos-offset="5" style="flex: 1;">
+                  <h3 class="story-title">${story.title}</h3>
+                  <p class="story-author">Tác giả: ${story.author}</p>
+                </div>
+              </a>
+            </div>
+          </div>
         </div>
-      </a>
+      </div>
       `;
   }
   container.innerHTML = htmlContent;
+
+  // Initialize Atropos for all cards
+  if (typeof Atropos !== 'undefined') {
+    storiesArray.forEach(story => {
+      Atropos({
+        el: `.atropos-card-${story._id}`,
+        activeOffset: 40,
+        shadow: false,
+        highlight: false
+      });
+    });
+  }
 }
 
 // === PHẦN 3: VẼ KHU VỰC "MỚI CẬP NHẬT" CÓ PHÂN TRANG ===
@@ -65,25 +85,43 @@ function renderUpdateList(page) {
         : ToriRoutes.href("storyDetail", { id: story._id });
 
     html += `
-          <a href="${detailHref}" style="text-decoration: none;">
-            <div class="update-item">
-                <div class="update-cover">
-                    <img src="${story.coverImg}" alt="Bìa">
+          <a href="${detailHref}" class="atropos atropos-update-${story._id}" style="text-decoration: none; display: block; width: 100%;">
+            <div class="atropos-scale">
+              <div class="atropos-rotate">
+                <div class="atropos-inner">
+                  <div class="update-item" style="background: transparent;">
+                      <div class="update-cover">
+                          <img src="${story.coverImg}" alt="Bìa" data-atropos-offset="-2">
+                      </div>
+                      <div class="update-info" data-atropos-offset="2">
+                          <div class="update-title">${story.title}</div>
+                          <div class="update-meta">
+                              <span>Tác giả: <strong>${story.author}</strong></span>
+                              <span>Trạng thái: <strong>${story.status}</strong></span>
+                          </div>
+                          <div class="update-desc">${story.description || "Chưa có mô tả."}</div>
+                          <div class="update-chapter">Chương mới nhất</div>
+                      </div>
+                  </div>
                 </div>
-                <div class="update-info">
-                    <div class="update-title">${story.title}</div>
-                    <div class="update-meta">
-                        <span>Tác giả: <strong>${story.author}</strong></span>
-                        <span>Trạng thái: <strong>${story.status}</strong></span>
-                    </div>
-                    <div class="update-desc">${story.description || "Chưa có mô tả."}</div>
-                    <div class="update-chapter">Chương mới nhất</div>
-                </div>
+              </div>
             </div>
           </a>
         `;
   }
   container.innerHTML = html;
+  
+  if (typeof Atropos !== 'undefined') {
+    itemsToShow.forEach(story => {
+      Atropos({
+        el: `.atropos-update-${story._id}`,
+        activeOffset: 20,
+        shadow: false,
+        highlight: false
+      });
+    });
+  }
+
   renderPagination();
 }
 

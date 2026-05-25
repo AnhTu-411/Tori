@@ -363,6 +363,13 @@ app.get("/api/users/:username/transactions", async (req, res) => {
 
     const transactions = await Transaction.find({ user: user._id })
       .populate("story", "title coverImg")
+      .populate({
+        path: "chapters",
+        populate: {
+          path: "storyId",
+          select: "title coverImg"
+        }
+      })
       .sort({ createdAt: -1 });
 
     res.status(200).json(transactions);

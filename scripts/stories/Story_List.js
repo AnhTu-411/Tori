@@ -67,17 +67,36 @@ function renderStories(storiesArray) {
     let premiumBadge = story.isPremium ? `<span class="tag-badge" style="position:absolute; top:5px; right:5px; background: #ffd700; color:#000; font-size:10px; font-weight:bold; padding:2px 5px; border-radius:3px;">Trả phí</span>` : "";
 
     htmlContent += `
-      <a href="${detailHref}" class="story-card" style="text-decoration: none; display: block; position: relative;">
-        ${premiumBadge}
-        <img src="${story.coverImg}" alt="Bìa ${story.title}">
-        <div class="story-info">
-          <h3 class="story-title">${story.title}</h3>
-          <p class="story-author">Tác giả: ${story.author}</p>
+      <div class="atropos atropos-search-${story._id}" style="width: 100%; height: 100%;">
+        <div class="atropos-scale">
+          <div class="atropos-rotate">
+            <div class="atropos-inner">
+              <a href="${detailHref}" class="story-card" style="text-decoration: none; display: flex; flex-direction: column; height: 100%; position: relative;">
+                ${premiumBadge}
+                <img src="${story.coverImg}" alt="Bìa ${story.title}" data-atropos-offset="-5">
+                <div class="story-info" data-atropos-offset="5" style="flex: 1;">
+                  <h3 class="story-title">${story.title}</h3>
+                  <p class="story-author">Tác giả: ${story.author}</p>
+                </div>
+              </a>
+            </div>
+          </div>
         </div>
-      </a>
+      </div>
       `;
   }
   container.innerHTML = htmlContent;
+
+  if (typeof Atropos !== 'undefined') {
+    storiesArray.forEach(story => {
+      Atropos({
+        el: `.atropos-search-${story._id}`,
+        activeOffset: 40,
+        shadow: false,
+        highlight: false
+      });
+    });
+  }
 }
 
 // Hook up events

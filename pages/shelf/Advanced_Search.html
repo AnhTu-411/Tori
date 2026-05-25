@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="../../styles/dark_mode_style.css" />
     <link rel="stylesheet" href="../../styles/advanced_search_style.css" />
     <link rel="stylesheet" href="../../styles/animation_style.css" />
+    <link rel="stylesheet" href="https://unpkg.com/atropos/atropos.css" />
   </head>
   <body>
 
@@ -193,17 +194,36 @@
             }
           }
 
-          html += '<a href="' + detailHref + '" class="story-card" style="text-decoration: none; display: block; position: relative;">' +
-            premiumBadge +
-            '<img src="' + story.coverImg + '" alt="Bìa ' + story.title + '">' +
-            '<div class="story-info">' +
-              '<h3 class="story-title">' + story.title + '</h3>' +
-              '<p class="story-author">Tác giả: ' + story.author + '</p>' +
-              '<div>' + genreTags + '</div>' +
+          html += '<div class="atropos atropos-adv-' + story._id + '" style="width: 100%; height: 100%;">' +
+            '<div class="atropos-scale">' +
+              '<div class="atropos-rotate">' +
+                '<div class="atropos-inner">' +
+                  '<a href="' + detailHref + '" class="story-card" style="text-decoration: none; display: flex; flex-direction: column; height: 100%; position: relative;">' +
+                    premiumBadge +
+                    '<img src="' + story.coverImg + '" alt="Bìa ' + story.title + '" data-atropos-offset="-5">' +
+                    '<div class="story-info" data-atropos-offset="5" style="flex: 1;">' +
+                      '<h3 class="story-title">' + story.title + '</h3>' +
+                      '<p class="story-author">Tác giả: ' + story.author + '</p>' +
+                      '<div>' + genreTags + '</div>' +
+                    '</div>' +
+                  '</a>' +
+                '</div>' +
+              '</div>' +
             '</div>' +
-          '</a>';
+          '</div>';
         }
         container.innerHTML = html;
+
+        if (typeof Atropos !== "undefined") {
+          for (var i = 0; i < stories.length; i++) {
+            Atropos({
+              el: '.atropos-adv-' + stories[i]._id,
+              activeOffset: 40,
+              shadow: false,
+              highlight: false
+            });
+          }
+        }
       }
 
       // === RESET ===
@@ -234,5 +254,6 @@
       });
     </script>
     <script src="../../scripts/ui/Navbar.js"></script>
+    <script src="https://unpkg.com/atropos/atropos.min.js"></script>
   </body>
 </html>

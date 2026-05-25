@@ -134,17 +134,17 @@ p {
 }
 
 /* Tính toán hiển thị số lượng truyện theo màn hình */
-.story-grid-carousel .story-card {
+.story-grid-carousel .atropos {
   flex: 0 0 calc((100% - 60px) / 4); /* mặc định là 4 truyện hiển thị vs pc*/
   position: relative;
 }
 @media (max-width: 1024px) {
-  .story-grid-carousel .story-card {
+  .story-grid-carousel .atropos {
     flex: 0 0 calc((100% - 40px) / 3);
   } /* Tablet: 3 truyện */
 }
 @media (max-width: 600px) {
-  .story-grid-carousel .story-card {
+  .story-grid-carousel .atropos {
     flex: 0 0 calc((100% - 20px) / 2);
   } /* Điện thoại: 2 truyện */
 }

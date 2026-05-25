@@ -5,16 +5,14 @@ html {
 /*hiệu ứng hover phần truyện ms cập nhật*/
 .story-card,
 .update-item {
-  transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+  transition: transform 0.3s ease;
   will-change: transform; /* Tối ưu hóa render cho trình duyệt*/
 }
 /* Hiệu ứng nổi thẻ phần truyện ms cập nhật */
 .story-card:hover,
 .update-item:hover {
-  transform: translateY(-5px); /* Nhấc thẻ nảy lên 5px */
-  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1); /* Đổ bóng xám nhạt xung quanh */
+  transform: translateY(-3px);
+  background-color: #f0f4ff;
 }
 
 /* Hiệu ứng mượt cho chữ "Chương x" khi rê chuột vào cả khối truyện */

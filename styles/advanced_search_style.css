@@ -85,22 +85,22 @@
 }
 
 /* Dark mode */
-.dark-mode .advanced-search-section {
+body.dark-mode .advanced-search-section {
   background-color: #1e1e2e;
   box-shadow: 0 2px 8px rgba(0,0,0,0.4);
 }
-.dark-mode .genre-item {
+body.dark-mode .genre-item {
   color: #ccc;
 }
-.dark-mode .filter-controls {
+body.dark-mode .filter-controls {
   border-top-color: #444;
 }
-.dark-mode .filter-group select {
+body.dark-mode .filter-group select {
   background-color: #2a2a3e;
   color: #ddd;
   border-color: #555;
 }
-.dark-mode .search-keyword-box input {
+body.dark-mode .search-keyword-box input {
   background-color: #2a2a3e;
   color: #ddd;
   border-color: #555;

@@ -47,16 +47,35 @@ async function loadFavoriteStories() {
       const detailHref = ToriRoutes.href("storyDetail", { id: story._id });
 
       html += `
-        <a href="${detailHref}" class="story-card" style="text-decoration: none; display: block;">
-          <img src="${story.coverImg || 'https://via.placeholder.com/200x280?text=No+Cover'}" alt="Bìa truyện ${story.title}">
-          <div class="story-info">
-            <h3 class="story-title">${story.title}</h3>
-            <p class="story-author">Tác giả: ${story.author}</p>
+        <div class="atropos atropos-fav-${story._id}" style="width: 100%; height: 100%;">
+          <div class="atropos-scale">
+            <div class="atropos-rotate">
+              <div class="atropos-inner">
+                <a href="${detailHref}" class="story-card" style="text-decoration: none; display: flex; flex-direction: column; height: 100%;">
+                  <img src="${story.coverImg || 'https://via.placeholder.com/200x280?text=No+Cover'}" alt="Bìa truyện ${story.title}" data-atropos-offset="-5">
+                  <div class="story-info" data-atropos-offset="5" style="flex: 1;">
+                    <h3 class="story-title">${story.title}</h3>
+                    <p class="story-author">Tác giả: ${story.author}</p>
+                  </div>
+                </a>
+              </div>
+            </div>
           </div>
-        </a>
+        </div>
       `;
     });
     grid.innerHTML = html;
+
+    if (typeof Atropos !== 'undefined') {
+      favList.forEach(story => {
+        Atropos({
+          el: `.atropos-fav-${story._id}`,
+          activeOffset: 40,
+          shadow: false,
+          highlight: false
+        });
+      });
+    }
   } catch (err) {
     grid.innerHTML = `<p class="empty-message" style="color:red;">Lỗi kết nối Server!</p>`;
     console.error(err);
@@ -101,17 +120,36 @@ async function loadFollowingStories() {
       }
 
       html += `
-        <a href="${detailHref}" class="story-card" style="text-decoration: none; display: block; position: relative;">
-          <img src="${story.coverImg || 'https://via.placeholder.com/200x280?text=No+Cover'}" alt="Bìa truyện ${story.title}">
-          <div class="story-info">
-            <h3 class="story-title">${story.title}</h3>
-            <p class="story-author">Tác giả: ${story.author}</p>
-            ${newChapterHtml}
+        <div class="atropos atropos-following-${story._id}" style="width: 100%; height: 100%;">
+          <div class="atropos-scale">
+            <div class="atropos-rotate">
+              <div class="atropos-inner">
+                <a href="${detailHref}" class="story-card" style="text-decoration: none; display: flex; flex-direction: column; height: 100%; position: relative;">
+                  <img src="${story.coverImg || 'https://via.placeholder.com/200x280?text=No+Cover'}" alt="Bìa truyện ${story.title}" data-atropos-offset="-5">
+                  <div class="story-info" data-atropos-offset="5" style="flex: 1;">
+                    <h3 class="story-title">${story.title}</h3>
+                    <p class="story-author">Tác giả: ${story.author}</p>
+                    ${newChapterHtml}
+                  </div>
+                </a>
+              </div>
+            </div>
           </div>
-        </a>
+        </div>
       `;
     });
     grid.innerHTML = html;
+
+    if (typeof Atropos !== 'undefined') {
+      favList.forEach(story => {
+        Atropos({
+          el: `.atropos-following-${story._id}`,
+          activeOffset: 40,
+          shadow: false,
+          highlight: false
+        });
+      });
+    }
   } catch (err) {
     grid.innerHTML = `<p class="empty-message" style="color:red;">Lỗi kết nối Server!</p>`;
     console.error(err);
@@ -142,7 +180,21 @@ async function loadPurchasedHistory() {
 
     let html = "";
     transactions.forEach((tx) => {
-      const story = tx.story;
+      let story = tx.story;
+      let isFullStory = true;
+      let chapterInfoText = "Toàn bộ truyện";
+      
+      if (!story && tx.chapters && tx.chapters.length > 0) {
+        // Mua chapter lẻ (từ giỏ hàng)
+        story = tx.chapters[0].storyId;
+        isFullStory = false;
+        if (tx.chapters.length === 1) {
+          chapterInfoText = `1 Chương`;
+        } else {
+          chapterInfoText = `${tx.chapters.length} Chương`;
+        }
+      }
+
       if (!story) return;
 
       const detailHref = ToriRoutes.href("storyDetail", { id: story._id });
@@ -156,7 +208,7 @@ async function loadPurchasedHistory() {
             </div>
             <div class="update-info">
               <div class="update-title" style="font-size: 16px; color: #000080;">${story.title}</div>
-              <div class="update-desc" style="margin-bottom: 5px;">Mở khóa: <strong>Toàn bộ truyện</strong></div>
+              <div class="update-desc" style="margin-bottom: 5px;">Mở khóa: <strong>${chapterInfoText}</strong></div>
               <div class="update-meta" style="margin-bottom: 5px; color: #666; font-size: 13px;">
                 Mã GD: <strong>${tx.transactionId}</strong> | Ngày: ${txDate}
               </div>
