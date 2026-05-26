@@ -3,10 +3,15 @@ const API_URL = "http://localhost:5000/api";
 document.addEventListener("DOMContentLoaded", () => {
   const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
   
-  if (!currentUser || currentUser.role !== "admin") {
+  if (!currentUser || (currentUser.role !== "admin" && currentUser.role !== "owner")) {
     alert("Trang này chỉ dành cho Quản trị viên tối cao (Admin)!");
     window.location.href = "Admin_Stories.html";
     return;
+  }
+
+  if (currentUser.role === "owner") {
+    const menuUsers = document.getElementById("menu-users");
+    if (menuUsers) menuUsers.style.display = "block";
   }
 
   fetchRequests();
@@ -147,3 +152,4 @@ async function updateRequestStatus(reqId, newStatus) {
     alert("Lỗi kết nối máy chủ.");
   }
 }
+

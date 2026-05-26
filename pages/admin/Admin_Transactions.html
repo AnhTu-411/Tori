@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quản lý Chương - Tori Admin</title>
+  <title>Quản lý Đơn Hàng - Tori Admin</title>
   <link rel="icon" sizes="16x16" href="../../assets/images/Falvicon.ico" />
   <link rel="stylesheet" href="../../styles/main_style.css" />
   <link rel="stylesheet" href="../../styles/main_header_style.css" />
@@ -12,60 +12,51 @@
   <link rel="stylesheet" href="../../styles/admin_style.css">
 </head>
 <body>
-  <!-- Header gốc từ trang chủ -->
   
-
   <main class="main-content" style="min-height: 70vh;">
+    <!-- Sidebar Admin -->
     <aside class="admin-sidebar">
       <h2>Tori Admin</h2>
       <nav>
         <ul>
-          <li><a href="Admin_Stories.html" class="active">Quản lý Truyện</a></li>
+          <li><a href="Admin_Stories.html">Quản lý Truyện</a></li>
           <li id="menu-publisher-requests"><a href="Admin_Publisher_Requests.html">Duyệt NXB</a></li>
-          <li id="menu-transactions"><a href="Admin_Transactions.html">Quản lý Đơn Hàng</a></li>
+          <li id="menu-transactions"><a href="Admin_Transactions.html" class="active">Quản lý Đơn Hàng</a></li>
           <li id="menu-users" style="display: none;"><a href="Admin_Users.html">Quản lý Tài Khoản</a></li>
         </ul>
       </nav>
     </aside>
 
+    <!-- Main Content Admin -->
     <div class="admin-main">
       <div class="admin-header">
-        <div>
-          <h1>Danh sách Chương</h1>
-          <p id="story-title-display" style="color: #7f8c8d; margin-top: 5px;">Đang tải...</p>
-        </div>
-        <div style="display: flex; gap: 10px;">
-          <a href="Admin_Stories.html" class="btn" style="background-color: #95a5a6; color: white;">← Quay Lại</a>
-          <a href="#" id="btn-add-chapter" class="btn btn-primary">+ Thêm Chương Mới</a>
-        </div>
+        <h1>Quản lý Đơn Hàng (Giao dịch)</h1>
       </div>
 
       <div class="admin-table-container">
         <table class="admin-table">
           <thead>
             <tr>
-              <th>Chương số</th>
-              <th>Tiêu đề</th>
-              <th>Giá (Coins)</th>
-              <th>Ngày tạo</th>
-              <th>Kiểm Duyệt</th>
-              <th>Hành động</th>
+              <th>Mã Giao Dịch</th>
+              <th>Người Dùng</th>
+              <th>Loại GD</th>
+              <th>Giá trị (Coins)</th>
+              <th>Ngày Tạo</th>
+              <th>Trạng Thái</th>
+              <th>Hành Động</th>
             </tr>
           </thead>
-          <tbody id="chapters-table-body">
-            <!-- Dữ liệu sẽ được render bằng JS -->
+          <tbody id="tx-table-body">
+            <!-- Dữ liệu render bằng JS -->
           </tbody>
         </table>
       </div>
     </div>
   </main>
 
-  
-
   <script src="../../scripts/ui/Routes.js"></script>
   <script src="../../scripts/auth/Auth.js"></script>
-  <script src="../../scripts/admin/admin_chapters.js"></script>
-  
-<script src="../../scripts/ui/Navbar.js"></script>
+  <script src="../../scripts/admin/admin_transactions.js"></script>
+  <script src="../../scripts/ui/Navbar.js"></script>
 </body>
 </html>

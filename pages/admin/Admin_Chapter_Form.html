@@ -21,6 +21,8 @@
         <ul>
           <li><a href="Admin_Stories.html" class="active">Quản lý Truyện</a></li>
           <li id="menu-publisher-requests"><a href="Admin_Publisher_Requests.html">Duyệt NXB</a></li>
+          <li id="menu-transactions"><a href="Admin_Transactions.html">Quản lý Đơn Hàng</a></li>
+          <li id="menu-users" style="display: none;"><a href="Admin_Users.html">Quản lý Tài Khoản</a></li>
         </ul>
       </nav>
     </aside>
@@ -62,11 +64,19 @@
 
           <div class="form-group">
             <label for="imageLinks1">Link Ảnh Truyện Tranh (Server 1)</label>
+            <div id="drop-zone-1" style="border: 2px dashed #95a5a6; padding: 20px; text-align: center; background-color: #f9f9f9; cursor: pointer; margin-bottom: 10px; border-radius: 5px;">
+              Kéo thả file .txt chứa link ảnh vào đây hoặc Click để chọn file
+            </div>
+            <input type="file" id="txtFileInput1" accept=".txt" style="display: none;">
             <textarea id="imageLinks1" class="form-control" placeholder="Dán các link ảnh vào đây, mỗi link 1 dòng (hoặc cách nhau bằng dấu phẩy)"></textarea>
           </div>
 
           <div class="form-group">
             <label for="imageLinks2">Link Ảnh Dự Phòng (Server 2)</label>
+            <div id="drop-zone-2" style="border: 2px dashed #95a5a6; padding: 20px; text-align: center; background-color: #f9f9f9; cursor: pointer; margin-bottom: 10px; border-radius: 5px;">
+              Kéo thả file .txt chứa link ảnh vào đây hoặc Click để chọn file
+            </div>
+            <input type="file" id="txtFileInput2" accept=".txt" style="display: none;">
             <textarea id="imageLinks2" class="form-control" placeholder="Dán các link ảnh dự phòng vào đây, mỗi link 1 dòng (hoặc cách nhau bằng dấu phẩy)"></textarea>
           </div>
 

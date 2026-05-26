@@ -106,7 +106,9 @@ function checkLoginState() {
 
   if (currentUser) {
     let adminLink = "";
-    if (currentUser.role === "admin") {
+    if (currentUser.role === "owner") {
+      adminLink = `<li><a href="${getAuthHref("adminDashboard")}" style="color: #ff0000; font-weight: bold;">[Chủ Sở Hữu]</a></li>`;
+    } else if (currentUser.role === "admin") {
       adminLink = `<li><a href="${getAuthHref("adminDashboard")}" style="color: #f39c12; font-weight: bold;">[Quản Trị Viên]</a></li>`;
     } else if (currentUser.role === "publisher") {
       adminLink = `<li><a href="${getAuthHref("adminDashboard")}" style="color: #f39c12; font-weight: bold;">[Nhà Xuất Bản]</a></li>`;

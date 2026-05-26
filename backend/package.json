@@ -2,7 +2,7 @@
   "name": "tori_original",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "server.js",
   "directories": {
     "doc": "docs"
   },

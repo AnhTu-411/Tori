@@ -9,6 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
+  if (currentUser.role === "owner") {
+    const menuUsers = document.getElementById("menu-users");
+    if (menuUsers) menuUsers.style.display = "block";
+  }
+
   if (currentUser.role === "publisher") {
     const pubReqMenu = document.getElementById("menu-publisher-requests");
     if (pubReqMenu) pubReqMenu.style.display = "none";
@@ -148,3 +153,4 @@ async function approveChapter(chapterId) {
     alert("Lỗi kết nối máy chủ!");
   }
 }
+
