@@ -1,50 +1,31 @@
 let currentPage = 1;
 let currentLimit = 12;
+let currentSort = "newest";
 
-function applyClientFilters() {
-  currentPage = 1; // Reset to page 1 on new filter
-  loadStoriesWithFilters();
-}
-
-async function loadStoriesWithFilters() {
+async function loadSelfWrittenStories() {
   const container = document.getElementById("story-list-container");
-  if (container) container.innerHTML = "<p>Đang tải danh sách truyện...</p>";
+  if (container) container.innerHTML = "<p>Đang tải danh sách truyện sáng tác...</p>";
 
-  const titleInput = document.getElementById("filter-title");
-  const statusSelect = document.getElementById("filter-status");
-  const yearSelect = document.getElementById("filter-year");
   const sortSelect = document.getElementById("sort-select");
-  const genreCheckboxes = document.querySelectorAll('input[name="genres"]:checked');
-
-  const keyword = titleInput && titleInput.value ? titleInput.value.trim().normalize('NFC') : "";
-  const status = statusSelect ? statusSelect.value : "Tất cả";
-  const year = yearSelect ? yearSelect.value : "Tất cả";
-  const sort = sortSelect ? sortSelect.value : "newest";
-  
-  const searchGenres = Array.from(genreCheckboxes).map(cb => cb.value.trim().normalize('NFC')).join(",");
+  if (sortSelect) {
+    currentSort = sortSelect.value;
+  }
 
   let queryParams = new URLSearchParams();
   queryParams.append("page", currentPage);
   queryParams.append("limit", currentLimit);
+  queryParams.append("genres", "Tori Xuất bản"); // Lọc riêng tag Tori Xuất bản
   
-  let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
-  if (currentUser && currentUser.role) {
-    queryParams.append("role", currentUser.role);
+  if (currentSort && currentSort !== "default") {
+    queryParams.append("sort", currentSort);
   }
-
-  if (keyword) queryParams.append("title", keyword);
-  if (status !== "Tất cả") queryParams.append("status", status);
-  if (year !== "Tất cả") queryParams.append("year", year);
-  if (searchGenres) queryParams.append("genres", searchGenres);
-  if (sort) queryParams.append("sort", sort);
 
   try {
     const API_URL = "http://localhost:5000/api";
     const res = await fetch(`${API_URL}/stories?${queryParams.toString()}`);
-    if (!res.ok) throw new Error("Lỗi tải dữ liệu truyện");
+    if (!res.ok) throw new Error("Lỗi tải dữ liệu truyện sáng tác");
 
     const responseData = await res.json();
-    // Support backwards compatibility if backend still returns array (though it shouldn't now)
     const stories = Array.isArray(responseData) ? responseData : responseData.data;
     const totalPages = responseData.totalPages || 1;
 
@@ -56,10 +37,15 @@ async function loadStoriesWithFilters() {
   }
 }
 
+function sortStories(order) {
+    currentSort = order;
+    currentPage = 1;
+    loadSelfWrittenStories();
+}
+
 function renderPagination(totalPages) {
   let paginationContainer = document.getElementById("pagination-container");
   if (!paginationContainer) {
-    // Nếu chưa có thẻ pagination-container thì tạo mới bên dưới list
     const listContainer = document.getElementById("story-list-container");
     if (!listContainer) return;
     
@@ -67,16 +53,13 @@ function renderPagination(totalPages) {
     paginationContainer.id = "pagination-container";
     paginationContainer.className = "pagination";
     paginationContainer.style.marginTop = "30px";
-    paginationContainer.style.display = "flex";
-    paginationContainer.style.justifyContent = "center";
-    paginationContainer.style.gap = "10px";
     
     listContainer.parentNode.insertBefore(paginationContainer, listContainer.nextSibling);
   }
 
   paginationContainer.innerHTML = "";
 
-  if (totalPages <= 1) return; // Không cần phân trang nếu chỉ có 1 trang
+  if (totalPages <= 1) return;
 
   // Nút Prev
   const prevBtn = document.createElement("button");
@@ -86,7 +69,7 @@ function renderPagination(totalPages) {
   prevBtn.onclick = () => {
     if (currentPage > 1) {
       currentPage--;
-      loadStoriesWithFilters();
+      loadSelfWrittenStories();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -100,7 +83,7 @@ function renderPagination(totalPages) {
     pageBtn.onclick = () => {
       if (currentPage !== i) {
         currentPage = i;
-        loadStoriesWithFilters();
+        loadSelfWrittenStories();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     };
@@ -115,7 +98,7 @@ function renderPagination(totalPages) {
   nextBtn.onclick = () => {
     if (currentPage < totalPages) {
       currentPage++;
-      loadStoriesWithFilters();
+      loadSelfWrittenStories();
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
@@ -127,7 +110,7 @@ function renderStories(storiesArray) {
   if (!container) return;
 
   if (storiesArray.length === 0) {
-    container.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: #888; font-style: italic; padding: 20px;">Không tìm thấy bộ truyện nào phù hợp với bộ lọc.</p>`;
+    container.innerHTML = `<p style="grid-column: 1 / -1; text-align: center; color: #888; font-style: italic; padding: 30px; background: #fff; border-radius: 8px;">Hiện tại chưa có truyện sáng tác nào mang nhãn "Tori Xuất bản".</p>`;
     return;
   }
 
@@ -141,7 +124,7 @@ function renderStories(storiesArray) {
     let premiumBadge = story.isPremium ? `<span class="tag-badge" style="position:absolute; top:5px; right:5px; background: #ffd700; color:#000; font-size:10px; font-weight:bold; padding:2px 5px; border-radius:3px;">Trả phí</span>` : "";
 
     htmlContent += `
-      <div class="atropos atropos-search-${story._id}" style="width: 100%; height: 100%; cursor: pointer;" onclick="window.location.href='${detailHref}'">
+      <div class="atropos atropos-self-${story._id}" style="width: 100%; height: 100%; cursor: pointer;" onclick="window.location.href='${detailHref}'">
         <div class="atropos-scale">
           <div class="atropos-rotate">
             <div class="atropos-inner">
@@ -164,7 +147,7 @@ function renderStories(storiesArray) {
   if (typeof Atropos !== 'undefined') {
     storiesArray.forEach(story => {
       Atropos({
-        el: `.atropos-search-${story._id}`,
+        el: `.atropos-self-${story._id}`,
         activeOffset: 40,
         shadow: false,
         highlight: false
@@ -173,28 +156,6 @@ function renderStories(storiesArray) {
   }
 }
 
-// Hook up events
 document.addEventListener("DOMContentLoaded", () => {
-  // Check if there is a search query from Navbar
-  const urlParams = new URLSearchParams(window.location.search);
-  const initialTitle = urlParams.get("title");
-  
-  const titleInput = document.getElementById("filter-title");
-  if (initialTitle && titleInput) {
-    titleInput.value = initialTitle;
-  }
-
-  // Bind filter button (for fallback)
-  const applyBtn = document.getElementById("btn-apply-filter");
-  if (applyBtn) {
-    applyBtn.addEventListener("click", () => {
-      applyClientFilters();
-    });
-  }
-
-
-
-
-  // Load initially
-  loadStoriesWithFilters();
+  loadSelfWrittenStories();
 });

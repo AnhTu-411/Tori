@@ -12,43 +12,89 @@ const { TrashStory, TrashChapter } = require("../models/Trash");
 // 1. API lấy toàn bộ danh sách truyện (Dùng cho Trang chủ và Admin)
 router.get("/api/stories", async (req, res) => {
   try {
-    const { publisherId, role, title, genres, status, year } = req.query;
+    const { publisherId, role, title, genres, status, year, sort, page = 1, limit = 12 } = req.query;
     let query = {};
     if (publisherId) {
       query.publisherId = publisherId;
     }
     
     if (title) {
-      query.title = { $regex: title, $options: "i" };
+      // Chuẩn hoá title trước khi search
+      const normalizedTitle = title.trim().normalize('NFC');
+      query.$or = [
+        { title: { $regex: normalizedTitle, $options: "i" } },
+        { author: { $regex: normalizedTitle, $options: "i" } }
+      ];
     }
     
     if (genres) {
       const genreArray = Array.isArray(genres) ? genres : genres.split(",");
-      query.genres = { $in: genreArray };
+      const regexArray = genreArray.map(g => {
+        const normalizedG = g.trim().normalize('NFC');
+        return new RegExp("^" + normalizedG.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "$", "i");
+      });
+      query.genres = { $all: regexArray };
     }
     
     if (status && status !== "Tất cả" && status !== "") {
       query.status = status;
     }
 
-    // Nếu không phải admin và không phải đang tìm truyện của chính mình, chỉ lấy truyện đã duyệt hoặc truyện cũ
-    if (role !== "admin" && !publisherId) {
-      query.$or = [
-        { isApproved: true },
-        { isApproved: { $exists: false } }
-      ];
+    if (year && year !== "Tất cả" && year !== "") {
+      // Tìm theo năm (sử dụng MongoDB aggregation operator $expr)
+      query.$expr = {
+        $eq: [
+          { $year: { $ifNull: ["$publishedDate", "$createdAt"] } },
+          parseInt(year)
+        ]
+      };
+    }
+
+    // Nếu không phải admin/owner và không phải đang tìm truyện của chính mình, chỉ lấy truyện đã duyệt hoặc truyện cũ
+    if (role !== "admin" && role !== "owner" && !publisherId) {
+      // Vì $expr và $or có thể đụng độ, gộp vào $and
+      const authFilter = {
+        $or: [
+          { isApproved: true },
+          { isApproved: { $exists: false } }
+        ]
+      };
+      
+      if (query.$or || query.$expr) {
+         if (!query.$and) query.$and = [];
+         query.$and.push(authFilter);
+         if (query.$or) {
+            query.$and.push({ $or: query.$or });
+            delete query.$or;
+         }
+         if (query.$expr) {
+            query.$and.push({ $expr: query.$expr });
+            delete query.$expr;
+         }
+      } else {
+         query.$or = authFilter.$or;
+      }
     }
     
-    let stories = await Story.find(query).sort({ createdAt: -1 });
+    // Sort logic
+    let sortObj = { createdAt: -1 };
+    if (sort === 'az') sortObj = { title: 1 };
+    else if (sort === 'za') sortObj = { title: -1 };
+    
+    const pageNum = parseInt(page) || 1;
+    const limitNum = parseInt(limit) || 12;
+    const skip = (pageNum - 1) * limitNum;
 
-    if (year && year !== "Tất cả" && year !== "") {
-      stories = stories.filter(story => {
-        const d = story.publishedDate ? new Date(story.publishedDate) : new Date(story.createdAt);
-        return d.getFullYear().toString() === year.toString();
-      });
-    }
+    const total = await Story.countDocuments(query);
+    const stories = await Story.find(query).sort(sortObj).skip(skip).limit(limitNum);
 
-    res.status(200).json(stories);
+    res.status(200).json({
+      data: stories,
+      total: total,
+      page: pageNum,
+      totalPages: Math.ceil(total / limitNum),
+      limit: limitNum
+    });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }
@@ -59,8 +105,8 @@ router.post("/api/stories", async (req, res) => {
   try {
     const { title, author, description, coverImg, status, isPremium, price, publisherId, role, genres, publishedDate } = req.body;
     
-    // Nếu admin tạo truyện thì duyệt luôn, ngược lại là false
-    const approved = role === "admin" ? true : false;
+    // Nếu admin/owner tạo truyện thì duyệt luôn, ngược lại là false
+    const approved = (role === "admin" || role === "owner") ? true : false;
 
     const newStory = new Story({
       title,
@@ -69,7 +115,7 @@ router.post("/api/stories", async (req, res) => {
       coverImg,
       status,
       genres: genres || [],
-      publishedDate: publishedDate ? new Date(publishedDate) : new Date(),
+      publishedDate: publishedDate ? new Date(publishedDate) : null,
       isPremium: isPremium || false,
       price: price || 0,
       publisherId: publisherId || null,
@@ -78,7 +124,7 @@ router.post("/api/stories", async (req, res) => {
     await newStory.save();
     
     // Ghi Log Admin
-    if (role === "admin") {
+    if (role === "admin" || role === "owner") {
       await logAdminAction(req.body.adminUsername, role, "CREATE_STORY", `Đã thêm truyện mới: "${title}" (ID: ${newStory._id})`);
     }
 
@@ -117,7 +163,7 @@ router.put("/api/stories/:id", async (req, res) => {
 
     // Ghi Log Admin
     const { role, adminUsername } = req.body;
-    if (role === "admin") {
+    if (role === "admin" || role === "owner") {
       await logAdminAction(adminUsername, role, "UPDATE_STORY", `Đã sửa truyện: "${updatedStory.title}" (ID: ${updatedStory._id})`);
     }
 
@@ -181,7 +227,7 @@ router.delete("/api/stories/:id", async (req, res) => {
     
     // Ghi Log Admin (Lấy query params adminUsername, role)
     const { role, adminUsername } = req.query;
-    if (role === "admin") {
+    if (role === "admin" || role === "owner") {
       await logAdminAction(adminUsername, role, "DELETE_STORY", `Đã xóa truyện: "${storyToTrash.title}" (ID: ${storyId}) vào thùng rác`);
     }
 
@@ -190,7 +236,5 @@ router.delete("/api/stories/:id", async (req, res) => {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }
 });
-
-
 
 module.exports = router;

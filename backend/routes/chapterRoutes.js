@@ -42,7 +42,7 @@ router.post("/api/chapters", async (req, res) => {
       return res.status(404).json({ message: "Không tìm thấy truyện!" });
     }
 
-    const approved = role === "admin" ? true : false;
+    const approved = (role === "admin" || role === "owner") ? true : false;
 
     const newChapter = new Chapter({
       storyId,
@@ -57,7 +57,7 @@ router.post("/api/chapters", async (req, res) => {
     await newChapter.save();
 
     // Ghi Log Admin
-    if (role === "admin") {
+    if (role === "admin" || role === "owner") {
       await logAdminAction(req.body.adminUsername, role, "CREATE_CHAPTER", `Đã thêm chương ${chapterNumber} truyện ID: ${storyId}`);
     }
 
@@ -90,7 +90,7 @@ router.get("/api/chapters/:id", async (req, res) => {
       }
 
       // Check quyền admin hoặc đã mua
-      const isAdmin = user.role === "admin";
+      const isAdmin = user.role === "admin" || user.role === "owner";
       // Ưu tiên check mua lẻ trước, fallback check mua nguyên bộ (unlockedStories) cho các user cũ
       const hasPurchased = user.unlockedChapters.includes(chapter._id) || user.unlockedStories.includes(story._id);
       
@@ -128,7 +128,7 @@ router.put("/api/chapters/:id", async (req, res) => {
 
     // Ghi Log Admin
     const { role, adminUsername } = req.body;
-    if (role === "admin") {
+    if (role === "admin" || role === "owner") {
       await logAdminAction(adminUsername, role, "UPDATE_CHAPTER", `Đã sửa chương ${updatedChapter.chapterNumber} truyện ID: ${updatedChapter.storyId}`);
     }
 
@@ -181,7 +181,7 @@ router.delete("/api/chapters/:id", async (req, res) => {
 
     // Ghi Log Admin
     const { role, adminUsername } = req.query;
-    if (role === "admin") {
+    if (role === "admin" || role === "owner") {
       await logAdminAction(adminUsername, role, "DELETE_CHAPTER", `Đã xóa chương ID: ${chapterId} vào thùng rác`);
     }
 

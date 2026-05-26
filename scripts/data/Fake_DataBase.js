@@ -4,10 +4,11 @@ let currentStories = [];
 // === PHẦN 1: KẾT NỐI MONGODB LẤY DỮ LIỆU ===
 async function fetchStoriesFromDatabase() {
   try {
-    const response = await fetch("http://localhost:5000/api/stories");
+    const response = await fetch("http://localhost:5000/api/stories?limit=100");
     if (!response.ok) throw new Error("Không thể tải danh sách truyện");
 
-    currentStories = await response.json();
+    const responseData = await response.json();
+    currentStories = Array.isArray(responseData) ? responseData : responseData.data;
 
     // Lấy dữ liệu xong thì gọi hàm vẽ giao diện luôn
     renderCarousel(currentStories);

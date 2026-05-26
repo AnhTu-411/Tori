@@ -34,9 +34,23 @@
     <div class="admin-main">
       <div class="admin-header">
         <h1>Danh sách Truyện</h1>
-        <div style="display: flex; gap: 10px; align-items: center;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap; margin-bottom: 20px;">
           <input type="text" id="search-story-input" class="form-control" style="width: 250px;" placeholder="Tìm tên truyện, tác giả...">
-          <a href="Admin_Story_Form.html" class="btn btn-primary">+ Thêm Truyện Mới</a>
+          
+          <input type="text" id="search-genre" class="form-control" style="width: 200px;" placeholder="Thể loại (VD: Hành động, Hài hước)">
+
+          <select id="search-status" class="form-control" style="width: 150px;">
+            <option value="">Tất cả trạng thái</option>
+            <option value="Đang tiến hành">Đang tiến hành</option>
+            <option value="Hoàn thành">Hoàn thành</option>
+            <option value="Tạm ngưng">Tạm ngưng</option>
+          </select>
+
+          <input type="number" id="search-year" class="form-control" style="width: 120px;" placeholder="Năm (VD: 2024)">
+          
+          <button id="btn-admin-search" class="btn btn-info" style="margin-right: auto;">Tìm kiếm</button>
+
+          <a href="Admin_Story_Form.html" class="btn btn-primary" style="margin-left: auto;">+ Thêm Truyện Mới</a>
         </div>
       </div>
 

@@ -1,5 +1,9 @@
 const API_URL = "http://localhost:5000/api";
 
+// === CACHE toàn bộ dữ liệu ===
+let allRequestsCache = [];
+let allPublishersCache = [];
+
 document.addEventListener("DOMContentLoaded", () => {
   const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
   
@@ -14,16 +18,45 @@ document.addEventListener("DOMContentLoaded", () => {
     if (menuUsers) menuUsers.style.display = "block";
   }
 
+  const searchBtn = document.getElementById("btn-search-publisher");
+  if (searchBtn) {
+    searchBtn.addEventListener("click", filterAndRenderAll);
+  }
+
   fetchRequests();
   fetchCurrentPublishers();
 });
+
+// === HÀM LỌC CLIENT-SIDE ===
+function filterAndRenderAll() {
+  const searchInput = document.getElementById("search-publisher");
+  const keyword = searchInput ? searchInput.value.trim().normalize('NFC').toLowerCase() : "";
+
+  // Lọc đơn xin duyệt
+  const filteredRequests = allRequestsCache.filter(req => {
+    const username = req.user ? req.user.username : "";
+    const email = req.user ? req.user.email : "";
+    const reason = req.reason || "";
+    const status = req.status || "";
+    const combined = (username + " " + email + " " + reason + " " + status).normalize('NFC').toLowerCase();
+    return combined.includes(keyword);
+  });
+  renderRequests(filteredRequests);
+
+  // Lọc danh sách NXB hiện tại
+  const filteredPublishers = allPublishersCache.filter(pub => {
+    const combined = (pub.username + " " + pub.email + " " + (pub._id || "")).normalize('NFC').toLowerCase();
+    return combined.includes(keyword);
+  });
+  renderPublishers(filteredPublishers);
+}
 
 async function fetchCurrentPublishers() {
   try {
     const response = await fetch(`${API_URL}/publishers`);
     if (!response.ok) throw new Error("Lỗi khi tải danh sách NXB");
-    const publishers = await response.json();
-    renderPublishers(publishers);
+    allPublishersCache = await response.json();
+    filterAndRenderAll();
   } catch (error) {
     console.error(error);
     alert("Không thể tải danh sách Nhà Xuất Bản hiện tại!");
@@ -68,7 +101,7 @@ async function revokePublisher(pubId, pubUsername) {
 
     if (response.ok) {
       alert(`Đã gỡ quyền NXB của "${pubUsername}" thành công!`);
-      fetchCurrentPublishers(); // Tải lại bảng NXB
+      fetchCurrentPublishers();
     } else {
       const data = await response.json();
       alert("Lỗi: " + data.message);
@@ -83,8 +116,8 @@ async function fetchRequests() {
   try {
     const response = await fetch(`${API_URL}/publisher-requests`);
     if (!response.ok) throw new Error("Lỗi khi tải danh sách");
-    const requests = await response.json();
-    renderRequests(requests);
+    allRequestsCache = await response.json();
+    filterAndRenderAll();
   } catch (error) {
     console.error(error);
     alert("Không thể tải danh sách đơn đăng ký!");

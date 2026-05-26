@@ -117,59 +117,121 @@
     <script>
       var API_URL = "http://localhost:5000/api";
 
+      var currentPage = 1;
+      var currentLimit = 12;
+
       // === TÌM KIẾM ===
-      async function doAdvancedSearch() {
-        var queryParams = new URLSearchParams();
+      async function doAdvancedSearch(resetPage = true) {
+        if (resetPage) currentPage = 1;
 
-        // Từ khoá
-        var title = document.getElementById("adv-search-title").value.trim();
-        if (title) queryParams.append("title", title);
-
-        // Thể loại (checkbox)
+        var keyword = document.getElementById("adv-search-title").value.trim().normalize('NFC').toLowerCase();
+        
         var checkedGenres = document.querySelectorAll('input[name="adv-genres"]:checked');
-        if (checkedGenres.length > 0) {
-          var genres = Array.from(checkedGenres).map(function(cb) { return cb.value; }).join(",");
-          queryParams.append("genres", genres);
-        }
+        var searchGenres = Array.from(checkedGenres).map(function(cb) { return cb.value.trim().normalize('NFC'); }).join(",");
 
-        // Tình trạng
         var status = document.getElementById("adv-status-select").value;
-        if (status && status !== "Tất cả") queryParams.append("status", status);
-
-        // Năm xuất bản
         var year = document.getElementById("adv-year-select").value;
-        if (year && year !== "Tất cả") queryParams.append("year", year);
+        var sort = document.getElementById("adv-sort-select").value;
 
-        // Gọi API
-        try {
-          var res = await fetch(API_URL + "/stories?" + queryParams.toString());
-          if (!res.ok) throw new Error("Lỗi tải dữ liệu");
-          var stories = await res.json();
+        var queryParams = new URLSearchParams();
+        queryParams.append("page", currentPage);
+        queryParams.append("limit", currentLimit);
 
-          // Sắp xếp
-          var sortVal = document.getElementById("adv-sort-select").value;
-          if (sortVal === "az") {
-            stories.sort(function(a, b) { return a.title.localeCompare(b.title, "vi"); });
-          } else if (sortVal === "za") {
-            stories.sort(function(a, b) { return b.title.localeCompare(a.title, "vi"); });
-          }
+        if (keyword) queryParams.append("title", keyword);
+        if (status !== "Tất cả") queryParams.append("status", status);
+        if (year !== "Tất cả") queryParams.append("year", year);
+        if (searchGenres) queryParams.append("genres", searchGenres);
+        if (sort) queryParams.append("sort", sort);
 
-          renderResults(stories);
-        } catch (err) {
-          console.error(err);
-          document.getElementById("adv-search-results").innerHTML = '<p style="color:red; text-align:center;">Lỗi kết nối đến máy chủ!</p>';
-          document.getElementById("search-results-section").style.display = "block";
-        }
-      }
-
-      // === VẼ KẾT QUẢ ===
-      function renderResults(stories) {
         var section = document.getElementById("search-results-section");
         var container = document.getElementById("adv-search-results");
         var countSpan = document.getElementById("result-count");
 
         section.style.display = "block";
-        countSpan.textContent = stories.length;
+        container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center;">Đang tải kết quả...</p>';
+
+        try {
+          var res = await fetch(API_URL + "/stories?" + queryParams.toString());
+          if (!res.ok) throw new Error("Lỗi tải dữ liệu");
+          
+          var responseData = await res.json();
+          var stories = Array.isArray(responseData) ? responseData : responseData.data;
+          var totalPages = responseData.totalPages || 1;
+          var totalItems = responseData.total || stories.length;
+
+          countSpan.textContent = totalItems;
+          renderResults(stories);
+          renderPagination(totalPages);
+        } catch (err) {
+          console.error(err);
+          container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: red;">Lỗi kết nối đến máy chủ!</p>';
+        }
+      }
+
+      function renderPagination(totalPages) {
+        var paginationContainer = document.getElementById("adv-pagination-container");
+        if (!paginationContainer) {
+          var section = document.getElementById("search-results-section");
+          paginationContainer = document.createElement("div");
+          paginationContainer.id = "adv-pagination-container";
+          paginationContainer.className = "pagination";
+          paginationContainer.style.marginTop = "30px";
+          paginationContainer.style.display = "flex";
+          paginationContainer.style.justifyContent = "center";
+          paginationContainer.style.gap = "10px";
+          section.appendChild(paginationContainer);
+        }
+
+        paginationContainer.innerHTML = "";
+        if (totalPages <= 1) return;
+
+        // Nút Prev
+        var prevBtn = document.createElement("button");
+        prevBtn.className = "btn btn-outline-primary";
+        prevBtn.innerText = "« Trước";
+        prevBtn.disabled = currentPage === 1;
+        prevBtn.onclick = function() {
+          if (currentPage > 1) {
+            currentPage--;
+            doAdvancedSearch(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        };
+        paginationContainer.appendChild(prevBtn);
+
+        // Số trang
+        for (let i = 1; i <= totalPages; i++) {
+          let pageBtn = document.createElement("button");
+          pageBtn.className = "btn " + (i === currentPage ? "btn-primary" : "btn-outline-primary");
+          pageBtn.innerText = i;
+          pageBtn.onclick = function() {
+            if (currentPage !== i) {
+              currentPage = i;
+              doAdvancedSearch(false);
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+          };
+          paginationContainer.appendChild(pageBtn);
+        }
+
+        // Nút Next
+        var nextBtn = document.createElement("button");
+        nextBtn.className = "btn btn-outline-primary";
+        nextBtn.innerText = "Sau »";
+        nextBtn.disabled = currentPage === totalPages;
+        nextBtn.onclick = function() {
+          if (currentPage < totalPages) {
+            currentPage++;
+            doAdvancedSearch(false);
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        };
+        paginationContainer.appendChild(nextBtn);
+      }
+
+      // === VẼ KẾT QUẢ ===
+      function renderResults(stories) {
+        var container = document.getElementById("adv-search-results");
 
         if (stories.length === 0) {
           container.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: #888; font-style: italic; padding: 30px;">Không tìm thấy truyện nào phù hợp.</p>';
@@ -243,6 +305,9 @@
         if (searchBtn) {
           searchBtn.addEventListener("click", doAdvancedSearch);
         }
+
+
+
 
         // Nếu có query param từ navbar search → tự động điền và tìm
         var urlParams = new URLSearchParams(window.location.search);

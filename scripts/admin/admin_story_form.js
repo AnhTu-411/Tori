@@ -62,6 +62,11 @@ async function fetchStoryDetails(id) {
     document.getElementById("genres").value = story.genres ? story.genres.join(", ") : "";
     document.getElementById("description").value = story.description || "";
     
+    if (story.publishedDate) {
+      const d = new Date(story.publishedDate);
+      document.getElementById("publishedDate").value = d.toISOString().split('T')[0];
+    }
+    
     document.getElementById("isPremium").checked = story.isPremium || false;
     document.getElementById("price").value = story.price || 0;
     if (story.isPremium) {
@@ -89,6 +94,7 @@ async function saveStory(e) {
   const description = document.getElementById("description").value.trim();
   const genresInput = document.getElementById("genres").value.trim();
   const genres = genresInput ? genresInput.split(",").map(g => g.trim()) : [];
+  const publishedDate = document.getElementById("publishedDate").value;
   const isPremium = document.getElementById("isPremium").checked;
   const price = parseInt(document.getElementById("price").value) || 0;
 
@@ -100,7 +106,8 @@ async function saveStory(e) {
     description,
     genres,
     isPremium,
-    price
+    price,
+    publishedDate: publishedDate ? publishedDate : null
   };
 
   const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));

@@ -117,6 +117,7 @@ async function loadStoryDetail() {
           <h1 class="detail-title">${story.title}</h1>
           <div class="detail-tags">${tagsHtml}</div>
           <p class="detail-meta"><strong>Tác giả:</strong> ${story.author}</p>
+          <p class="detail-meta"><strong>Năm xuất bản:</strong> ${(story.publishedDate ? new Date(story.publishedDate) : new Date(story.createdAt)).getFullYear()}</p>
           <p class="detail-meta"><strong>Tình trạng:</strong> ${story.status || "Đang tiến hành"}</p>
           
           <!-- Đã loại bỏ nút mua nguyên bộ -->

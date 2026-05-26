@@ -15,65 +15,96 @@ document.addEventListener("DOMContentLoaded", async () => {
   const modal = document.getElementById("edit-user-modal");
   
   let currentEditUserId = null;
+  let allUsersCache = [];
+
+  // === TÌM KIẾM ===
+  const searchInput = document.getElementById("search-users");
+  const searchBtn = document.getElementById("btn-search-users");
+  if (searchBtn) {
+    searchBtn.addEventListener("click", filterAndRenderUsers);
+  }
+  function filterAndRenderUsers() {
+    const keyword = searchInput ? searchInput.value.trim().normalize('NFC').toLowerCase() : "";
+
+    const filtered = allUsersCache.filter(user => {
+      const combined = (
+        user.username + " " + 
+        user.email + " " + 
+        user.role + " " + 
+        (user._id || "")
+      ).normalize('NFC').toLowerCase();
+      return combined.includes(keyword);
+    });
+
+    renderUsers(filtered);
+  }
+
+  function renderUsers(users) {
+    tbody.innerHTML = "";
+
+    if (users.length === 0) {
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #888; font-style: italic;">Không tìm thấy tài khoản nào.</td></tr>`;
+      return;
+    }
+
+    users.forEach((user) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${user._id.substring(0, 6)}...</td>
+        <td>${user.username}</td>
+        <td>${user.email}</td>
+        <td>
+           <span class="role-badge ${user.role}">${user.role}</span>
+        </td>
+        <td>${user.coins} <i class="fa-solid fa-coins" style="color: gold;"></i></td>
+        <td>
+          <button class="btn btn-primary btn-edit" data-id="${user._id}" data-role="${user.role}" data-coins="${user.coins}">Sửa</button>
+          <button class="btn btn-danger btn-delete" data-id="${user._id}" ${user.role === 'owner' ? 'disabled' : ''}>Xóa</button>
+        </td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    // Events cho nút
+    document.querySelectorAll(".btn-edit").forEach(btn => {
+      btn.addEventListener("click", (e) => {
+        currentEditUserId = e.target.getAttribute("data-id");
+        document.getElementById("edit-user-role").value = e.target.getAttribute("data-role");
+        document.getElementById("edit-user-coins").value = e.target.getAttribute("data-coins");
+        document.getElementById("edit-user-password").value = "";
+        modal.style.display = "flex";
+      });
+    });
+
+    document.querySelectorAll(".btn-delete").forEach(btn => {
+      btn.addEventListener("click", async (e) => {
+        const id = e.target.getAttribute("data-id");
+        if (confirm("Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản này không?")) {
+          try {
+            const res = await fetch(`${API_URL}/owner/users/${id}?role=${currentUser.role}&ownerUsername=${currentUser.username}`, {
+              method: "DELETE"
+            });
+            if (res.ok) {
+              alert("Xóa thành công!");
+              loadUsers();
+            } else {
+              const errorData = await res.json();
+              alert(errorData.message);
+            }
+          } catch(err) {
+            alert("Lỗi Server");
+          }
+        }
+      });
+    });
+  }
 
   async function loadUsers() {
     try {
       const response = await fetch(`${API_URL}/owner/users?role=${currentUser.role}`);
       if (!response.ok) throw new Error("Lỗi tải danh sách người dùng");
-      const users = await response.json();
-
-      tbody.innerHTML = "";
-      users.forEach((user) => {
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-          <td>${user._id.substring(0, 6)}...</td>
-          <td>${user.username}</td>
-          <td>${user.email}</td>
-          <td>
-             <span class="role-badge ${user.role}">${user.role}</span>
-          </td>
-          <td>${user.coins} <i class="fa-solid fa-coins" style="color: gold;"></i></td>
-          <td>
-            <button class="btn btn-primary btn-edit" data-id="${user._id}" data-role="${user.role}" data-coins="${user.coins}">Sửa</button>
-            <button class="btn btn-danger btn-delete" data-id="${user._id}" ${user.role === 'owner' ? 'disabled' : ''}>Xóa</button>
-          </td>
-        `;
-        tbody.appendChild(tr);
-      });
-
-      // Events cho nút
-      document.querySelectorAll(".btn-edit").forEach(btn => {
-        btn.addEventListener("click", (e) => {
-          currentEditUserId = e.target.getAttribute("data-id");
-          document.getElementById("edit-user-role").value = e.target.getAttribute("data-role");
-          document.getElementById("edit-user-coins").value = e.target.getAttribute("data-coins");
-          document.getElementById("edit-user-password").value = "";
-          modal.style.display = "flex";
-        });
-      });
-
-      document.querySelectorAll(".btn-delete").forEach(btn => {
-        btn.addEventListener("click", async (e) => {
-          const id = e.target.getAttribute("data-id");
-          if (confirm("Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản này không?")) {
-            try {
-              const res = await fetch(`${API_URL}/owner/users/${id}?role=${currentUser.role}&ownerUsername=${currentUser.username}`, {
-                method: "DELETE"
-              });
-              if (res.ok) {
-                alert("Xóa thành công!");
-                loadUsers();
-              } else {
-                const errorData = await res.json();
-                alert(errorData.message);
-              }
-            } catch(err) {
-              alert("Lỗi Server");
-            }
-          }
-        });
-      });
-
+      allUsersCache = await response.json();
+      filterAndRenderUsers();
     } catch (error) {
       console.error(error);
     }

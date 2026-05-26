@@ -160,7 +160,7 @@ p {
 }
 
 .New-update {
-  margin-top: 40px; /* Tạoj khoảng cách với Slider phía trên */
+  margin-top: 40px; /* Tạo khoảng cách với Slider phía trên */
 }
 
 /* Khung viền bọc ngoài toàn bộ danh sách */
@@ -263,13 +263,14 @@ p {
   margin-top: 2px;
 }
 
-/* Phân trang */
+/* ===== Phân trang ===== */
 .pagination {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
   align-items: center;
   margin-top: 20px;
-  gap: 5px;
+  gap: 6px;
+  flex-wrap: wrap;
 }
 
 .page-btn {
@@ -290,6 +291,44 @@ p {
 .page-btn.active {
   background-color: #2b70a1;
   color: white;
+}
+
+/* ===== Pagination Buttons (dùng chung cho tất cả trang) ===== */
+.pagination .btn {
+  padding: 7px 14px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+}
+
+.pagination .btn-primary {
+  background-color: #3498db;
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(52, 152, 219, 0.35);
+}
+.pagination .btn-primary:hover {
+  background-color: #2980b9;
+}
+
+.pagination .btn-outline-primary {
+  background-color: transparent;
+  color: #3498db;
+  border: 1.5px solid #3498db;
+}
+.pagination .btn-outline-primary:hover:not(:disabled) {
+  background-color: #3498db;
+  color: #fff;
+}
+.pagination .btn-outline-primary:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 /* ========== STORY LIST FILTER SIDEBAR ========== */

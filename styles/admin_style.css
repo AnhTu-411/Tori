@@ -181,8 +181,8 @@ textarea.form-control {
 body.dark-mode .admin-header,
 body.dark-mode .admin-table-container,
 body.dark-mode .admin-form-container {
-  background-color: #1f2430;
-  border: 1px solid #2d3446;
+  background-color: rgba(31, 36, 48, 0.85);
+  border: 1px solid rgba(45, 52, 70, 0.8);
   box-shadow: none;
 }
 
@@ -194,16 +194,16 @@ body.dark-mode .admin-table td {
 }
 
 body.dark-mode .admin-table th {
-  background-color: #2a3142;
-  border-bottom: 1px solid #3c465a;
+  background-color: rgba(42, 49, 66, 0.85);
+  border-bottom: 1px solid rgba(60, 70, 90, 0.8);
 }
 
 body.dark-mode .admin-table td {
-  border-bottom: 1px solid #2d3446;
+  border-bottom: 1px solid rgba(45, 52, 70, 0.8);
 }
 
 body.dark-mode .admin-table tr:hover {
-  background-color: #2a3142;
+  background-color: rgba(42, 49, 66, 0.6);
 }
 
 body.dark-mode .form-control {
@@ -215,3 +215,11 @@ body.dark-mode .form-control {
 body.dark-mode .admin-sidebar {
   background-color: #1a202c;
 }
+
+.text-approval { color: green; }
+.text-unapproved { color: orange; }
+
+.status-badge { padding: 4px 8px; border-radius: 4px; font-size: 13px; display: inline-block; font-weight: bold; }
+.status-ongoing { background: #e8f8f5; color: #1abc9c; }
+.status-completed { background: #d4edda; color: #28a745; }
+.status-paused { background: #fff3cd; color: #856404; }
