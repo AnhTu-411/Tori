@@ -175,4 +175,21 @@ router.put("/api/admin/transactions/:id", async (req, res) => {
   }
 });
 
+// ==========================================
+// KHOẢNG NHẬT KÝ HOẠT ĐỘNG
+// ==========================================
+router.get("/api/admin/logs", async (req, res) => {
+  try {
+    const { role } = req.query;
+    if (role !== "admin" && role !== "owner") {
+      return res.status(403).json({ message: "Chỉ Admin/Owner mới có quyền truy cập!" });
+    }
+
+    const logs = await AdminLog.find().sort({ createdAt: -1 });
+    res.status(200).json(logs);
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi Server!", error: error.message });
+  }
+});
+
 module.exports = router;

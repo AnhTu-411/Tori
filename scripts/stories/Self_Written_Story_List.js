@@ -16,6 +16,11 @@ async function loadSelfWrittenStories() {
   queryParams.append("limit", currentLimit);
   queryParams.append("genres", "Tori Xuất bản"); // Lọc riêng tag Tori Xuất bản
   
+  let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+  if (currentUser && currentUser.role) {
+    queryParams.append("role", currentUser.role);
+  }
+  
   if (currentSort && currentSort !== "default") {
     queryParams.append("sort", currentSort);
   }

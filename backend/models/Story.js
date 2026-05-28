@@ -12,6 +12,8 @@ const storySchema = new mongoose.Schema({
   publishedDate: { type: Date },
   publisherId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   isApproved: { type: Boolean, default: false },
+  deleteRequested: { type: Boolean, default: false },
+  deleteReason: { type: String, default: null },
   createdAt: { type: Date, default: Date.now },
 });
 

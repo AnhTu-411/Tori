@@ -72,6 +72,11 @@ router.post("/api/publisher-requests", async (req, res) => {
 // 2. Lấy danh sách toàn bộ đơn đăng ký (Dành cho Admin)
 router.get("/api/publisher-requests", async (req, res) => {
   try {
+    const { role } = req.query;
+    if (role !== "admin" && role !== "owner") {
+      return res.status(403).json({ message: "Chỉ Admin/Owner mới có quyền xem danh sách đơn!" });
+    }
+
     const requests = await PublisherRequest.find()
       .populate("user", "username email")
       .sort({ createdAt: -1 });
@@ -84,7 +89,11 @@ router.get("/api/publisher-requests", async (req, res) => {
 // 3. Duyệt / Từ chối đơn đăng ký (Dành cho Admin)
 router.put("/api/publisher-requests/:id", async (req, res) => {
   try {
-    const { status } = req.body; // "Đã duyệt" hoặc "Từ chối"
+    const { status, role, adminUsername } = req.body; // "Đã duyệt" hoặc "Từ chối"
+    if (role !== "admin" && role !== "owner") {
+      return res.status(403).json({ message: "Chỉ Admin/Owner mới có quyền duyệt đơn!" });
+    }
+
     const request = await PublisherRequest.findById(req.params.id);
     if (!request) return res.status(404).json({ message: "Không tìm thấy đơn này" });
 
@@ -101,15 +110,12 @@ router.put("/api/publisher-requests/:id", async (req, res) => {
     await PublisherRequest.findByIdAndDelete(req.params.id);
 
     // Ghi Log Admin
-    const { adminUsername } = req.body;
-    await logAdminAction(adminUsername, "admin", "PROCESS_REQUEST", `Đã ${status} đơn xin làm NXB của User ID: ${request.user}`);
+    await logAdminAction(adminUsername, role, "PROCESS_REQUEST", `Đã ${status} đơn xin làm NXB của User ID: ${request.user}`);
 
     res.status(200).json({ message: `Cập nhật trạng thái đơn thành ${status} và xoá thành công!` });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }
 });
-
-
 
 module.exports = router;

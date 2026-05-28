@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quản lý Đơn Hàng - Tori Admin</title>
+  <title>Giám sát Nhật ký - Tori Admin</title>
   <link rel="icon" sizes="16x16" href="../../assets/images/Falvicon.ico" />
   <link rel="stylesheet" href="../../styles/main_style.css" />
   <link rel="stylesheet" href="../../styles/main_header_style.css" />
@@ -21,9 +21,9 @@
         <ul>
           <li><a href="Admin_Stories.html">Quản lý Truyện</a></li>
           <li id="menu-publisher-requests"><a href="Admin_Publisher_Requests.html">Duyệt NXB</a></li>
-          <li id="menu-transactions"><a href="Admin_Transactions.html" class="active">Quản lý Đơn Hàng</a></li>
+          <li id="menu-transactions"><a href="Admin_Transactions.html">Quản lý Đơn Hàng</a></li>
           <li id="menu-users" style="display: none;"><a href="Admin_Users.html">Quản lý Tài Khoản</a></li>
-          <li id="menu-admin-logs"><a href="Admin_Logs.html">Giám sát Nhật ký</a></li>
+          <li id="menu-admin-logs"><a href="Admin_Logs.html" class="active">Giám sát Nhật ký</a></li>
         </ul>
       </nav>
     </aside>
@@ -31,28 +31,25 @@
     <!-- Main Content Admin -->
     <div class="admin-main">
       <div class="admin-header">
-        <h1>Quản lý Đơn Hàng (Giao dịch)</h1>
+        <h1>Giám sát Nhật ký (Admin Logs)</h1>
       </div>
 
       <div class="admin-filters" style="margin-bottom: 15px; display: flex; gap: 10px;">
-        <input type="text" id="search-transactions" placeholder="Tìm kiếm Username, Loại GD..." style="padding: 8px; width: 300px; border: 1px solid #ccc; border-radius: 4px;">
-        <button id="btn-search-transactions" class="btn btn-info">Tìm kiếm</button>
+        <input type="text" id="search-logs" placeholder="Tìm kiếm tài khoản, hành động..." style="padding: 8px; width: 300px; border: 1px solid #ccc; border-radius: 4px;">
+        <button id="btn-search-logs" class="btn btn-info">Tìm kiếm</button>
       </div>
 
       <div class="admin-table-container">
         <table class="admin-table">
           <thead>
             <tr>
-              <th>Mã Giao Dịch</th>
-              <th>Người Dùng</th>
-              <th>Loại GD</th>
-              <th>Giá trị (Coins)</th>
-              <th>Ngày Tạo</th>
-              <th>Trạng Thái</th>
-              <th>Hành Động</th>
+              <th>Thời gian</th>
+              <th>Quản trị viên</th>
+              <th>Loại hành động</th>
+              <th>Chi tiết</th>
             </tr>
           </thead>
-          <tbody id="tx-table-body">
+          <tbody id="logs-table-body">
             <!-- Dữ liệu render bằng JS -->
           </tbody>
         </table>
@@ -62,7 +59,7 @@
 
   <script src="../../scripts/ui/Routes.js"></script>
   <script src="../../scripts/auth/Auth.js"></script>
-  <script src="../../scripts/admin/admin_transactions.js"></script>
+  <script src="../../scripts/admin/admin_logs.js"></script>
   <script src="../../scripts/ui/Navbar.js"></script>
 </body>
 </html>

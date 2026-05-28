@@ -114,7 +114,8 @@ async function revokePublisher(pubId, pubUsername) {
 
 async function fetchRequests() {
   try {
-    const response = await fetch(`${API_URL}/publisher-requests`);
+    const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+    const response = await fetch(`${API_URL}/publisher-requests?role=${currentUser.role}`);
     if (!response.ok) throw new Error("Lỗi khi tải danh sách");
     allRequestsCache = await response.json();
     filterAndRenderAll();
@@ -170,7 +171,7 @@ async function updateRequestStatus(reqId, newStatus) {
     const response = await fetch(`${API_URL}/publisher-requests/${reqId}`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ status: newStatus, adminUsername: currentUser.username })
+      body: JSON.stringify({ status: newStatus, adminUsername: currentUser.username, role: currentUser.role })
     });
 
     if (response.ok) {

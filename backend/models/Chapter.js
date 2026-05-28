@@ -13,6 +13,8 @@ const chapterSchema = new mongoose.Schema({
   imageLinks2: [{ type: String }],
   price: { type: Number, default: 0 },
   isApproved: { type: Boolean, default: false },
+  deleteRequested: { type: Boolean, default: false },
+  deleteReason: { type: String, default: null },
   createdAt: { type: Date, default: Date.now },
 });
 

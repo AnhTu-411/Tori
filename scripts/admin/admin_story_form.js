@@ -112,7 +112,7 @@ async function saveStory(e) {
 
   const currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
   if (currentUser && currentUser.role === "publisher") {
-    payload.publisherId = currentUser._id;
+    payload.publisherId = currentUser._id || currentUser.id;
   }
   
   if (currentUser) {

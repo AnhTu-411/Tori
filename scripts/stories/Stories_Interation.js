@@ -19,7 +19,12 @@ async function loadStoryDetail() {
     const story = await storyRes.json();
 
     // 2. Fetch Chapters
-    const chaptersRes = await fetch(`${API_URL}/stories/${storyId}/chapters`);
+    let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+    let queryParams = `?role=${currentUser ? currentUser.role : ""}`;
+    if (currentUser && currentUser.role === "publisher") {
+      queryParams += `&publisherId=${currentUser._id || currentUser.id}`;
+    }
+    const chaptersRes = await fetch(`${API_URL}/stories/${storyId}/chapters${queryParams}`);
     const chapters = await chaptersRes.json();
 
     document.title = story.title + " - Tori Lightnovel";
@@ -34,7 +39,7 @@ async function loadStoryDetail() {
       }
     }
 
-    let currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
+    currentUser = JSON.parse(localStorage.getItem("tori_current_user"));
     let isAdmin = currentUser && currentUser.role === "admin";
     let unlockedChapters = [];
 

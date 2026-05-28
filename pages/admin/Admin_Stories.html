@@ -26,6 +26,7 @@
           <li id="menu-publisher-requests"><a href="Admin_Publisher_Requests.html">Duyệt NXB</a></li>
           <li id="menu-transactions"><a href="Admin_Transactions.html">Quản lý Đơn Hàng</a></li>
           <li id="menu-users" style="display: none;"><a href="Admin_Users.html">Quản lý Tài Khoản</a></li>
+          <li id="menu-admin-logs"><a href="Admin_Logs.html">Giám sát Nhật ký</a></li>
         </ul>
       </nav>
     </aside>
@@ -44,6 +45,14 @@
             <option value="Đang tiến hành">Đang tiến hành</option>
             <option value="Hoàn thành">Hoàn thành</option>
             <option value="Tạm ngưng">Tạm ngưng</option>
+          </select>
+
+          <select id="search-approval" class="form-control" style="width: 170px;">
+            <option value="">Tất cả kiểm duyệt</option>
+            <option value="approved">Đã duyệt (Truyện)</option>
+            <option value="unapproved">Chưa duyệt (Truyện)</option>
+            <option value="has_unapproved_chapters">Có chương chờ duyệt</option>
+            <option value="pending_delete">Yêu cầu xoá (Truyện)</option>
           </select>
 
           <input type="number" id="search-year" class="form-control" style="width: 120px;" placeholder="Năm (VD: 2024)">

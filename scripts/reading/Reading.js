@@ -224,7 +224,11 @@ async function loadReadingContent() {
 
     // Logic Chapter Prev / Next
     try {
-      const allChapsRes = await fetch(`${API_URL}/stories/${storyId}/chapters${usernameQuery ? usernameQuery : "?role=" + (currentUser ? currentUser.role : "")}`);
+      let queryParams = `?role=${currentUser ? currentUser.role : ""}`;
+      if (currentUser && currentUser.role === "publisher") {
+        queryParams += `&publisherId=${currentUser._id || currentUser.id}`;
+      }
+      const allChapsRes = await fetch(`${API_URL}/stories/${storyId}/chapters${queryParams}`);
       if (allChapsRes.ok) {
         const allChaps = await allChapsRes.json();
         const currentIndex = allChaps.findIndex(c => c._id === chapterId);

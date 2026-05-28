@@ -75,7 +75,7 @@ router.delete("/api/comments/:id", async (req, res) => {
     if (!comment) return res.status(404).json({ message: "Không tìm thấy bình luận" });
 
     const isOwner = comment.user.username === username;
-    const isAdmin = role === "admin";
+    const isAdmin = role === "admin" || role === "owner";
 
     if (!isOwner && !isAdmin) {
       return res.status(403).json({ message: "Bạn không có quyền xoá bình luận này" });

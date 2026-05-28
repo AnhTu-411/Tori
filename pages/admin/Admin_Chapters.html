@@ -24,6 +24,7 @@
           <li id="menu-publisher-requests"><a href="Admin_Publisher_Requests.html">Duyệt NXB</a></li>
           <li id="menu-transactions"><a href="Admin_Transactions.html">Quản lý Đơn Hàng</a></li>
           <li id="menu-users" style="display: none;"><a href="Admin_Users.html">Quản lý Tài Khoản</a></li>
+          <li id="menu-admin-logs"><a href="Admin_Logs.html">Giám sát Nhật ký</a></li>
         </ul>
       </nav>
     </aside>
@@ -34,7 +35,14 @@
           <h1>Danh sách Chương</h1>
           <p id="story-title-display" style="color: #7f8c8d; margin-top: 5px;">Đang tải...</p>
         </div>
-        <div style="display: flex; gap: 10px;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <select id="filter-chapter-approval" class="form-control" style="width: 160px;" onchange="filterChapters()">
+            <option value="">Tất cả kiểm duyệt</option>
+            <option value="approved">Đã duyệt</option>
+            <option value="unapproved">Chưa duyệt</option>
+            <option value="pending_delete">Yêu cầu xoá</option>
+          </select>
+          <button id="btn-approve-all" class="btn" style="background-color: #27ae60; color: white; display: none;" onclick="approveAllChapters()">✓ Duyệt tất cả</button>
           <a href="Admin_Stories.html" class="btn" style="background-color: #95a5a6; color: white;">← Quay Lại</a>
           <a href="#" id="btn-add-chapter" class="btn btn-primary">+ Thêm Chương Mới</a>
         </div>

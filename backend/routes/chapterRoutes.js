@@ -14,8 +14,17 @@ router.get("/api/stories/:storyId/chapters", async (req, res) => {
     const { role, publisherId } = req.query;
     let query = { storyId: req.params.storyId };
     
-    // Nếu không phải admin, và cũng không phải đang truy vấn với tư cách publisher (chính chủ), thì chỉ lấy chương đã duyệt hoặc chương cũ
-    if (role !== "admin" && role !== "publisher") {
+    let hasPrivilege = false;
+    if (role === "admin" || role === "owner") {
+      hasPrivilege = true;
+    } else if (role === "publisher" && publisherId) {
+      const story = await Story.findById(req.params.storyId);
+      if (story && story.publisherId && story.publisherId.toString() === publisherId) {
+        hasPrivilege = true;
+      }
+    }
+
+    if (!hasPrivilege) {
       query.$or = [
         { isApproved: true },
         { isApproved: { $exists: false } }
@@ -34,12 +43,20 @@ router.get("/api/stories/:storyId/chapters", async (req, res) => {
 // API thêm chương mới vào 1 bộ truyện
 router.post("/api/chapters", async (req, res) => {
   try {
-    const { storyId, chapterNumber, title, content, imageLinks, imageLinks2, price, role } = req.body;
+    const { storyId, chapterNumber, title, content, imageLinks, imageLinks2, price, role, publisherId } = req.body;
     
     // Kiểm tra xem truyện có tồn tại không
     const story = await Story.findById(storyId);
     if (!story) {
       return res.status(404).json({ message: "Không tìm thấy truyện!" });
+    }
+
+    if (role === "publisher") {
+      if (!story.publisherId || story.publisherId.toString() !== publisherId) {
+        return res.status(403).json({ message: "Bạn không có quyền thêm chương cho truyện của người khác!" });
+      }
+    } else if (role !== "admin" && role !== "owner") {
+      return res.status(403).json({ message: "Bạn không có quyền thêm chương!" });
     }
 
     const approved = (role === "admin" || role === "owner") ? true : false;
@@ -117,17 +134,37 @@ router.get("/api/chapters/:id", async (req, res) => {
 // API cập nhật thông tin chương
 router.put("/api/chapters/:id", async (req, res) => {
   try {
+    const { role, adminUsername, publisherId } = req.body;
+    
+    const chapter = await Chapter.findById(req.params.id).populate("storyId");
+    if (!chapter) return res.status(404).json({ message: "Không tìm thấy chương này!" });
+
+    if (role === "publisher") {
+      if (!chapter.storyId || !chapter.storyId.publisherId || chapter.storyId.publisherId.toString() !== publisherId) {
+        return res.status(403).json({ message: "Bạn không có quyền sửa chương của người khác!" });
+      }
+    } else if (role !== "admin" && role !== "owner") {
+      return res.status(403).json({ message: "Bạn không có quyền sửa chương!" });
+    }
+
+    let updateData = { ...req.body };
+    
+    // Nếu NXB tự sửa, chương trở về trạng thái Chưa duyệt
+    if (role !== "admin" && role !== "owner") {
+      updateData.isApproved = false;
+    }
+
     const updatedChapter = await Chapter.findByIdAndUpdate(
       req.params.id,
-      req.body,
+      updateData,
       { new: true }
     );
     if (!updatedChapter) {
       return res.status(404).json({ message: "Không tìm thấy chương này!" });
     }
 
+
     // Ghi Log Admin
-    const { role, adminUsername } = req.body;
     if (role === "admin" || role === "owner") {
       await logAdminAction(adminUsername, role, "UPDATE_CHAPTER", `Đã sửa chương ${updatedChapter.chapterNumber} truyện ID: ${updatedChapter.storyId}`);
     }
@@ -141,6 +178,11 @@ router.put("/api/chapters/:id", async (req, res) => {
 // API Duyệt chương (Dành cho Admin)
 router.put("/api/chapters/:id/approve", async (req, res) => {
   try {
+    const { adminUsername, role } = req.body;
+    if (role !== "admin" && role !== "owner") {
+      return res.status(403).json({ message: "Chỉ Admin/Owner mới có quyền duyệt chương!" });
+    }
+
     const updatedChapter = await Chapter.findByIdAndUpdate(
       req.params.id,
       { isApproved: true },
@@ -148,11 +190,45 @@ router.put("/api/chapters/:id/approve", async (req, res) => {
     );
     if (!updatedChapter) return res.status(404).json({ message: "Không tìm thấy chương!" });
 
+    // Kiểm tra xem tất cả các chương của truyện này đã được duyệt hết chưa
+    const unapprovedCount = await Chapter.countDocuments({
+      storyId: updatedChapter.storyId,
+      isApproved: { $ne: true }
+    });
+
+    if (unapprovedCount === 0) {
+      // Nếu không còn chương nào chưa duyệt, tự động duyệt luôn bộ truyện
+      await Story.findByIdAndUpdate(updatedChapter.storyId, { isApproved: true });
+    }
+
     // Ghi Log Admin
-    const { adminUsername } = req.body;
-    await logAdminAction(adminUsername, "admin", "APPROVE_CHAPTER", `Đã duyệt chương ${updatedChapter.chapterNumber} truyện ID: ${updatedChapter.storyId}`);
+    await logAdminAction(adminUsername, role || "admin", "APPROVE_CHAPTER", `Đã duyệt chương ${updatedChapter.chapterNumber} truyện ID: ${updatedChapter.storyId}`);
 
     res.status(200).json({ message: "Đã duyệt chương thành công!", chapter: updatedChapter });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi Server!", error: error.message });
+  }
+});
+
+// API Hủy duyệt chương (Dành cho Admin/Owner)
+router.put("/api/chapters/:id/unapprove", async (req, res) => {
+  try {
+    const { adminUsername, role } = req.body;
+    if (role !== "admin" && role !== "owner") {
+      return res.status(403).json({ message: "Chỉ Admin/Owner mới có quyền hủy duyệt chương!" });
+    }
+
+    const updatedChapter = await Chapter.findByIdAndUpdate(
+      req.params.id,
+      { isApproved: false },
+      { new: true }
+    );
+    if (!updatedChapter) return res.status(404).json({ message: "Không tìm thấy chương!" });
+
+    // Ghi Log Admin
+    await logAdminAction(adminUsername, role || "admin", "UNAPPROVE_CHAPTER", `Đã hủy duyệt chương ${updatedChapter.chapterNumber} truyện ID: ${updatedChapter.storyId}`);
+
+    res.status(200).json({ message: "Đã hủy duyệt chương thành công!", chapter: updatedChapter });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }
@@ -162,13 +238,30 @@ router.put("/api/chapters/:id/approve", async (req, res) => {
 router.delete("/api/chapters/:id", async (req, res) => {
   try {
     const chapterId = req.params.id;
+    const { role, adminUsername, reason, publisherId } = req.query;
 
     // Tìm chương trước khi xoá
-    const chapterToTrash = await Chapter.findById(chapterId);
+    const chapterToTrash = await Chapter.findById(chapterId).populate("storyId");
     if (!chapterToTrash) {
       return res.status(404).json({ message: "Không tìm thấy chương này!" });
     }
 
+    if (role === "publisher") {
+      if (!chapterToTrash.storyId || !chapterToTrash.storyId.publisherId || chapterToTrash.storyId.publisherId.toString() !== publisherId) {
+        return res.status(403).json({ message: "Bạn không có quyền xoá chương của người khác!" });
+      }
+      // Publisher chỉ được gửi yêu cầu xoá
+      chapterToTrash.deleteRequested = true;
+      chapterToTrash.deleteReason = reason || "Không có lí do";
+      await chapterToTrash.save();
+      return res.status(200).json({ message: "Đã gửi yêu cầu xoá chương thành công. Vui lòng chờ admin duyệt!" });
+    }
+
+    if (role !== "admin" && role !== "owner") {
+      return res.status(403).json({ message: "Bạn không có quyền xoá chương này!" });
+    }
+
+    // Admin/Owner thì xoá thật
     // Lưu vào Thùng rác
     const trashChap = new TrashChapter({
       originalId: chapterToTrash._id.toString(),
@@ -180,12 +273,34 @@ router.delete("/api/chapters/:id", async (req, res) => {
     await Chapter.findByIdAndDelete(chapterId);
 
     // Ghi Log Admin
-    const { role, adminUsername } = req.query;
     if (role === "admin" || role === "owner") {
-      await logAdminAction(adminUsername, role, "DELETE_CHAPTER", `Đã xóa chương ID: ${chapterId} vào thùng rác`);
+      await logAdminAction(adminUsername, role, "DELETE_CHAPTER", `Đã duyệt xoá chương ID: ${chapterId} vào thùng rác`);
     }
 
     res.status(200).json({ message: "Đã xoá chương thành công (Đã chuyển vào thùng rác)!" });
+  } catch (error) {
+    res.status(500).json({ message: "Lỗi Server!", error: error.message });
+  }
+});
+
+// API Từ chối yêu cầu xoá chương
+router.put("/api/chapters/:id/reject-delete", async (req, res) => {
+  try {
+    const { adminUsername, role } = req.body;
+    if (role !== "admin" && role !== "owner") {
+      return res.status(403).json({ message: "Chỉ Admin/Owner mới có quyền từ chối xoá chương!" });
+    }
+
+    const updatedChapter = await Chapter.findByIdAndUpdate(
+      req.params.id,
+      { deleteRequested: false, deleteReason: null },
+      { new: true }
+    );
+    if (!updatedChapter) return res.status(404).json({ message: "Không tìm thấy chương!" });
+
+    await logAdminAction(adminUsername, role || "admin", "REJECT_DELETE_CHAPTER", `Đã từ chối yêu cầu xoá chương ${updatedChapter.chapterNumber} truyện ID: ${updatedChapter.storyId}`);
+
+    res.status(200).json({ message: "Đã từ chối yêu cầu xoá thành công!", chapter: updatedChapter });
   } catch (error) {
     res.status(500).json({ message: "Lỗi Server!", error: error.message });
   }

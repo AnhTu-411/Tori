@@ -12,7 +12,7 @@ const AdminLog = mongoose.model("AdminLog", adminLogSchema);
 // Hàm helper hỗ trợ ghi Log
 async function logAdminAction(username, role, action, details) {
   try {
-    if (role === "admin") {
+    if (role === "admin" || role === "owner") {
       const newLog = new AdminLog({
         adminUsername: username,
         action: action,

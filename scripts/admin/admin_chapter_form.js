@@ -160,7 +160,8 @@ async function saveChapter(e) {
     imageLinks2,
     price,
     role: currentUser ? currentUser.role : "",
-    adminUsername: currentUser ? currentUser.username : ""
+    adminUsername: currentUser ? currentUser.username : "",
+    publisherId: (currentUser && currentUser.role === "publisher") ? (currentUser._id || currentUser.id) : undefined
   };
 
   try {
