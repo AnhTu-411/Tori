@@ -84,12 +84,16 @@ a {
 .authentication-main-content-tittle p {
   display: inline;
 }
-.authentication-main-content-tittle a {
+.authentication-main-content-tittle a,
+#myform .authentication-main-content-tittle a {
   font-size: 14px;
   color: #000080;
   transition: color 0.3s ease;
+  display: inline;
+  margin: 0;
 }
-.authentication-main-content-tittle a:hover {
+.authentication-main-content-tittle a:hover,
+#myform .authentication-main-content-tittle a:hover {
   color: #0000d8;
 }
 

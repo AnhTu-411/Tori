@@ -197,3 +197,28 @@ body.dark-mode .page-btn.active {
   background-color: #b3d4ff;
   color: #121212;
 }
+
+/* Dark mode cho form Đăng nhập / Đăng ký */
+body.dark-mode #myform {
+  background-color: #0a0a0f !important;
+  border: 1px solid rgba(45, 52, 70, 0.8);
+}
+
+body.dark-mode #myform h2,
+body.dark-mode #myform p,
+body.dark-mode #myform label,
+body.dark-mode #myform a,
+body.dark-mode #myform span {
+  color: #b3d4ff !important;
+}
+
+body.dark-mode #myform input[type="text"],
+body.dark-mode #myform input[type="password"],
+body.dark-mode #myform input[type="email"] {
+  background-color: #161620 !important;
+  color: #b3d4ff !important;
+  border-color: #555 !important;
+}
+body.dark-mode #myform input::placeholder {
+  color: #6c7b93 !important;
+}
