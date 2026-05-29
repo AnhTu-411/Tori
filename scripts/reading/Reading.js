@@ -180,7 +180,7 @@ async function loadReadingContent() {
     // Render nội dung
     let contentHtml = "";
     if (chap.content) {
-      const lines = chap.content.split('\\n');
+      const lines = chap.content.split('\n');
       for (let i = 0; i < lines.length; i++) {
         if (lines[i].trim()) {
           contentHtml += `<p>${lines[i]}</p>`;
@@ -510,4 +510,22 @@ async function handleCommentSubmit(e, storyId, chapterId) {
 }
 
 // Kích hoạt chạy hàm ngay khi mở trang đọc lên
-document.addEventListener("DOMContentLoaded", loadReadingContent);
+document.addEventListener("DOMContentLoaded", () => {
+  loadReadingContent();
+
+  // Chặn chuột phải (Context Menu) trên toàn trang đọc
+  document.addEventListener("contextmenu", (e) => e.preventDefault());
+
+  // Chặn thao tác Copy
+  document.addEventListener("copy", (e) => {
+    e.preventDefault();
+    alert("Tính năng copy bị vô hiệu hóa trên trang đọc truyện!");
+  });
+
+  // Chặn phím tắt Ctrl+C, Ctrl+U, Ctrl+Shift+I, F12 (Tùy chọn thêm để hạn chế)
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && (e.key === 'c' || e.key === 'C')) {
+      e.preventDefault();
+    }
+  });
+});

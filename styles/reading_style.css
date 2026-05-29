@@ -48,11 +48,15 @@ body {
 /* Căn chỉnh đoạn văn */
 .reading-content {
   font-size: 22px;
+  user-select: none; /* Chặn bôi đen */
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 .reading-content p {
   font-size: inherit; /* Cho phép đổi cỡ chữ từ JS */
   line-height: 1.8;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
   text-align: justify;
 }
 
