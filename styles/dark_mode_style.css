@@ -48,12 +48,17 @@ body.dark-mode .main-content {
 }
 
 body.dark-mode .update-list,
-body.dark-mode .right-section .comment-box,
 body.dark-mode .story-card,
 body.dark-mode .filter-sidebar {
   background-color: rgba(31, 36, 48, 0.85) !important;
-  border: 1px solid rgba(45, 52, 70, 0.8);
+  border: 1px solid rgba(45, 52, 70, 0.8) !important;
   color: #e0e0e0;
+}
+
+body.dark-mode .right-section .comment-box {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 body.dark-mode .story-title {
@@ -140,8 +145,94 @@ body.dark-mode .navigation-bar-bottom-left_side ul li a.active {
 body.dark-mode .tab-btn {
   color: #aaa;
 }
+body.dark-mode .vol-header h3 {
+  color: #e0e0e0;
+}
+body.dark-mode .chap-row {
+  border-bottom-color: #333;
+}
+body.dark-mode .chap-row:hover {
+  background-color: #2a2a36;
+}
+body.dark-mode .chap-left a {
+  color: #cfd8dc;
+}
+
+/* Dark Mode cho Khu vực Bình luận Truyện */
+body.dark-mode #story-comments-section {
+  background-color: #1a1a24 !important;
+  border: 1px solid #333 !important;
+  box-shadow: none !important;
+}
+body.dark-mode #story-comments-section h3 {
+  color: #e0e0e0;
+  border-bottom-color: #3498db;
+}
+body.dark-mode #story-comments-section p {
+  color: #aaa;
+}
+
+body.dark-mode .story-comment-item {
+  background-color: #24242e !important;
+  border-color: #333 !important;
+}
+body.dark-mode .story-comment-item .comment-username {
+  color: #3498db !important; /* Xanh dương sáng */
+}
+body.dark-mode .story-comment-item .comment-chapter-badge {
+  background-color: #333 !important;
+  color: #bbb !important;
+}
+body.dark-mode .story-comment-item .comment-text {
+  color: #e0e0e0 !important;
+}
+
+/* Dark mode overrides for Search Suggestions */
+body.dark-mode .suggestions-box {
+  background-color: #24242e;
+  border-color: #333;
+}
+body.dark-mode .suggestion-item {
+  border-bottom-color: #333;
+}
+body.dark-mode .suggestion-item:hover {
+  background-color: #2a2a36;
+}
+body.dark-mode .suggestion-title {
+  color: #b3d4ff;
+}
+body.dark-mode .suggestion-author {
+  color: #aaa;
+}
+
 body.dark-mode .tab-btn:hover {
   color: #b3d4ff;
+}
+
+/* Dark mode overrides for Payment Modal */
+body.dark-mode #payment-modal h3 {
+  color: #b3d4ff !important;
+}
+
+body.dark-mode #payment-modal #dynamic-qr-img {
+  border-color: #b3d4ff !important;
+}
+
+/* Cart Summary text in Dark Mode */
+body.dark-mode .summary-row span {
+  color: #b0b0b0;
+}
+body.dark-mode .summary-row span[style*="color: green"] {
+  color: #4cd137 !important; /* Lighter green for dark mode */
+}
+body.dark-mode .summary-total span {
+  color: #e0e0e0;
+}
+
+/* Advanced Search labels in Dark Mode */
+body.dark-mode .search-keyword-box label strong,
+body.dark-mode .filter-group label strong {
+  color: #b0b0b0;
 }
 body.dark-mode .tab-btn.active {
   color: #b3d4ff;

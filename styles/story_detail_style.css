@@ -138,12 +138,7 @@ body.dark-mode .detail-actions,
 body.dark-mode .detail-stats {
   border-top-color: #444;
 }
-/* Tắt viền và nền hộp Thông tin thêm trong Story_detail.html */
-body.dark-mode .right-section .comment-box {
-  border: none;
-  box-shadow: none;
-  background-color: transparent;
-}
+
 /*phần mục lục chương cho từng vol*/
 .vol-box {
   background-color: #fff;

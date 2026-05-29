@@ -32,9 +32,10 @@ function _initToriNavbar() {
           </ul>
         </div>
         <div class="navigation-bar-bottom-right_side">
-          <div class="search-bar">
-            <input type="text" id="global-search-input" placeholder="Tìm kiếm truyện..." />
+          <div class="search-bar" style="position: relative;">
+            <input type="text" id="global-search-input" placeholder="Tìm kiếm truyện..." autocomplete="off" />
             <button type="button" id="search-button">🔍︎</button>
+            <div id="search-suggestions" class="suggestions-box" style="display: none;"></div>
           </div>
           <a href="#" data-route="cart" class="cart-icon" title="Giỏ hàng">
             🛒 <span id="cart-count">0</span>
@@ -114,6 +115,55 @@ function _initToriNavbar() {
     searchBtn.addEventListener("click", doSearch);
     searchInput.addEventListener("keypress", function(e) {
       if (e.key === "Enter") doSearch();
+    });
+
+    // Tính năng Gợi ý tìm kiếm (Auto-suggest)
+    var suggestionsBox = document.getElementById("search-suggestions");
+    var debounceTimer;
+
+    searchInput.addEventListener("input", function() {
+      clearTimeout(debounceTimer);
+      var keyword = this.value.trim();
+      
+      if (!keyword) {
+        suggestionsBox.style.display = "none";
+        return;
+      }
+
+      debounceTimer = setTimeout(async () => {
+        try {
+          const res = await fetch(`http://localhost:5000/api/stories?title=${encodeURIComponent(keyword)}`);
+          if (res.ok) {
+            const data = await res.json();
+            const stories = Array.isArray(data) ? data : (data.data || []);
+            
+            if (stories.length === 0) {
+              suggestionsBox.innerHTML = '<div class="suggestion-item" style="color: #888;">Không tìm thấy truyện</div>';
+            } else {
+              const html = stories.slice(0, 5).map(s => `
+                <div class="suggestion-item" onclick="window.location.href='${typeof ToriRoutes !== "undefined" ? ToriRoutes.href("storyDetail", {id: s._id}) : "../stories/Story_Detail.html?id=" + s._id}'">
+                  <img src="${s.coverImg || 'https://via.placeholder.com/40x50?text=No+Cover'}" alt="cover" class="suggestion-cover" />
+                  <div class="suggestion-info">
+                    <div class="suggestion-title">${s.title}</div>
+                    <div class="suggestion-author">${s.author}</div>
+                  </div>
+                </div>
+              `).join("");
+              suggestionsBox.innerHTML = html;
+            }
+            suggestionsBox.style.display = "block";
+          }
+        } catch (err) {
+          console.error("Lỗi gọi gợi ý tìm kiếm:", err);
+        }
+      }, 300); // 300ms debounce
+    });
+
+    // Ẩn bảng gợi ý khi bấm ra ngoài
+    document.addEventListener("click", function(e) {
+      if (!searchInput.contains(e.target) && !suggestionsBox.contains(e.target)) {
+        suggestionsBox.style.display = "none";
+      }
     });
   }
 }

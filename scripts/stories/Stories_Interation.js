@@ -309,15 +309,15 @@ async function fetchStoryComments(storyId) {
       const dateStr = new Date(c.createdAt).toLocaleString("vi-VN");
       const chapterTitle = c.chapter ? `Chương ${c.chapter.chapterNumber}: ${c.chapter.title}` : "Chương không xác định";
       html += `
-        <div style="background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 10px;">
+        <div class="story-comment-item" style="background: #fdfdfd; padding: 15px; border-radius: 8px; border: 1px solid #eee; margin-bottom: 10px;">
           <div style="display: flex; justify-content: space-between; margin-bottom: 5px;">
             <div>
-              <strong style="color: #e67e22;">${c.user ? c.user.username : 'Ẩn danh'}</strong>
-              <span style="font-size: 13px; color: #7f8c8d; margin-left: 10px; background: #ecf0f1; padding: 2px 6px; border-radius: 4px;">Tại ${chapterTitle}</span>
+              <strong class="comment-username" style="color: #e67e22;">${c.user ? c.user.username : 'Ẩn danh'}</strong>
+              <span class="comment-chapter-badge" style="font-size: 13px; color: #7f8c8d; margin-left: 10px; background: #ecf0f1; padding: 2px 6px; border-radius: 4px;">Tại ${chapterTitle}</span>
             </div>
             <span style="font-size: 12px; color: #95a5a6;">${dateStr}</span>
           </div>
-          <p style="margin-top: 8px; line-height: 1.5; color: #2c3e50;">${c.content}</p>
+          <p class="comment-text" style="margin-top: 8px; line-height: 1.5; color: #2c3e50;">${c.content}</p>
         </div>
       `;
     });

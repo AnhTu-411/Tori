@@ -96,8 +96,8 @@
   // Đường dẫn ảnh
   const ASSETS = {
     logo: "assets/images/Tori_Logo_Transparent.png",
-    bankQr: "assets/images/Bank_QR.jpg",
-    vnpayQr: "assets/images/VNPAY_QR.jpg",
+    bankQr: "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg",
+    vnpayQr: "https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg",
   };
 
   // Hàm tính toán điểm gốc
@@ -141,6 +141,10 @@
     const assetPath = ASSETS[assetName];
     if (!assetPath) {
       throw new Error(`Unknown asset: ${assetName}`);
+    }
+
+    if (assetPath.startsWith("http")) {
+      return assetPath;
     }
 
     // Ghép nối: Lùi thư mục + Đường dẫn tĩnh của ảnh

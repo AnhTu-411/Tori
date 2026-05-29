@@ -113,27 +113,91 @@ a {
 }
 /*Phần rỏ hàng*/
 .cart-icon {
-  position: relative;
-  font-size: 24px;
-  color: #000080;
+  font-size: 20px;
+  color: #fff;
   text-decoration: none;
-  margin-right: 15px;
-  transition: transform 0.2s ease;
+  position: relative;
+  transition: transform 0.2s;
 }
 
 .cart-icon:hover {
   transform: scale(1.1);
 }
 
-/* Cục thông báo số lượng nằm góc trên giỏ hàng */
 #cart-count {
   position: absolute;
-  top: -5px;
-  right: -10px;
-  background-color: red;
+  top: -8px;
+  right: -12px;
+  background-color: #e74c3c;
   color: white;
   font-size: 12px;
   font-weight: bold;
   padding: 2px 6px;
   border-radius: 50%;
+}
+
+/* =========================================================
+   STYLE CHO GỢI Ý TÌM KIẾM (AUTO-SUGGEST)
+   ========================================================= */
+.suggestions-box {
+  position: absolute;
+  top: 100%; /* Đẩy xuống ngay dưới ô input */
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 0 0 8px 8px; /* Bo tròn góc dưới */
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  max-height: 350px;
+  overflow-y: auto;
+  z-index: 1000;
+  margin-top: 5px;
+}
+
+.suggestion-item {
+  display: flex;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  text-align: left;
+}
+
+.suggestion-item:last-child {
+  border-bottom: none;
+}
+
+.suggestion-item:hover {
+  background-color: #f9f9f9;
+}
+
+.suggestion-cover {
+  width: 40px;
+  height: 55px;
+  object-fit: cover;
+  border-radius: 4px;
+  margin-right: 12px;
+}
+
+.suggestion-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.suggestion-title {
+  font-weight: bold;
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 180px;
+}
+
+.suggestion-author {
+  font-size: 12px;
+  color: #777;
 }
